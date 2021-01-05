@@ -1,0 +1,138 @@
+\documentclass{lipics-v2021}
+\usepackage{xspace}
+%see https://submission.dagstuhl.de/documentation/authors
+
+\title{A formalization of Dedekind domains and the class number}
+\author{author name}{affiliation}{email}{orcid}{funding}
+
+\newcommand{\lean}[1]{\texttt{#1}\xspace} % for writing Lean expressions
+\newcommand{\OK}{\mathrm{O}_K}
+\DeclareMathOperator{\Tr}{\mathrm{Tr}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We present our formalization of Dedekind domains and class numbers in the Lean prover. ...
+\end{abstract}
+
+\section{Introduction}
+
+Our main achievement: if $K$ is a finite field extension of $\Q$, then the ring of integers $\OK$ is a Dedekind domain with finite class number.
+
+Overview of the work:
+\begin{itemize}
+ \item Define dedekind domains
+ \item show the definitions are equivalent to each other
+ \item show a principal ideal domain is a Dedekind domain
+ \item show the integral closure of a Dedekind domain in a finite (separable) field extension is a Dedekind domain
+ \item define the class group
+ \item show the class group is finite
+\end{itemize}
+
+\section{Supporting definitions}
+
+% I put this section in front because my notes later on refer back to definitions in this section. We could also give the informal overview first, then explain how we map this to formal maths.
+
+\subsection{Subobjects}
+We write ``$L$ is a field extension of $K$'' as \lean{[algebra K L]}. This provides us with a canonical ring homomorphism $\lean{algebra\_map K L} : K \to L$ which is injective because $K$ and $L$ are fields.
+
+We defined a subfield of $K$ as a subset of $K$ that contains $0$ and $1$ and is closed under addition, negation, multiplication, and taking inverses.
+
+If $L$ is a field extension of $K$, we define an intermediate field as a subfield that is also a subalgebra: a subfield that contains the image of $\lean{algebra\_map K L}$.
+
+If $K$ is an $R$-algebra and $x : K$, $x$ is integral if it is the root of a monic polynomial over $R$: there is a polynomial $p$ with leading coefficient $1$ and other coefficients in $R$, such that $p(x) = 0$.
+The integral closure of $R$ in $K$ is the subalgebra containing all integral elements of $R$.
+Elements of $K$ that are integral over the integral closure are also integral over $R$, explaining the word ``closure'' in the name.
+
+\subsection{Fraction fields}
+
+A fraction field $K$ of an integral domain $R$ is the smallest field that contains $R$ (or some other equivalent definitions).
+The choice of $K$ is only unique up to isomorphism.
+In particular, the generic construction of a fraction field of $\Z$ does not yield $\Q$.
+One solution is to build a transfer tactic, the other is to state our theorems parametrized by $K$, along with a proof that $K$ is a fraction field of $R$.
+
+A number ring is defined as a ring whose fraction field is a number field, a finite extension of $\Q$, the ring of integers $\OK$ is an important example. Since we need $K$ to define $\OK$, it would be circular to define $K$ as the fraction field of $\OK$. We need an unbundled (a less bundled) definiton.
+
+The mathlib definition of fraction fields is based around the localization map. Let $R$ and $K$ be (commutative) rings with submonoid $P \subset R$, then $f : R \to K$ is a localization map if ..., expressed formally as the following structure:
+
+The localization map $f$ endows $K$ with an $R$-algebra structure.
+
+If the submonoid $P$ consists of all non-zero-divisors of $R$, we say that $f$ is a fraction map, and if $R$ is an integral domain, $K$ is a field. We call $K$ the fraction field of $R$.
+
+The choice of $R$-algebra structure on $K$ is not unique, so we use a type synonym \lean{f.codomain}. This instructs the type class system to use the algebra instance derived from the localization map $f$.
+
+In the following sections, let $f : R \to K$ be a fraction map.
+
+\subsection{Fractional ideals}
+
+When working with fraction fields, it is useful to extend the notion of $R$-ideals to fractional ideals: these are $R$-ideals divided by some $x : R$, or equivalently $R$-submodules $I$ of $K$ such that there is an $x : R$ with $x I \subseteq R$. The "$R$" in this statement is the image of $R$ in $K$, so our definition of fractional ideals depends on the fraction map $f$.
+
+\subsection{Power basis}
+
+Let $K$ be a field, then the following are equivalent by isomorphism of $K$-algebras:
+\begin{itemize}
+ \item ``infimum of intermediate fields'': for $L / K$ and $x : L$ algebraic over $K$, the smallest subfield of $L$ containing $x$ and the image of $K$
+ \item ``fractions of subring closure'': for $L / K$ and $x : L$ algebraic over $K$, the subfield containing all $y / z$, where $y$ and $z$ are in the smallest subring of $L$ containing $x$ and the image of $K$
+ \item ``subring closure'': for $L / K$ and $x : L$ algebraic over $K$, the smallest subring of $L$ containing $x$ and the image of $K$ already contains all inverses. This is more problematic with typeclass inference.
+ \item ``adjoining a root of a polynomial'' for $f$ an irreducible polynomial over $K$, the field $K[x] / f$
+ \item ``infimum of intermediate fields'': for $L / K$ and $x : L$ algebraic over $K$, $L$ itself if the smallest subfield of $L$ containing $x$ and the image of $K$ contains all elements of $L$
+ \item ``power basis'' for $L / K$, $x : L$ and $n : \N$ such that all $y : L$ can be written as a polynomial of degree $\le n$ over $x$
+\end{itemize}
+
+We chose the last condition since it is parametric in $K$ and $L$, again avoiding the need for transferring our results across isomorphisms. It also allows us to explicitly construct several maps we will need later on.
+
+``primitive element theorem'': for $L / K$ finite and separable, $L$ has a power basis.
+
+\subsection{Scalar towers}
+
+We say ``this diagram commutes'' using \lean{is\_scalar\_tower}.
+
+\section{Defining Dedekind Domains}
+
+Initially we used 3 different structures to represent Dedekind domains: \lean{is\_dedekind\_domain}, \lean{is\_dedekind\_domain\_iff} and \lean{is\_dedekind\_domain\_dvr}, defined as follows:
+...
+
+These different structures allowed us to do our work in parallel. This meshed well with the approach in mathlib of favouring short, complete, individual contributions over including projects. (This is also how the Linux kernel gets developed!)
+
+In parallel we could then work on providing instances of the \lean{is\_dedekind\_domain} typeclass, proving the equivalences between the structures, and using the Dedekind domain definition as a hypothesis.
+
+Discuss the \lean{not\_is\_field} assumption.
+
+\section{Equivalence of the definitions}
+
+In this section, we describe how we proved that the 3 definitions of Dedekind domain are equivalent.
+
+\section{Principal ideal domains are Dedekind}
+
+This is not a long proof, so it can be a good demonstration of our definitions.
+
+\section{Ring of integers are Dedekind domains}
+
+We prove a stronger statement: if $R$ is a Dedekind domain with fraction field $K$, and $L$ is a finite separable extension of $K$, then the integral closure of $R$ in $L$ is a Dedekind domain.
+
+The integral closure is immediately integrally closed.
+
+The integral closure has dimension at most one: some going-up theory needed. Let $I$ be a prime ideal in the closure, then $I \cap R$ is a prime ideal not equal to $R$ itself, which is maximal. If $I < J$ then we find an integral $x \in J \setminus I$, and the smallest nonzero coefficient of $x$'s minimal polynomial is in $J \cap R$.
+
+The integral closure is noetherian: Because the trace form is nondegenerate and $L / K$ is finite-dimensional, there is a basis $b$ for $L / K$ which is mapped to a dual basis $b'$, such that the $i$'th coordinate of $x$ according to $b'$ is exactly the trace of $b_i x$. Let $x$ be integral over $R$, because the trace of $x$ is equal (in an algebraic closure of $L$) to the sum of roots of the characteristic polynomial of $x$, each of these roots is integral so the sum is integral too; therefore the trace of $x$ is integral over $R$. Now we suppose that all $b_i$ are integral (we can multiply the whole of $b$ by a constant until all $b_i$ are integral), and let $x : L$ be integral over $R$: then $\sum_i \Tr(b_i x) b'_i = \sum_i x_i b'_i = x$, and each $\Tr(b_i x) : K$ is integral over the Dedekind domain $R$, so it is an element of $R$. We conclude that the integral closure of $R$ in $L$ is contained in the $R$-span of $b'_i$, so it is noetherian.
+
+When working with the trace of $x$, main difficulties that we resolved were: many different ways of arriving at K(x) (fixed using power basis); switching between many different extensions (fixed using \lean{is\_scalar\_tower}).
+
+If $R$ is a principal ideal domain, such as $\Z$, we can strengthen the conclusion more: there is a linear independent set of integral elements spanning the integral closure. This is one part of the structure theorem of finitely generated modules.
+
+\section{Class number}
+
+The class group is the quotient \lean{units (fractional\_ideal f)} modulo the principal fractional ideals, or equivalently the ideals of $R$ (except $0$) modulo the elements of $R$ (except $0$).
+
+We are interested in the class group because ...
+
+An important property of the ring of integers in a number field is that the class group is finite. The number of elements of the class group is called the class number.
+
+We prove that the class group is finite using a simplified form of the traditional proof, ...
+
+\end{document}
