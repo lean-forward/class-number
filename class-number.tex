@@ -72,6 +72,8 @@ In the following sections, let $f : R \to K$ be a fraction map.
 
 When working with fraction fields, it is useful to extend the notion of $R$-ideals to fractional ideals: these are $R$-ideals divided by some $x : R$, or equivalently $R$-submodules $I$ of $K$ such that there is an $x : R$ with $x I \subseteq R$. The "$R$" in this statement is the image of $R$ in $K$, so our definition of fractional ideals depends on the fraction map $f$.
 
+Submodules have a division but no inverses. This division lifts to dedekind domains, but dedekind domains have inverses for fractional ideals. This conflicts with the default definition of division, so we had to refactor the definition of \lean{group(\_with\_zero)} to include a field for division.
+
 \subsection{Power basis}
 
 Let $K$ be a field, then the following are equivalent by isomorphism of $K$-algebras:
