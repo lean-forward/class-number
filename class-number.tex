@@ -1,16 +1,30 @@
 \documentclass{lipics-v2021}
-\usepackage{xspace}
 %see https://submission.dagstuhl.de/documentation/authors
 
 \title{A formalization of Dedekind domains and the class number}
 \author{author name}{affiliation}{email}{orcid}{funding}
+
+\usepackage{xcolor}
+\usepackage{xspace}
+\usepackage{listings}
+\def\lstlanguagefiles{lstlean.tex}
+\lstset{language=lean}
 
 \newcommand{\lean}[1]{\texttt{#1}\xspace} % for writing Lean expressions
 \newcommand{\OK}{\mathrm{O}_K}
 \DeclareMathOperator{\Tr}{\mathrm{Tr}}
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Qbar}{\mathbb{\bar{Q}}}
 \newcommand{\Z}{\mathbb{Z}}
+
+\definecolor{keywordcolor}{rgb}{0.7, 0.1, 0.1}   % red
+\definecolor{commentcolor}{rgb}{0.4, 0.4, 0.4}   % grey
+\definecolor{symbolcolor}{rgb}{0.4, 0.4, 0.4}    % grey
+\definecolor{sortcolor}{rgb}{0.1, 0.5, 0.1}      % green
+
+\DeclareUnicodeCharacter{211A}{\ensuremath{\Q}}
+\DeclareUnicodeCharacter{22A4}{\ensuremath{\top}}
 
 \begin{document}
 
@@ -34,12 +48,64 @@ Overview of the work:
  \item show the class group is finite
 \end{itemize}
 
+\section{Number fields, global fields and rings of integers}
+
+A number field is a finite field extension of $\Q$.
+Number fields are a basic concept in algebraic number theory. Examples: ....
+We formalized number fields as the following typeclass:
+\begin{lstlisting}
+class is_number_field (K : Type*) [field K] :=
+[cz : char_zero K] [fd : finite_dimensional ℚ K]
+\end{lstlisting}
+The condition \lean{[cz : char\_zero K]} states that $K$ has characteristic zero, i.e. the canonical ring homomorphism $\N \to K$ is an embedding.
+This implies that there is a $\Q$-algebra structure on $K$ (found by typeclass search), this gives the vector space structure used in the \lean{[fd : finite\_dimensional ℚ K]} hypothesis.
+
+\subsection{Field extensions}
+
+The definition of \lean{is\_number\_field} illustrates our treatment of field extensions.
+In informal mathematics, a field $L$ containing a subfield $K$ is said to be a field extension $L / K$.
+Often we encounter towers of field extensions: we might have that $\Q$ is contained in $K$, $K$ is contained in $L$, $L$ is contained in the algebraic closure $\bar{K}$ of $K$, and $\bar{K}$ is contained in $\C$.
+We might formalize this situation by viewing $\Q$, $K$, $L$ and $\bar{K}$ to be sets of complex numbers $\C$ and defining field extensions as subset relations between these subfields.
+This way, no coercions need to be inserted to map elements of one field into a larger field.
+% I believe this is what mathcomp does; verify?
+In type theory we cannot define $\Q$ as a subset of $\C$ since we need $\Q$ to define $\C$.
+Thus, some coercion is always needed to go from the original definition of $\Q$ to its image in $\C$; and similar issues arise for other subfields that were not originally defined as such.
+Moreover, we lose flexibility since we need to choose the top field at the start and cannot adjoin more elements when needed.
+
+Instead, we parametrize our results over abritrary types $K$ and $L$ and represent the hypothesis ``$L$ is a field extension of $K$'' by taking an instance argument \lean{[algebra K L]}.
+This provides us with a canonical ring homomorphism $\lean{algebra\_map K L} : K \to L$; this map is injective because $K$ and $L$ are fields.
+In other words, field extensions are given by their canonical embeddings.
+
+\subsection{Scalar towers}
+
+The main drawback of allowing arbitrary embeddings is that we need to prove that these maps commute.
+For example, we might start with a field extension $L / \Q$, then define a subfield $K$ of $L$,
+giving a tower of extensions $L / K / \Q$.
+In such a tower, the map $\Q \to L$ should be equal to the composition $Q \to K \to L$,
+yet we cannot define this to be the case since the map $\Q \to L$ came earlier.
+
+We formalize a result with hypothesis of the form ``$L / K / F$ is a tower of field extensions''
+to be parametrized over all three maps \lean{[algebra F K]}, \lean{[algebra K L]} and \lean{[algebra F L]},
+and take an additional parameter \lean{[is\_scalar\_tower F K L]} stating that these maps commute.
+
+\lean{is\_scalar\_tower} works well.
+Parameters are automatically inferred by the typeclass system in many cases,
+such as when \lean{K : intermediate\_field F L}.
+
+\subsection{Ring of integers}
+
+A number ring is defined as a ring whose fraction field is a number field, the ring of integers $\OK$ is an important example.
+The ring of integers in $K$ is defined as all $x : K$ that are the root of a monic polynomials with coefficients in $\Z$:
+\begin{lstlisting}
+def ring_of_integers (K : Type*) [field K] [is_number_field K] :=
+integral_closure ℤ K
+\end{lstlisting}
+
 \section{Supporting definitions}
 
 % I put this section in front because my notes later on refer back to definitions in this section. We could also give the informal overview first, then explain how we map this to formal maths.
 
 \subsection{Subobjects}
-We write ``$L$ is a field extension of $K$'' as \lean{[algebra K L]}. This provides us with a canonical ring homomorphism $\lean{algebra\_map K L} : K \to L$ which is injective because $K$ and $L$ are fields.
 
 We defined a subfield of $K$ as a subset of $K$ that contains $0$ and $1$ and is closed under addition, negation, multiplication, and taking inverses.
 
@@ -55,8 +121,6 @@ A fraction field $K$ of an integral domain $R$ is the smallest field that contai
 The choice of $K$ is only unique up to isomorphism.
 In particular, the generic construction of a fraction field of $\Z$ does not yield $\Q$.
 One solution is to build a transfer tactic, the other is to state our theorems parametrized by $K$, along with a proof that $K$ is a fraction field of $R$.
-
-A number ring is defined as a ring whose fraction field is a number field, a finite extension of $\Q$, the ring of integers $\OK$ is an important example. Since we need $K$ to define $\OK$, it would be circular to define $K$ as the fraction field of $\OK$. We need an unbundled (a less bundled) definiton.
 
 The mathlib definition of fraction fields is based around the localization map. Let $R$ and $K$ be (commutative) rings with submonoid $P \subset R$, then $f : R \to K$ is a localization map if ..., expressed formally as the following structure:
 
@@ -74,25 +138,58 @@ When working with fraction fields, it is useful to extend the notion of $R$-idea
 
 Submodules have a division but no inverses. This division lifts to dedekind domains, but dedekind domains have inverses for fractional ideals. This conflicts with the default definition of division, so we had to refactor the definition of \lean{group(\_with\_zero)} to include a field for division.
 
-\subsection{Power basis}
+\subsection{Representing simple field extensions}
 
-Let $K$ be a field, then the following are equivalent by isomorphism of $K$-algebras:
-\begin{itemize}
- \item ``infimum of intermediate fields'': for $L / K$ and $x : L$ algebraic over $K$, the smallest subfield of $L$ containing $x$ and the image of $K$
- \item ``fractions of subring closure'': for $L / K$ and $x : L$ algebraic over $K$, the subfield containing all $y / z$, where $y$ and $z$ are in the smallest subring of $L$ containing $x$ and the image of $K$
- \item ``subring closure'': for $L / K$ and $x : L$ algebraic over $K$, the smallest subring of $L$ containing $x$ and the image of $K$ already contains all inverses. This is more problematic with typeclass inference.
- \item ``adjoining a root of a polynomial'' for $f$ an irreducible polynomial over $K$, the field $K[x] / f$
- \item ``infimum of intermediate fields'': for $L / K$ and $x : L$ algebraic over $K$, $L$ itself if the smallest subfield of $L$ containing $x$ and the image of $K$ contains all elements of $L$
- \item ``power basis'' for $L / K$, $x : L$ and $n : \N$ such that all $y : L$ can be written as a polynomial of degree $\le n$ over $x$
-\end{itemize}
+A number field $K$ is defined as a finite extension of $\Q$, or equivalently a field of the form $\Q(\alpha)$ for some algebraic number $\alpha$.
+A field extension $L / K$ is called \emph{simple} if there is an $\alpha$ algebraic over $K$, called the \emph{primitive element}, such that $L = K(\alpha)$.
+The primitive element theorem states that a finite, separable extension is simple; the converse holds if the primitive element $\alpha$ is separable.
 
-We chose the last condition since it is parametric in $K$ and $L$, again avoiding the need for transferring our results across isomorphisms. It also allows us to explicitly construct several maps we will need later on.
+The exact choice of these $\alpha$ and $K(\alpha)$ are underspecified in the mathematical literature.
+We can find $K(\alpha)$ by adjoining the root of a polynomial: there is an irreducible polynomial $p \in K[X]$ such that $K[X] / p \simeq L$; we set $\alpha$ to be the image of $X$ in $K[X] / p$.
+We can also take $\alpha : \bar{K}$, the algebraic closure of $K$, set $K(\alpha)$ to be the smallest subfield of $\bar{K}$ that contains $\alpha$ and the image of $K$, and have an equality $L = K(\alpha)$ as subfields of $\bar{K}$.
+Similarly, we can take $\alpha : L$ and $K(\alpha)$ to be the smallest subfield of $L$ containing $\alpha$ and the image of $K$; then $L = K(\alpha)$ means that $K(\alpha)$, as a subfield of $L$, contains all elements of $L$.
 
-``primitive element theorem'': for $L / K$ finite and separable, $L$ has a power basis.
+Because $\alpha$ is algebraic the smallest subring containing $\alpha$ and $\Q$ will be a field, thus we can add two more representations, replacing ``smallest subfield'' with ``smallest subring''.
+Moreover, all subfields/subrings containing $\Q$ are also $\Q$-algebras, so we can additionally replace ``subfield'' with ``intermediate field'' and ``subring'' with ``$\Q$-subalgebra''.
 
-\subsection{Scalar towers}
+The ability to switch between these representations is important: sometimes $K$ and $L$ are fixed and we want an arbitrary $\alpha$; sometimes $\alpha$ is fixed and we want an arbitrary type representing $K(\alpha)$.
+In Lean, these different constructions have already been formalized:
+$K[X] / p$ is a type called \lean{adjoin\_root p},
+$K(\alpha)$ as smallest $K$-subalgebra containing $\alpha$ is called \lean{subalgebra.adjoin $K$ \{$\alpha$\}}
+and the smallest intermediate field containing $\alpha$ is \lean{intermediate\-\_field.adjoin $K$ \{$\alpha$\}}.
+The primitive element theorem had been formalized as:
+\begin{lstlisting}
+theorem exists_primitive_element
+  [finite_dimensional F E] [is_separable F E] :
+  ∃ α : E, intermediate_field.adjoin F α = ⊤
+\end{lstlisting}
 
-We say ``this diagram commutes'' using \lean{is\_scalar\_tower}.
+Note that the choice of $\alpha$ (or the irreducible polynomial $p$) is not unique in general; both $3^\frac{1}{3}$ and $3^\frac{2}{3}$ generate $\Q(\sqrt[3]{3})$.
+This means none of the above conditions provides a uniform way of reasoning about simple extensions:
+if we use a predicate like ``finite, separable extension'' we cannot guarantee that the primitive element chosen for $K(\alpha)$ is indeed $\alpha$.
+If we need to choose an $\alpha$ ahead of time and work in (any definition of) $K(\alpha)$, we need extra work to transfer the result across the isomorphism $K(\alpha) \simeq L$.
+
+We chose instead to use a \emph{power basis} to represent simple field extensions, a basis of the form $1, x, x^2, \dots, x^{n-1} : A$ (viewing $A$ as an $R$-module).
+We call $x$ the \emph{generator} and $n$ the \emph{dimension} of this power basis.
+In Lean, we defined the following structure, bundling the information of a power basis:
+\begin{lstlisting}
+structure power_basis (R A : Type*) [comm_ring R] [ring A] [algebra R A] :=
+(gen : S) (dim : ℕ)
+(is_basis : is_basis R (λ (i : fin dim), gen ^ (i : ℕ)))
+\end{lstlisting}
+
+If $x : A$ is the generator of a power basis over $R$, it is also integral over $R$:
+let $n$ be the dimension of the power basis, then $x^n : A$ can be written as $x^n = \sum_i c_i x^i$ for some coefficients $c_i : R$;
+thus $p(X) = X^n - \sum_i c_i X^i$ is a polynomial with root $x$.
+That $p$ has minimal degree, follows from the linear independence of the powers of $x$ up to $n$.
+Conversely, for algebraic (and therefore integral) $\alpha$, $\Q(\alpha)$ has a power basis generated by $\alpha$.
+This shows that the condition of having a power basis is equivalent to being a simple field extension.
+
+With the \lean{power\_basis} structure, we have the ability to parametrize our results,
+being able to choose the $K$ and $L$ in a simple field extension $L / K$,
+or being able to choose the $\alpha$ generating $K(\alpha)$ (packaged up as \lean{power\_basis.gen\ pb}).
+Specializing a result from an arbitrary $L$ with a power basis over $K$, to \lean{adjoin K \{$\alpha$\}} specifically, is a matter of applying the result to the power basis generated by $\alpha$, and rewriting $\lean{power\_basis.gen (adjoin.power\_basis K $\alpha$)} = \alpha$.
+
 
 \section{Defining Dedekind Domains}
 
