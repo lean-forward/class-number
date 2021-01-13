@@ -140,7 +140,54 @@ In the following sections, let $f : R \to K$ be a fraction map.
 
 When working with fraction fields, it is useful to extend the notion of $R$-ideals to fractional ideals: these are $R$-ideals divided by some $x : R$, or equivalently $R$-submodules $I$ of $K$ such that there is an $x : R$ with $x I \subseteq R$. The "$R$" in this statement is the image of $R$ in $K$, so our definition of fractional ideals depends on the fraction map $f$.
 
-Submodules have a division but no inverses. This division lifts to dedekind domains, but dedekind domains have inverses for fractional ideals. This conflicts with the default definition of division, so we had to refactor the definition of \lean{group(\_with\_zero)} to include a field for division.
+We defined the addition, multiplication and intersection operations on fractional ideals,
+by showing the corresponding operations on submodules map fractional ideals to fractional ideals.
+We also proved that these operations give a commutative semiring structure on the type of fractional ideals.
+For example, multiplication of fractional ideals is defined as:
+\begin{lstlisting}
+lemma fractional_mul (I J : fractional_ideal f) :
+  is_fractional f (I.1 * J.1) := _
+
+instance : has_mul (fractional_ideal f) :=
+⟨λ I J, ⟨I.1 * J.1, fractional_mul I J⟩⟩
+\end{lstlisting}
+
+Defining the quotient of two fractional ideals requires slightly more work.
+The submodule quotient $I / J$\footnote{The $:$ operator typically used for the submodule quotient is already reserved by the type theory, so \mathlib uses $/$ instead.} is characterized by the property
+\begin{lstlisting}
+lemma submodule.mem_div_iff_forall_mul_mem {x : A} {I J : submodule R A} :
+  x ∈ I / J ↔ ∀ y ∈ J, x * y ∈ I
+\end{lstlisting}
+However, if $J$ contains only the element $0$,
+then $xy = 0 \in I$ for all $y \in J$, so all $x : A$ are elements of $I / J$.
+The submodule consisting of all $x : A$ is not a fractional ideal in general,
+so we cannot simply define the quotient of two fractional ideals to be the submodule quotient.
+Instead we set $I / 0 = 0$, resulting in the following definition of the fractional ideal quotient:
+\begin{lstlisting}
+noncomputable instance fractional_ideal.has_div :
+  has_div (fractional_ideal g) :=
+⟨λ I J, if h : J = 0 then 0 else ⟨I.1 / J.1, fractional_div_of_nonzero h⟩⟩
+\end{lstlisting}
+
+In general, if there is a multiplicative inverse $J$ of $I$, such that $I J = J I = 1$, then $J = 1 / I$.
+However, the converse does not always hold: $1 / I$ is not always the multiplicative inverse of $I$.
+Indeed, the condition that $1 / I$ is an inverse for all $I$ is one of the equivalent definitions of a Dedekind domain.
+Therefore, we defined the inverse operator $\cdot^{-1}$ only for fractional ideals in a Dedekind domain:
+\begin{lstlisting}
+noncomputable instance [is_dedekind_domain R] (g : fraction_map R K) :
+  has_inv (fractional_ideal g) :=
+⟨λ I, 1 / I⟩
+\end{lstlisting}
+
+Defining the inverse in terms of the quotient causes a problem later on, when we tried to define a \lean{group\_with\_zero} instance for fractional ideals in a Dedekind domain.
+%TODO: explain group_with_zero? Is it already in another article?
+The \lean{group\_with\_zero} typeclass defines its own division operator, $x / y := x y^{-1}$,
+resulting in a definitionally unequal second interpretation of $I / J = I * (1 / J)$.
+We were able to fix this issue by including the division operator as a field in \lean{group\_with\_zero},
+along with a field $\lean{div\_eq\_mul\_inv} : \forall\ a\ b, a / b = a * b^{-1}$.
+This weakened the requirement on division from definitional to propositional equality.
+As a consequence, many \lean{group\_with\_zero} instances and proofs throughout \mathlib needed slight changes to explicily rewrite $x / y$ to $x * y^{-1}$ instead of using unification to implicitly do so.
+% TODO: explain that we did the same for group and add_group, or is that too much detail?
 
 \subsection{Representing simple field extensions}
 
@@ -150,11 +197,11 @@ The primitive element theorem states that a finite, separable extension is simpl
 
 The exact choice of these $\alpha$ and $K(\alpha)$ are underspecified in the mathematical literature.
 We can find $K(\alpha)$ by adjoining the root of a polynomial: there is an irreducible polynomial $p \in K[X]$ such that $K[X] / p \simeq L$; we set $\alpha$ to be the image of $X$ in $K[X] / p$.
-We can also take $\alpha : \bar{K}$, the algebraic closure of $K$, set $K(\alpha)$ to be the smallest subfield of $\bar{K}$ that contains $\alpha$ and the image of $K$, and have an equality $L = K(\alpha)$ as subfields of $\bar{K}$.
+We can also take $\alpha : \bar{K}$, the algebraic closure of $K$, set $K(\alpha)$ to be the smallest subfield of $\bar{K}$ that contains $\alpha$ and the image of $K$, and have an equality $L = K(\alpha)$ as subsets of $\bar{K}$.
 Similarly, we can take $\alpha : L$ and $K(\alpha)$ to be the smallest subfield of $L$ containing $\alpha$ and the image of $K$; then $L = K(\alpha)$ means that $K(\alpha)$, as a subfield of $L$, contains all elements of $L$.
 
 Because $\alpha$ is algebraic the smallest subring containing $\alpha$ and $\Q$ will be a field, thus we can add two more representations, replacing ``smallest subfield'' with ``smallest subring''.
-Moreover, all subfields/subrings containing $\Q$ are also $\Q$-algebras, so we can additionally replace ``subfield'' with ``intermediate field'' and ``subring'' with ``$\Q$-subalgebra''.
+Moreover, all subfields/subrings containing $K$ are also $K$-algebras, so we can additionally replace ``subfield'' with ``intermediate field'' and ``subring'' with ``$K$-subalgebra''.
 
 The ability to switch between these representations is important: sometimes $K$ and $L$ are fixed and we want an arbitrary $\alpha$; sometimes $\alpha$ is fixed and we want an arbitrary type representing $K(\alpha)$.
 In Lean, these different constructions have already been formalized:
@@ -182,6 +229,7 @@ structure power_basis (R A : Type*) [comm_ring R] [ring A] [algebra R A] :=
 (is_basis : is_basis R (λ (i : fin dim), gen ^ (i : ℕ)))
 \end{lstlisting}
 
+% TODO: or just refer here to the names of the Lean functions?
 If $x : A$ is the generator of a power basis over $R$, it is also integral over $R$:
 let $n$ be the dimension of the power basis, then $x^n : A$ can be written as $x^n = \sum_i c_i x^i$ for some coefficients $c_i : R$;
 thus $p(X) = X^n - \sum_i c_i X^i$ is a polynomial with root $x$.
@@ -341,23 +389,58 @@ Since a basis $b : \iota \to L$ for $K : L$ and a basis $c : \kappa \to F$ for $
 these results follow by direct computation of the multiplication matrices $M_x$.
 
 To compute $\Tr_{K : L}(x)$ it therefore suffices to consider the trace of $x$ in the smallest field containing $x$ and $K$, which is $K(x)$.
-It turns out that the trace of $x$ in $K(x)$ is the sum of all conjugate elements to $x$,
+It turns out that the trace of $x$ in $K(x)$ is the sum of all conjugate roots to $x$,
 i.e. if the field extension $F$ contains all roots of the minimal polynomial of $x$, then the sum of its roots is exactly (the image of) $\Tr_{K : K(x)}(x)$.
 We formalize this using the power basis, as follows:
 \begin{lstlisting}
 lemma power_basis.trace_gen_eq_sum_roots (pb : power_basis K L)
   (h : polynomial.splits (algebra_map K F) pb.minpoly_gen) :
-  algebra_map _ F (trace K L pb.gen) =
+  algebra_map K F (trace K L pb.gen) =
     (pb.minpoly_gen.map (algebra_map K F)).roots.sum
 \end{lstlisting}
-Each conjugate element of $x$ is integral since they are roots of the same monic polynomial,
-and integer multiples and sums of integral elements are integral,
-thus we conclude that the trace (and trace form) of an integral element is also integral.
+Applying this result to a specific $x$ is then a question of applying it to the power basis for $K(x)$ generated by $x$, to give:
+\begin{lstlisting}
+lemma trace_eq_sum_roots [finite_dimensional K L]
+  {x : L} (hx : is_integral K x)
+  (hF : (minimal_polynomial hx).splits (algebra_map K F)) :
+  algebra_map K F (algebra.trace K L x) =
+  (findim K(x) L) • ((minimal_polynomial hx).map (algebra_map K F)).roots.sum
+\end{lstlisting}
+We formulate the lemma in terms of the power basis, since we will also use it for a finite simple extension $L : K$ later in the proof.
+
+Each conjugate element of $x$ is integral since they are roots of (the same) monic polynomial,
+and integer multiples and sums of integral elements are integral.
+Since \lean{trace\_eq\_sum\_roots} shows that the trace of $x$ is an integer (\lean{findim K(x) L}) multiple of a sum of conjugate roots,
+we conclude that the trace (and trace form) of an integral element is also integral.
 % It would be marginally easier if `is_integral' was just an auxiliary definition for the subalgebra
 % `integral_closure', since subalgebras are closed under sums and smul "for free".
 
 To show the trace form is nondegenerate, we adapted \cite{Neukirch}, Proposition 2.8 as follows:
-An alternative characterization of the conjugates of $x$ is that they are the images of $x$ under each embedding $K(x) \to F$ that fixes $K$.
+Suppose $L : K$ is a separable field extension of finite degree $n$,
+thus it has a primitive element $x$ generating a power basis \lean{pb} of dimension $n$.
+Let $F$ be the algebraic closure of $K$. Since $L$ is a finite extension, hence algebraic over $K$, we find a tower of field extensions $F : L : K$.
+Let $A$ be the matrix corresponding to \lean{trace\_form K L}, written out with respect to the basis \lean{pb}.
+Computing the entries of this matrix, we see $A_{ij} = \Tr_{L : K} (x^{i + j})$.
+We want to show that $\det A \ne 0$.
+
+Let $x_0, \dots, x_{n - 1} : F$ enumerate the roots of the minimal polynomial of $x$,
+since $L : K$ is separable and of degree $n$, there are indeed exactly $n$ distinct roots in $F$.
+Consider the $n$-by-$n$ matrix $B$ such that $B_{ij} = x_i^j$.
+This is a Vandermonde matrix, which has determinant $\prod_{i < j} (x_i - x_j)^2$.
+In particular, since $L : K$ is separable, the conjugates are distinct, meaning each factor $x_i - x_j$ is nonzero,
+so $\det B = \prod_{i < j} (x_i - x_j)^2 \ne 0$.
+Therefore, $\det (B^T B) = (\det B)^2 \ne 0$.
+We claim that $B^T B$ is equal to $A$('s image in $F$), whhich implies our desired result.
+
+The $(i, j)$'th entry of $B^T B$ is equal to $\sum_k x_k^{i + j}$,
+and we want to show this is equal to \lean{algebra\_map K F (trace (x \pow (i + j)))}.
+Directly applying \lean{trace\_eq\_sum\_roots} is tempting, since we have a sum over conjugates of powers on both sides.
+However, the two expressions will not precisely match: $B^T B$ contains a sum over conjugates of $x$, with each conjugate raised to the power $i + j$,
+while the conclusion of \lean{trace\_eq\_sum\_roots} results in a sum over conjugates of $x^{i + j}$.
+
+Instead of directly proving that the conjugates of $x^{i + j}$ (counted with the correct multiplicities) correspond to $i + j$'th powers of the conjugates of $x$,
+we need to use an equivalent definition of conjugate:
+the conjugates of $x$ in $F$ are the (distinct) images of $x$ under each embedding $K(x) \to F$ that fixes $K$.
 The equivalence between these two notions of conjugates was developed in Berkeley at the same time as our project, and mapping the equivalence through a sum shows: % TODO: awkward, rephrase
 \begin{lstlisting}
 lemma power_basis.sum_embeddings_gen
@@ -377,39 +460,15 @@ lemma power_basis.trace_gen_eq_sum_embeddings [is_separable K L]
           pb.finite_dimensional)),
       σ pb.gen
 \end{lstlisting}
-Taking the power basis of $K(x)$ generated by $x$, we generalize the above to all $x$:
+Taking the power basis of $K(y)$ generated by $y$, we generalize the above to all $y : L$.
 \begin{lstlisting}
 lemma trace_eq_sum_embeddings
   [is_alg_closed F] [finite_dimensional K L] [is_separable K L]
   {x : L} (hx : is_integral K x) :
   algebra_map K F (algebra.trace K L x) = ∑ σ : L →ₐ[K] F, σ x
 \end{lstlisting}
-In particular, if we choose $x = \lean{pb.gen}^{i + j}$, we get:
-\begin{lstlisting}
-lemma trace_form_gen_pow_gen_pow
-  [is_alg_closed F] [is_separable K L] [finite_dimensional K L]
-  (i j : ℕ) :
-  algebra_map K F (trace_form K L (pb.gen ^ i) (pb.gen ^ j)) =
-  ((pb.minpoly_gen.map (algebra_map K F)).roots
-    .map (λ x, x ^ (i + j))).sum
-\end{lstlisting}
-% TODO: explain that polynomial.roots is a multiset, hence the different notation
-
-If we compute the matrix corresponding to the bilinear form \lean{trace\_form},
-in the basis \lean{pb}, the $(i, j)$'th entry is exactly \lean{trace\_form K L (pb.gen \pow i) (pb.gen \pow j)}.
-Since \lean{algebra\_map K F} is an injective ring homomorphism,
-the trace form has nonzero determinant if and only if the matrix with entries
-\lean{algebra\_map K F (trace\_form K L (pb.gen \pow i) (pb.gen \pow j))}
-has nonzero determinant.
-These entries are exactly the left hand side of \lean{trace\_form\_gen\_pow\_gen\_pow}.
-
-Now consider the matrix $A$ where the $(i, j)$'th entry is the $i$'th conjugate of \lean{pb.gen},
-to the power $j$, so if $x_k : F$ is the $k$'th conjugate of \lean{pb.gen}, we have $A_{ij} = x_i^j$.
-This is a Vandermonde matrix, which has determinant $\prod_{i < j} (x_i - x_j)^2$.
-In particular, since $L : K$ is separable, the conjugates are distinct, meaning each factor $x_i - x_j$ is nonzero,
-so $\det A = \prod_{i < j} (x_i - x_j)^2 \ne 0$.
-Then the $(i, j)$'th entry of $A^T A$ is equal to $\sum_k x_k^{i + j}$, exactly the right hand side of \lean{trace\_form\_gen\_pow\_gen\_pow}.
-Therefore, the (image in $F$ of the) determinant of the trace form is the product $\det (A^T) \det A = (\det A)^2 \ne 0$, exactly what we wanted to prove.
+The advantage of using these embeddings is that $\sigma\ x^{i + j} = (\sigma\ x)^{i + j}$,
+so we can directly go from the conjugates of $x^{i + j}$ to the $i + j$'th powers of conjugates of $x$.
 
 \section{Class number}
 
