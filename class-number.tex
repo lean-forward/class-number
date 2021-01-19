@@ -262,6 +262,10 @@ Discuss the \lean{not\_is\_field} assumption.
 
 In this section, we describe how we proved that the 3 definitions of Dedekind domain are equivalent.
 
+We use the proof given in Cassels and Frohlich's Algebraic Number Theory (Chapter 1, Section 2, Proposition 1) to show that \lean{is\_dedekind\_domain\_inv} implies \lean{is\_dedekind\_domain}. A constant challenge that was faced while coding this proof is that one must work with pushforwards and pull backs of elements that belong to the ring, and hence to its localisation. 
+
+Proving the Noetherian condition was the most challenging. In the original proof by Cassels and Frohlich, they consider elements $a_1, \dots, a_n \in I$ and $b_1, \dots, b_n \in I^{-1}$ for any nonempty fractional ideal $I$, such that $ \sum_i a_i b_i = 1 $. However, it is quite challenging to prove that an element of the multiplication of two $R$-submodules $M$ and $N$ must be of the form $\sum_{i = 1}^m a_i*b_i$, for $a_i \in A$ and $b_i \in B$ for all $1 \leq i \leq m$. This result does exist for finite sets (or \lean{finset R}). So we show that, for every element of an ideal, there exists a \lean{finset} whose span is contained in the ideal, and which contains the element. This is accomplished by the lemma \lean{submodule.mem\_span\_mul\_finite\_of\_mem\_span\_mul}. Now considering an ideal $s$ of the ring $A$, due to its invertibility, by \lean{submodule.mem\_span\_mul\_finite\_of\_mem\_span\_mul}, we obtain \lean{finset A} $T \subset s$ and $T' \subset 1/s$, such that 1 is contained in the span of $T*T'$. This is then sufficient to show that $s$ is finitely generated, as shown in the lemma \lean{fg_of_one_mem_span_mul}.
+
 \section{Principal ideal domains are Dedekind}
 
 This is not a long proof, so it can be a good demonstration of our definitions.
