@@ -49,7 +49,7 @@
 \def\lstlanguagefiles{lstlean.tex}
 \lstset{language=lean}
 
-
+\newcommand{\C}{\mathbb{C}}
 \newcommand{\lean}[1]{\texttt{#1}\xspace} % for writing Lean expressions
 \newcommand{\OK}{\mathrm{O}_K}
 \DeclareMathOperator{\Tr}{\mathrm{Tr}}
@@ -118,54 +118,87 @@ This way, no coercions need to be inserted to map elements of one field into a l
 % I believe this is what mathcomp does; verify?
 In type theory we cannot define $\Q$ as a subset of $\C$ since we need $\Q$ to define $\C$.
 Thus, some coercion is always needed to go from the original definition of $\Q$ to its image in $\C$; and similar issues arise for other subfields that were not originally defined as such.
-Moreover, we lose flexibility since we need to choose the top field at the start and cannot adjoin more elements when needed.
+Moreover, such an approach loses flexibility since we need to fix the top field, of which all others are subfields, at the start of our development and cannot adjoin more elements when needed.
 
-Instead, we parametrize our results over abritrary types $K$ and $L$ and represent the hypothesis ``$L$ is a field extension of $K$'' by taking an instance argument \lean{[algebra K L]}.
+Instead, we formalize results about field extensions by parametrization.
+The lemma statement is parametrized over abritrary types $K$ and $L$ with a field structure,
+along with the hypothesis ``$L$ is a field extension of $K$'', represented by an instance parameter \lean{[algebra K L]}.
 This provides us with a canonical ring homomorphism $\lean{algebra\_map K L} : K \to L$; this map is injective because $K$ and $L$ are fields.
 In other words, field extensions are given by their canonical embeddings.
 
 \subsection{Scalar towers} \label{sec:scalar_tower}
 
-The main drawback of allowing arbitrary embeddings is that we need to prove that these maps commute.
+The main drawback of using arbitrary embeddings to represent field extensions is that we need to prove that these maps commute.
 For example, we might start with a field extension $L / \Q$, then define a subfield $K$ of $L$,
-giving a tower of extensions $L / K / \Q$.
-In such a tower, the map $\Q \to L$ should be equal to the composition $\Q \to K \to L$,
-yet we cannot define this to be the case since the map $\Q \to L$ came earlier.
+resulting in a tower of extensions $L / K / \Q$.
+In such a tower, the map $\Q \to L$ should be equal to the composition $\Q \to K \to L$.
+The example has other maps depend on the map $\Q \to L$, so we cannot arrange the coherence condition by defining $\Q \to L$ after the fact.
 
-We formalize a result with hypothesis of the form ``$L / K / F$ is a tower of field extensions''
-to be parametrized over all three maps \lean{[algebra F K]}, \lean{[algebra K L]} and \lean{[algebra F L]},
-and take an additional parameter \lean{[is\_scalar\_tower F K L]} stating that these maps commute.
+The solution in \mathlib is to parametrize over all three maps, as long a there is also a proof of coherency:
+a hypothesis of the form ``$L / K / F$ is a tower of field extensions'' is translated to three instance parameters \lean{[algebra F K]}, \lean{[algebra K L]} and \lean{[algebra F L]},
+along with an additional parameter \lean{[is\_scalar\_tower F K L]} expressing that the maps commute.
 
-\lean{is\_scalar\_tower} works well.
-Parameters are automatically inferred by the typeclass system in many cases,
-such as when \lean{K : intermediate\_field F L}.
+The \lean{is\_scalar\_tower} typeclass derives its name from its applicability to any three types between which exist scalar multiplication operations:
+\begin{lstlisting}
+class is_scalar_tower (M N α : Type*) [has_scalar M N] [has_scalar N α]
+  [has_scalar M α] : Prop :=
+(smul_assoc : ∀ (x : M) (y : N) (z : α), (x • y) • z = x • (y • z))
+\end{lstlisting}
+For example, if $R$ is a ring, $A$ is an $R$-algebra and $M$ an $A$-module, we can express the fact that $M$ is also an $R$-module by adding a \lean{[is\_scalar\_tower R A M]} parameter.
+Since \lean{x $\cdot$ y} for an $R$-algebra $A$ is defined as \lean{algebra\_map R A x * y}, applying \lean{smul\_assoc} for each $x$ with $y = z = 1$ shows that the \lean{algebra\_map}s indeed commute.
+
+The typeclass system is set up to automatically provide common \lean{is\_scalar\_tower} instances,
+such as for the maps $R \to S \to A$ when $S$ is a $R$-subalgebra of $S$.
+The effect is that almost all coherence proof obligations are automatically solved from known results or filled in from parameters.
+In our formalization, we found that the \lean{is\_scalar\_tower} typeclass translates towers of field extension well.
 
 \subsection{Ring of integers}
 
 A number ring is defined as a ring whose fraction field is a number field, the ring of integers $\OK$ is an important example.
-The ring of integers in $K$ is defined as all $x : K$ that are the root of a monic polynomials with coefficients in $\Z$:
+The ring of integers in $K$ is defined as the integral closure of $\Z$ in $K$.
+This is the subring containing those $x : K$ that are the root of a monic polynomials with coefficients in $\Z$:
 \begin{lstlisting}
-def ring_of_integers (K : Type*) [field K] [is_number_field K] :=
+def ring_of_integers (K : Type*) [field K] [is_number_field K] :
+  subalgebra ℤ K :=
 integral_closure ℤ K
 \end{lstlisting}
+where \lean{integral\_closure} was previously defined in mathlib as follows:
+\begin{lstlisting}
+def integral_closure (R A : Type*) [comm_ring R] [comm_ring A]
+  [algebra R A] : subalgebra R A :=
+{ carrier := { r | is_integral R r },
+  .. /- proofs omitted -/ }
+\end{lstlisting}
 
-Some examples of ring of integers include $\Z$ and $\Z[\iota]$. We prove ahead that the ring of integers of a number field is, in fact, a Dedekind domain. Moreover, it is a finitely-generated free $\Z$-module, with rank equal to the degree of the number field over $\Q$. 
+Some examples of rings of integers include $\Z$ and $\Z[\iota]$. We prove ahead that the ring of integers of a number field is, in fact, a Dedekind domain. Moreover, it is a finitely-generated free $\Z$-module, with rank equal to the degree of the number field over $\Q$.
 
 %Will add more after completing proof
 
-\section{Supporting definitions}
-
-% I put this section in front because my notes later on refer back to definitions in this section. We could also give the informal overview first, then explain how we map this to formal maths.
-
 \subsection{Subobjects}
 
-We defined a subfield of $K$ as a subset of $K$ that contains $0$ and $1$ and is closed under addition, negation, multiplication, and taking inverses.
+The ring of integers are one example of a subobject, such as a subfield, subring or subalgebra, defined through a characteristic predicate.
+In mathlib, a subobject is defined as a bundled structure comprising the carrier set,
+along with proofs showing the carrier set is closed under the relevant operations.
 
+Two new subobjects we needed in our development were \lean{subfield} and \lean{intermediate\-\_field}.
+We define a subfield of a field $K$ as a subset of $K$ that contains $0$ and $1$ and is closed under addition, negation, multiplication, and taking inverses.
 If $L$ is a field extension of $K$, we define an intermediate field as a subfield that is also a subalgebra: a subfield that contains the image of $\lean{algebra\_map K L}$.
+Other examples of subobjects available in mathlib are submonoids, subgroups and submodules (with ideals as a special case of submodules).
 
-If $K$ is an $R$-algebra and $x : K$, $x$ is integral if it is the root of a monic polynomial over $R$: there is a polynomial $p$ with leading coefficient $1$ and other coefficients in $R$, such that $p(x) = 0$.
-The integral closure of $R$ in $K$ is the subalgebra containing all integral elements of $R$.
-Elements of $K$ that are integral over the integral closure are also integral over $R$, explaining the word ``closure'' in the name.
+The new definitions found immediate use:
+soon after we contributed our definition of \lean{intermediate\_field} to \mathlib,
+the Berkeley Galois theory group used it in a proof of the primitive element theorem.
+Soon after the primitive element theorem was merged into \mathlib,
+we used it in our development of the trace form.
+This anecdote illutrates the decentralized development style of \mathlib,
+with different groups and people building on each other's results in a collaborative process.
+
+By providing a coercion from subobjects to types, sending a subobject $S$ to the subtype of all elements of $S$,
+and putting typeclass instances on this subtype,
+we can reason about inductively defined rings such as $\Z$ and subrings such as \lean{integral\_closure $\Z$ K} uniformly.
+If $S : \lean{subfield}\ K$, the map that sends $x : S$ to $K$ by ``forgetting'' that $x \in S$ is a ring embedding,
+and we register this map as a \lean{algebra S K} instance, also allowing us to treat field extensions of the form $\Q \to \C$ and subfields uniformly.
+Similarly, for $F : \lean{intermediate\_field K L}$, we defined the corresponding \lean{algebra K F}, \lean{algebra F L} and \lean{is\_scalar\_tower K F L} instances.
 
 \subsection{Fraction fields}
 
@@ -186,7 +219,7 @@ In the following sections, let $f : R \to K$ be a fraction map.
 
 \subsection{Fractional ideals}
 
-When working with fraction fields, it is useful to extend the notion of $R$-ideals to fractional ideals: these are $R$-ideals divided by some $x : R$, or equivalently $R$-submodules $I$ of $K$ such that there is an $x : R$ with $x I \subseteq R$. The "$R$" in this statement is the image of $R$ in $K$, so our definition of fractional ideals depends on the fraction map $f$.
+When working with fraction fields, it is useful to extend the notion of $R$-ideals to fractional ideals: these are $R$-ideals divided by some $x : R$, or equivalently $R$-submodules $I$ of $K$ such that there is an $x : R$ with $x I \subseteq R$. The ``$R$' in the second statement is the image of $R$ in $K$, so our definition of fractional ideals depends on the fraction map $f$.
 
 We defined the addition, multiplication and intersection operations on fractional ideals,
 by showing the corresponding operations on submodules map fractional ideals to fractional ideals.
@@ -194,7 +227,7 @@ We also proved that these operations give a commutative semiring structure on th
 For example, multiplication of fractional ideals is defined as:
 \begin{lstlisting}
 lemma fractional_mul (I J : fractional_ideal f) :
-  is_fractional f (I.1 * J.1) := _
+  is_fractional f (I.1 * J.1) := _ -- proof omitted
 
 instance : has_mul (fractional_ideal f) :=
 ⟨λ I J, ⟨I.1 * J.1, fractional_mul I J⟩⟩
@@ -227,15 +260,16 @@ noncomputable instance [is_dedekind_domain R] (g : fraction_map R K) :
 ⟨λ I, 1 / I⟩
 \end{lstlisting}
 
-Defining the inverse in terms of the quotient causes a problem later on, when we tried to define a \lean{group\_with\_zero} instance for fractional ideals in a Dedekind domain.
-%TODO: explain group_with_zero? Is it already in another article?
+Defining the inverse in terms of the quotient caused a problem later on, when we tried to define a \lean{group\_with\_zero} instance for fractional ideals in a Dedekind domain.
+Groups with zero are defined in \mathlib as monoids with multiplication $*$ and identity $1$ along with an absorbing element $0$ and an inverse $x^{-1}$ for all $x \ne 0$; for completeness $0^{-1}$ is defined as $0$.
+An important class of examples are fields, if we ignore the addition operator $+$.
+
 The \lean{group\_with\_zero} typeclass defines its own division operator, $x / y := x y^{-1}$,
 resulting in a definitionally unequal second interpretation of $I / J = I * (1 / J)$.
 We were able to fix this issue by including the division operator as a field in \lean{group\_with\_zero},
 along with a field $\lean{div\_eq\_mul\_inv} : \forall\ a\ b, a / b = a * b^{-1}$.
-This weakened the requirement on division from definitional to propositional equality.
-As a consequence, many \lean{group\_with\_zero} instances and proofs throughout \mathlib needed slight changes to explicily rewrite $x / y$ to $x * y^{-1}$ instead of using unification to implicitly do so.
-% TODO: explain that we did the same for group and add_group, or is that too much detail?
+This resulted in weakening $a / b = a * b^{-1}$ from a definitional equality to a propositional equality.
+As a consequence, many \lean{group\_with\_zero} instances and proofs throughout \mathlib needed slight changes to explicily rewrite $x / y$ to $x * y^{-1}$ instead of using unification to implicitly do so; in total hundreds of lines of code needed to be changed.
 
 \subsection{Representing simple field extensions}
 
@@ -243,36 +277,40 @@ A number field $K$ is defined as a finite extension of $\Q$, or equivalently a f
 A field extension $L / K$ is called \emph{simple} if there is an $\alpha$ algebraic over $K$, called the \emph{primitive element}, such that $L = K(\alpha)$.
 The primitive element theorem states that a finite, separable extension is simple; the converse holds if the primitive element $\alpha$ is separable.
 
-The exact choice of these $\alpha$ and $K(\alpha)$ are underspecified in the mathematical literature.
+The exact choice of these $\alpha$ and $K(\alpha)$ are underspecified in informal mathematical usage.
 We can find $K(\alpha)$ by adjoining the root of a polynomial: there is an irreducible polynomial $p \in K[X]$ such that $K[X] / p \simeq L$; we set $\alpha$ to be the image of $X$ in $K[X] / p$.
 We can also take $\alpha : \bar{K}$, the algebraic closure of $K$, set $K(\alpha)$ to be the smallest subfield of $\bar{K}$ that contains $\alpha$ and the image of $K$, and have an equality $L = K(\alpha)$ as subsets of $\bar{K}$.
-Similarly, we can take $\alpha : L$ and $K(\alpha)$ to be the smallest subfield of $L$ containing $\alpha$ and the image of $K$; then $L = K(\alpha)$ means that $K(\alpha)$, as a subfield of $L$, contains all elements of $L$.
+Similarly, we can take $\alpha : L$ and $K(\alpha)$ to be the smallest subfield of $L$ containing $\alpha$ and the image of $K$; then $L = K(\alpha)$ means that $K(\alpha)$, as a subfield of $L$, is equal to the subfield $\top$ containing all elements of $L$.
 
 Because $\alpha$ is algebraic the smallest subring containing $\alpha$ and $\Q$ will be a field, thus we can add two more representations, replacing ``smallest subfield'' with ``smallest subring''.
 Moreover, all subfields/subrings containing $K$ are also $K$-algebras, so we can additionally replace ``subfield'' with ``intermediate field'' and ``subring'' with ``$K$-subalgebra''.
 
 The ability to switch between these representations is important: sometimes $K$ and $L$ are fixed and we want an arbitrary $\alpha$; sometimes $\alpha$ is fixed and we want an arbitrary type representing $K(\alpha)$.
-In Lean, these different constructions have already been formalized:
-$K[X] / p$ is a type called \lean{adjoin\_root p},
-$K(\alpha)$ as smallest $K$-subalgebra containing $\alpha$ is called \lean{subalgebra.adjoin $K$ \{$\alpha$\}}
-and the smallest intermediate field containing $\alpha$ is \lean{intermediate\-\_field.adjoin $K$ \{$\alpha$\}}.
-The primitive element theorem had been formalized as:
+The different constructions of $K(\alpha)$ have already been formalized in \mathlib:
+$K[X] / p$ is a type called \lean{adjoin\_root p};
+$K(\alpha)$ as smallest $K$-subalgebra containing $\alpha$ is called \lean{subalgebra.adjoin $K$ \{$\alpha$\}},
+which itself is defined as the smallest subring containing the image of $K$ and $\alpha$.
+After we contributed intermediate fields and subfields to \mathlib,
+the smallest intermediate field containing $\alpha$ was defined \lean{intermediate\_field.adjoin $K$ \{$\alpha$\}},
+which itself is defined as the smallest field containing the image of $K$ and $\alpha$,
+along with a formalization of the primitive element theorem:
 \begin{lstlisting}
 theorem exists_primitive_element
   [finite_dimensional F E] [is_separable F E] :
-  ∃ α : E, intermediate_field.adjoin F α = ⊤
+  ∃ α : E, intermediate_field.adjoin F {α} = ⊤
 \end{lstlisting}
 
 Note that the choice of $\alpha$ (or the irreducible polynomial $p$) is not unique in general; both $3^\frac{1}{3}$ and $3^\frac{2}{3}$ generate $\Q(\sqrt[3]{3})$.
 This means none of the above conditions provides a uniform way of reasoning about simple extensions:
 if we use a predicate like ``finite, separable extension'' we cannot guarantee that the primitive element chosen for $K(\alpha)$ is indeed $\alpha$.
-If we need to choose an $\alpha$ ahead of time and work in (any definition of) $K(\alpha)$, we need extra work to transfer the result across the isomorphism $K(\alpha) \simeq L$.
+If we need to choose an $\alpha$ ahead of time and prove a result about $K(\alpha)$, we need extra work to transfer the result across the isomorphism $K(\alpha) \simeq L$.
 
 We chose instead to use a \emph{power basis} to represent simple field extensions, a basis of the form $1, x, x^2, \dots, x^{n-1} : A$ (viewing $A$ as an $R$-module).
 We call $x$ the \emph{generator} and $n$ the \emph{dimension} of this power basis.
 In Lean, we defined the following structure, bundling the information of a power basis:
 \begin{lstlisting}
-structure power_basis (R A : Type*) [comm_ring R] [ring A] [algebra R A] :=
+structure power_basis (R A : Type*) [comm_ring R] [ring A]
+  [algebra R A] :=
 (gen : S) (dim : ℕ)
 (is_basis : is_basis R (λ (i : fin dim), gen ^ (i : ℕ)))
 \end{lstlisting}
