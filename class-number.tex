@@ -86,6 +86,15 @@ and mathlib's decentralized collaboration processes involved in this project.
 
 \section{Introduction}
 
+
+In its basic form, number theory studies properties of the integers $\Z$ (say as a set together with the \lq standard\rq\ addition and multiplication operations) and its fraction field, i.e. the rational numbers $\Q$.\footnote{From a classical point of view, one could even argue that the positive, or perhaps nonnegative, integers and rational numbers are the most basic objects of study of number theory. From an algebraic point of view, this would still quickly lead into studying $\Z$ and $\Q$.}
+Both for the sake of generalization, as well as for providing powerful techniques to answer questions about the original objects $\Z$ and $\Q$, it is worthwhile to study finite field extensions of $\Q$, called \emph{number fields}, as well as their so called \emph{rings of integers} (defined in Section~\ref{sec math background} below), basically generalizing how $\Z$ is embedded into $\Q$.
+These numbers fields and their rings of integers form the basics objects of study of algebraic number theory, an important brach of modern number theory. 
+The aim of this work is to formalize these notions and some of their important properties. Our goal however is not to get to the definitions and properties as quickly as 
+possible, but instead we aim at building it up as part of a natural and quite general theory as we shall explain below.
+
+This formalization project opens the door to formalizing \ldots
+
 Refer to the `challenge' to proof verification communities: ``Where is the proof that the class group of a number field is finite? Where are number fields, for that matter?'' \url{https://xenaproject.wordpress.com/2020/02/09/where-is-the-fashionable-mathematics/}?
 
 Our main achievement: if $K$ is a finite field extension of $\Q$, then the ring of integers $\OK$ is a Dedekind domain with finite class number.
@@ -99,6 +108,51 @@ Overview of the work:
  \item define the class group
  \item show the class group is finite
 \end{itemize}
+
+
+\section{Mathematical background}\label{sec math background}
+
+Let us now introduce some of the main objects we study, described in a \lq standard\rq\ mathematical way. In the later sections we will go into the details concerning formalizing them in Lean.
+
+A \emph{number field} $K$ is a finite field extensions of $\Q$, and as such has the structure of a finite dimensional vector space over $\Q$. The smallest example is $\Q$ itself, and the two-dimensional cases are given by the quadratic number fields
+\[\Q(\sqrt{d})=\{a+b\sqrt{d} : a,b \in \Q\}\]
+where $d\not=1$ is a squarefree (i.e. not divisible by $p^2$ for any prime $p$) integer, and there is no loss in generality in considering $\sqrt{d}$ as a complex number (since every number field can be embedded into the complex numbers).
+A cubic example is
+\[K:=\{a+b\alpha+c \alpha^2: a,b,c \in \Q\}\]
+where $\alpha$ satisfies $\alpha^3 + \alpha^2 - 2\alpha + 8=0$ (e.g. the unique real number with this property).
+
+The \emph{ring of integers} $\mathcal{O}_K$ of a number field $K$ is defined as the integral closure of $\Z$ in $K$, which boils down to
+\[\OK := \{x \in K : f(x)=0 \text{ for some \emph{monic} polynomial } f \text{ with integer coefficients}\},\]
+where we recall that a polynomial is called \emph{monic} if its leading coefficient equals $1$.
+While it might not be immediately obvious that $\mathcal{O}_K$ forms indeed a ring, this follows form general algebraic properties of integral closures.
+Some examples of $\OK$ are as follows. Taking $K=\Q$, we get $\OK=\Z$ back. For $K=\Q(\sqrt{2})$ we get $\OK=\Z[\sqrt{2}]=\{a+b\sqrt{2} : a,b \in \Z\}$. But for $K=\Q(\sqrt{5})$ we do \emph{not} simply get $\Z[\sqrt{5}]=\{a+b\sqrt{5} : a,b \in \Z\}$ as $\OK$, since the golden ratio $\varphi:=(1+\sqrt{5})/2\not\in \Z[\sqrt{5}]$ satisfies the monic polynomial equation $\varphi^2-\varphi-1=0$, hence by definition $\varphi \in \OK$; it turns out that $\OK=\Z[\varphi]=\{a+b\varphi : a,b \in \Z\}$. For quadratic numbers field $\Q(\sqrt{d})$, with $d$ as above, the previous two examples in fact generalize to
+\begin{equation*}
+\mathcal{O}_{\Q(\sqrt{d})}=
+\begin{cases}
+\Z[\sqrt{d}]=\{a+b\sqrt{d}: a,b \in \Z\} \text { if } d \not\equiv 1 \pmod{4}\\
+ \Z\left[\frac{1+\sqrt{d}}{2}\right]=\left\{a+b \frac{1+\sqrt{d}}{2} : a,b \in \Z \right\} \text { if } d \equiv 1 \pmod{4}.
+\end{cases}
+\end{equation*}
+Finally, if $K=\Q(\alpha)$ with $\alpha$ as before, then $\OK=\{a+b \alpha+c (\alpha+\alpha^2)/2 : a,b,c \in \Z\}$, illustrating that explicitly writing down $\OK$ can quickly become complicated.
+%TODO do we want to say something here about the existence of an integral basis? And the existence/nonexistence of a power basis for number fields/rings of integers?
+We could think of $\OK$ as generalization of $\Z$, and ask for properties of $\Z$ if they still hold in $\OK$, and if not, if a natural generalization still holds. An important property of $\Z$ is that it is a PID (i.e. a principal ideal domain), and hence a UFD (i.e. unique factorization domain); the latter meaning that every nonzero nonunit element can be written as a (nonempty) finite product of irreducible elements, which is unique up to the order of the elements and changing the elements by multiplication with units (which are $\pm 1$ in $\Z$).
+For example, $6$ can be factorized in exactly 4 ways, namely $6=2\cdot 3=3\cdot2=(-2)\cdot (-3)=(-3) \cdot (-2)$. Some well known rings of integers are e.g. the Gaussian integers $\Z[i]=\{a+b i : a,b, \in \Z\}$ (with $i$ some squareroot of $-1$), the Eisenstein integers $\Z[(1+\sqrt{-3})/2]$, and the \lq real\rq\ quadratic ring $\Z[\sqrt{2}]$. They all have in common that they are also UFD's, like $\Z$. However, this is certainly not true for all rings of integers. For example $\Z[\sqrt{-5}]$ is \emph{not} a UFD: $6=2\cdot3=(1+\sqrt{-5}) (1-\sqrt{-5})$ provide two essentially different ways to factor $6$ in irredicible elements in $\Z[\sqrt{-5}]$.
+As it turns out, there is a beautiful way to remedy this. Namely by considering factorization of \emph{ideals} instead of elements: for a number field $K$, with ring of integers $\OK$, every nonzero ideal of $\OK$ can be factored into prime ideals in a unique way, up to the order of the factors.
+%TODO? ?Talk about unique factorization monoid?
+
+Although unique factorization in terms of ideals is of great importance and beauty, it is still very interesting, and for many arithmetic applications necessary, to also consider factorization properties in terms of elements. For this, one can consider the nonzero fractional ideals of $\OK$ modulo the units $K^*$, which a priori has the structure of a commutative monoid, but actually turns out to be a group, called the \emph{class group} of $\OK$. An important theorem is that $\OK$ is finite. The interpretation is that its order, called the \emph{class number}, measures how far away $\OK$ is from being a UFD. In particular, the class group of $\OK$ is trivial if and only if $\OK$ is a UFD.
+
+
+%%
+Now talk about the more general setting and describe more explicitly  the different theorems concerning Dedekind domains, class groups, etc.
+%%
+
+The intrinsic algebraic properties of $\OK$ are very nice. In particular, every ring of integers $\OK$ is a \emph{Dedekind domain}. The latter can be defined as a domain $D$ which is Noetherian (i.e. every ideal of $D$ is finitely generated), integrally closed (i.e. if $x$ is in the fraction field of $D$ and a root of a monic polynonial with coefficients in  $D$, then actually $x \in D$), and of Krull dimension at most $1$ (i.e. every nonzero prime ideal of $D$ is maximal).
+
+%% Generalize
+
+%Both generalizing algebraic aspects to general definitions and theorems in commutative algebra, most notably about Dedekind domains (defined below), and generalizing number theoretic aspect to also include function fields, i.e. finite field extensions of the fraction field of the polynomial ring $(\Z/p\Z)[t]$ (with $p$ prime)
+
 
 \section{Number fields, global fields and rings of integers}
 
