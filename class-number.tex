@@ -86,6 +86,8 @@ and mathlib's decentralized collaboration processes involved in this project.
 
 \section{Introduction}
 
+Refer to the `challenge' to proof verification communities: ``Where is the proof that the class group of a number field is finite? Where are number fields, for that matter?'' \url{https://xenaproject.wordpress.com/2020/02/09/where-is-the-fashionable-mathematics/}?
+
 Our main achievement: if $K$ is a finite field extension of $\Q$, then the ring of integers $\OK$ is a Dedekind domain with finite class number.
 
 Overview of the work:
@@ -581,27 +583,15 @@ We prove that the class group is finite using a simplified form of the tradition
 
 \section{Related work}
 
-We are not aware of any existing formal developments of Dedekind domains or finiteness results for class groups of global fields.
-Since the core library components of our proofs are in ideal theory, field theory, (?commutative algebra?,) and algebraic number theory
-%TODO Good list areas. In particular, first few items may be too broad, so that it's easy to miss too much in other provers; to narrowly defined items on the other hand, may not connect to much/anything else..
-we provide here a (partial) survey of formalizations in these areas.
-%This incomplete list is meant to indicate the depth and flavor of such projects.
+We are not aware of any other formal developments of fractional ideals, Dedekind domains or class groups of global fields.
+Since our project touches upon the theories of field extensions, ideals, number fields and number rings,
+we provide here a partial overview of formalizations in these areas.
 
-The Mathematical Components library in Coq~\cite{mathcomp} has some results about fields extensions, a construction of the algebraic closure of rational numbers, and some Galois theory.
-It was mostly geared toward the requirements of the proof of the Odd Order Theorem.
-See:
-\url{https://github.com/math-comp/math-comp/tree/master/mathcomp/field}
-%TODO links will have to be removed, or moved to a footnote or bibliography
-In particular, for the (constructive) existence of number fields, see
-\url{https://github.com/math-comp/math-comp/blob/master/mathcomp/field/algnum.v}
+There are many libraries formalizing basic notions of commutative algebra such as field extensions and ideals, including the Mathematical Components library in Coq~\cite{mathcomp}, the algebraic library for Isabelle/HOL~\cite{algebra_isabelle}, the \texttt{set.mm} database for MetaMath~\cite{metamath} and the Mizar Mathematical Library~\cite{algebraic-hierarchy_mizar}. The field of algebraic numbers, or more generally algebraic closures of arbitrary fields, are also available in many provers, for example Coq~\cite{real-algebraic-numbers-coq, mathcomp}, Isabelle/HOL~\cite{algebraic-numbers-isabelle}, MetaMath~\cite{algebraic-numbers-metamath}, and Mizar~\cite{algebraic-numbers-mizar}. To our knowledge, the Coq Mathematical Components library is the only formal development except ours specifically dealing with number fields~\cite[\texttt{field/algnum.v}]{mathcomp}.
 
-Perhaps also mention?:
-\url{https://github.com/math-comp/math-comp/blob/master/mathcomp/field/algebraics_fundamentals.v}
-and
-\url{https://hal.inria.fr/file/index/docid/671809/filename/main.pdf}
-
-In Isabelle/HOL \ldots
-
+Apart from the general theory of algebraic numbers, there are formalizations of specific number rings: the Gaussian integers $\Z[i]$ are available in Isabelle/HOL~\cite{gaussian_integers-isabelle}, MetaMath~\cite{gaussian_integers-metamath} and Mizar~\cite{gaussian_integers-mizar}.
+The Isabelle/HOL formalization deserves special mention since it introduces techniques from algebraic number theory,
+defining the integer-valued norm on $\Z[i]$ and classifying the prime elements of $\Z[i]$.
 
 \section{Conclusion}
 
