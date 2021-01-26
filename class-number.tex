@@ -415,7 +415,29 @@ This is then sufficient to show that $s$ is finitely generated, as shown in the 
 
 \section{Principal ideal domains are Dedekind}
 
-This is not a long proof, so it can be a good demonstration of our definitions.
+This is not a long proof, so it can be a good demonstration of our definitions. A principal ideal ring is defined to be
+
+\begin{lstlisting}
+/-- A commutative ring is a principal ideal ring if all ideals are principal. -/
+class is_principal_ideal_ring (R : Type u) [comm_ring R] : Prop :=
+(principal : ∀ (S : ideal R), S.is_principal)
+\end{lstlisting}
+
+A principal ideal domain (PID) is a principal ideal ring which has a compatible integral domain structure. It is not explicitly defined in Lean. For any commutative ring $R$, one uses \lean{[integral domain R] [is\_principal\_ideal\_ring R]} to denote a PID R. The basic properties of PIRs and PIDs have been proved in \lean{principal\_ideal\_domain.lean} by Chris Hughes and Morenikeji Neri.  
+
+We show that every \lean{integral\_domain A}, \lean{is\_principal\_ideal\_ring A} satisfies the condition of being \lean{is\_dedekind\_domain A}. The proof is relatively short : 
+
+\begin{lstlisting}
+instance principal_ideal_ring.to_dedekind_domain [is_principal_ideal_ring A] : is_dedekind_domain A :=
+⟨principal_ideal_ring.is_noetherian_ring, dimension_le_one.principal_ideal_ring _,
+  @unique_factorization_monoid.integrally_closed A _ _
+    (principal_ideal_ring.to_unique_factorization_monoid) _ (fraction_ring.of A)⟩
+\end{lstlisting}
+
+Making this an \lean{instance} instead of a \lean{lemma} ensures that Lean can now automatically "infer" a PID to be a Dedekind domain.  
+The Noetherian property of a Dedekind domain follows easily by the lemma \lean{principal\_ideal\_ring.is\_noetherian\_ring}, since, by definition, each ideal is finitely generated (by a single element). In fact, this holds true even if A is a PIR instead of a PID.
+The lemma \lean{is\_prime.to\_maximal\_ideal} shows that every nonzero prime ideal is maximal, hence every PID has dimension less than or equal to 1. The lemma uses the characterization of maximal ideals as ideals which cannot be properly contained in any ideal that is not the full ring. The proof says : suppose a prime ideal I is properly contained in an ideal J, then $1 \in J$. Let $i \in I$ and $j \in J$ be generators of $I$ and $J$ respectively. Since $I \subset J$, $\exists a \in A$ such that $i = a * j$. Since $I$ is a prime ideal, this implies that either $a \in I$ or $j \in I$. The latter would imply that $I = J$, which contradicts our assumption that $I$ is properly contained in $J$. The former would imply that $\exists k \in A$ such that $a = k * i = k * (a * j)$. Since $A$ is an integral domain, we then have $k * j = 1$, which implies that $1 \in J$, as required. 
+The final condition of a PID being integrally closed is the most challenging. We show that a PID is a unique factorization domain (UFD), and that every UFD is integrally closed.  
 
 \section{Ring of integers are Dedekind domains}
 
