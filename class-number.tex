@@ -164,7 +164,7 @@ We formalized number fields as the following typeclass:
 class is_number_field (K : Type*) [field K] :=
 [cz : char_zero K] [fd : finite_dimensional ℚ K]
 \end{lstlisting}
-The condition \lean{[cz : char\_zero K]} states that $K$ has characteristic zero, i.e. the canonical ring homomorphism $\N \to K$ is an embedding.
+The condition \lean{[cz : char\_zero K]} states that $K$ has characteristic zero, i.e. the canonical ring homomorphism $\Z \to K$ is an embedding.
 This implies that there is a $\Q$-algebra structure on $K$ (found by typeclass search), this gives the vector space structure used in the \lean{[fd : finite\_dimensional ℚ K]} hypothesis.
 
 \subsection{Field extensions}
