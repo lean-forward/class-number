@@ -171,7 +171,7 @@ This implies that there is a $\Q$-algebra structure on $K$ (found by typeclass s
 
 The definition of \lean{is\_number\_field} illustrates our treatment of field extensions.
 In informal mathematics, a field $L$ containing a subfield $K$ is said to be a field extension $L / K$.
-Often we encounter towers of field extensions: we might have that $\Q$ is contained in $K$, $K$ is contained in $L$, $L$ is contained in the algebraic closure $\bar{K}$ of $K$, and $\bar{K}$ is contained in $\C$.
+Often we encounter towers of field extensions: we might have that $\Q$ is contained in $K$, $K$ is contained in $L$, $L$ is contained in an algebraic closure $\bar{K}$ of $K$, and $\bar{K}$ is contained in $\C$.
 We might formalize this situation by viewing $\Q$, $K$, $L$ and $\bar{K}$ to be sets of complex numbers $\C$ and defining field extensions as subset relations between these subfields.
 This way, no coercions need to be inserted to map elements of one field into a larger field.
 % I believe this is what mathcomp does; verify?
