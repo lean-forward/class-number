@@ -15,7 +15,7 @@
 
 \authorrunning{T. Baanen, S. R. Dahmen, A. Narayanan, and F. A. E. Nuccio}
 
-\Copyright{Anne Baanen, Sander R. Dahmen, Ashvni Narayanan, and Filippo A. E. Nuccio}
+\Copyright{Anne Baanen, Sander R. Dahmen, Ashvni Narayanan, and Filippo A. E. Nuccio Mortarino Majno di Capriglio}
 
 \ccsdesc[500]{Mathematics of computing~Mathematical software}
 \ccsdesc[500]{Security and privacy~Logic and verification}
@@ -55,7 +55,7 @@
 \newcommand{\lean}[1]{\texttt{#1}\xspace} % for writing Lean expressions
 \newcommand{\OK}{\mathrm{O}_K}
 \DeclareMathOperator{\Tr}{\mathrm{Tr}}
-\newcommand{\mathlib}{\texttt{mathlib}\xspace}
+\newcommand{\mathlib}{\textsf{mathlib}\xspace}
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\pow}{\textasciicircum\xspace}
 \newcommand{\Q}{\mathbb{Q}}
@@ -88,30 +88,59 @@ and mathlib's decentralized collaboration processes involved in this project.
 
 \section{Introduction}
 
+In its basic form, number theory studies properties of the integers $\Z$
+%(say as a set together with the \lq standard\rq\ addition and multiplication operations)
+and its fraction field, the rational numbers $\Q$.\footnote{From a classical point of view, one could even argue that the positive, or perhaps nonnegative, integers and rational numbers are the most basic objects of study of number theory. From an algebraic point of view, this would still quickly lead into studying $\Z$ and $\Q$.}
+Both for the sake of generalization, as well as for providing powerful techniques to answer questions about the original objects $\Z$ and $\Q$,
+it is worthwhile to study finite field extensions of $\Q$, called \emph{number fields}, as well as their so called \emph{rings of integers} (defined in Section~\ref{sec math background} below),
+whose relations mirror the way $\Q$ contains $\Z$ as a subring.
+These number fields and their rings of integers form the basic objects of study of algebraic number theory, an important brach of modern number theory.
+In this paper, we describe our project aiming to formalize these notions and some of their important properties.
+Our goal, however, is not to get to the definitions and properties as quickly as possible,
+but instead we aim at our formalization as a foundation for future work,
+as part of a natural and more general theory as we shall explain below.
 
-In its basic form, number theory studies properties of the integers $\Z$ (say as a set together with the \lq standard\rq\ addition and multiplication operations) and its fraction field, i.e. the rational numbers $\Q$.\footnote{From a classical point of view, one could even argue that the positive, or perhaps nonnegative, integers and rational numbers are the most basic objects of study of number theory. From an algebraic point of view, this would still quickly lead into studying $\Z$ and $\Q$.}
-Both for the sake of generalization, as well as for providing powerful techniques to answer questions about the original objects $\Z$ and $\Q$, it is worthwhile to study finite field extensions of $\Q$, called \emph{number fields}, as well as their so called \emph{rings of integers} (defined in Section~\ref{sec math background} below), basically generalizing how $\Z$ is embedded into $\Q$.
-These numbers fields and their rings of integers form the basics objects of study of algebraic number theory, an important brach of modern number theory. 
-The aim of this work is to formalize these notions and some of their important properties. Our goal however is not to get to the definitions and properties as quickly as 
-possible, but instead we aim at building it up as part of a natural and quite general theory as we shall explain below.
+In particular, our project resulted in formalized definitions and elementary properties of
+number fields and their rings of integers (described in Section \ref{sec:ring-of-integers}),
+Dedekind domains (Section \ref{sec:Dedekind-domain}),
+and the ideal class group and class number (Section \ref{sec:class-number}).
+The main proofs that we formalized show
+that two definitions of Dedekind domains are equivalent (Section \ref{sec:equivalence}),
+that the ring of integers (or more generally: the integral closure of a Dedekind domain in a finite separable field extension) is a Dedekind domain (Section \ref{sec:integral-closure})
+and that the class group of a number field is finite (Section \ref{sec:class-number}).
+%
+%As a preview, the latter two results correspond to the following declarations in Lean:
+%\begin{lstlisting}
+%instance : is_dedekind_domain (ring_of_integers K) :=
+%integral_closure_int.is_dedekind_domain K
+%
+%noncomputable instance :
+%  fintype (class_group (ring_of_integers.fraction_map K)) :=
+%class_group.finite_of_admissible K int.fraction_map int.admissible_abs
+%
+%noncomputable def class_number : ℕ :=
+%fintype.card (class_group (ring_of_integers.fraction_map K))
+%\end{lstlisting}
 
-This formalization project opens the door to formalizing \ldots
+Apart from the achievement of formalizing a non-trivial amount of mathematical theory,
+our formal definition of the class number is an essential requirement
+for theorem provers assisting in modern number theory research.
+% doing ``fashionable mathematics'' in a theorem prover, borrowing a term from prof. Kevin Buzzard~\cite{fashionable-mathematics}.
+Additionally, our formalization opens the door to the verification of software used for number theoretic research,
+such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}.
 
-Refer to the `challenge' to proof verification communities: ``Where is the proof that the class group of a number field is finite? Where are number fields, for that matter?'' \url{https://xenaproject.wordpress.com/2020/02/09/where-is-the-fashionable-mathematics/}?
-
-Our main achievement: if $K$ is a finite field extension of $\Q$, then the ring of integers $\OK$ is a Dedekind domain with finite class number.
-
-Overview of the work:
-\begin{itemize}
- \item Define dedekind domains
- \item show the definitions are equivalent to each other
- \item show a principal ideal domain is a Dedekind domain
- \item show the integral closure of a Dedekind domain in a finite (separable) field extension is a Dedekind domain
- \item define the class group
- \item show the class group is finite
-\end{itemize}
-
+Our work is developed as part of the mathematical library \mathlib~\mathlib\cite{mathlib} for the Lean 3 theorem prover~\cite{lean-prover}.
+The formal system of Lean is a dependent type theory based on the calculus of inductive constructions,
+with a proof-irrelevant impredicative universe \lean{Prop} at the bottom of a noncumulative hierarchy of universes \lean{Prop : Type : Type 1 : Type 2 : \dots}.\footnote{In our code samples, we use \lean{Type*} as abbreviation of ``\lean{Type u} for an arbitrary choice of \lean{u}''.}
+Other important characteristics of Lean as used in \mathlib are the use of quotient types, ubiquitous classical reasoning and the use of type classes to define the hierarchy of algebraic structures.
+Organizationally, \mathlib is characterized by a distributed set of contributors, a willingness to refactor its basic definitions, and a preference for complete and regular contributions over larger projects added all at once.
+Our own project, being part of the development of \mathlib, follows this philosophy by contributing pieces of our work as they are finished,
+in turn taking advantage of results contributed by others after the start of the project.
+At several points, we had just merged a formalization into \mathlib that another contributor needed,
+immediately before they contributed a result that we needed.
 Due to the decentralized organization and fluid nature of contributions to mathlib, its contents are built up of many different contributions from many different authors. Attributing each formalization to a single set of main authors would not do justice to all others whose additions and tweaks are essential to its current use. Therefore, we will make clear whether a contribution is part of our project or not, but not who we consider to be the main author(s).
+
+The source files of the formalization are currently in the process of being merged into \mathlib, an up-to-date branch being available \url{https://github.com/leanprover-community/mathlib/tree/dedekind-domain-dev}. We also maintain a separate repository containing the files relevant to this paper, available at \url{https://github.com/lean-forward/class-number}.
 
 \section{Mathematical background}\label{sec math background}
 
@@ -213,7 +242,7 @@ such as for the maps $R \to S \to A$ when $S$ is a $R$-subalgebra of $S$.
 The effect is that almost all coherence proof obligations are automatically solved from known results or filled in from parameters.
 In our formalization, we found that the \lean{is\_scalar\_tower} typeclass translates towers of field extension well.
 
-\subsection{Ring of integers}
+\subsection{Ring of integers} \label{sec:ring-of-integers}
 
 A number ring is defined as a ring whose fraction field is a number field, the ring of integers $\OK$ is an important example.
 The ring of integers in $K$ is defined as the integral closure of $\Z$ in $K$.
@@ -264,7 +293,7 @@ Similarly, for $F : \lean{intermediate\_field K L}$, we defined the correspondin
 \subsection{Fraction fields}
 The fraction field $\Frac R$ of an integral domain $R$ can be defined explicitly as a quotient type as follows:
 starting from the set of pairs $(a,b)$ with $a,b \in R$ such that $b\neq 0$,
-one quotiens by the equivalence relation stating that $(\alpha a, \alpha b) \sim (a,b)$ for all $\alpha \ne 0 : R$, writing the equivalence class of $(a,b)$ as $\frac{a}{b}$.
+one quotients by the equivalence relation stating that $(\alpha a, \alpha b) \sim (a,b)$ for all $\alpha \ne 0 : R$, writing the equivalence class of $(a,b)$ as $\frac{a}{b}$.
 It can easily be proved that the ring structure on $R$ extends uniquely to a ring structure turning $K$ into a field.
 When $R=\Z$, this yields the traditional description of $\Q$ as the set of equivalence classes of fractions, where $\frac{2}{3}=\frac{-4}{-6}$, etc.
 The drawback of this construction is that it hides a crucial property of fraction fields, which can be informally phrased as being ``the smallest field containing $R$''.
@@ -426,7 +455,7 @@ or being able to choose the $\alpha$ generating $K(\alpha)$ (packaged up as \lea
 Specializing a result from an arbitrary $L$ with a power basis over $K$, to \lean{adjoin K \{$\alpha$\}} specifically, is a matter of applying the result to the power basis generated by $\alpha$, and rewriting $\lean{power\_basis.gen (adjoin.power\_basis K $\alpha$)} = \alpha$.
 
 
-\section{Defining Dedekind domains}
+\section{Defining Dedekind domains} \label{sec:Dedekind-domain}
 
 The ring of integers $\OK$ satisfies many useful algebraic properties.
 An important class of integral domains that satisfy many of these properties is the class of \emph{Dedekind domains},
@@ -479,7 +508,7 @@ We mark \lean{is\_dedekind\_domain} as a typeclass by using the keyword \lean{cl
 allowing the typeclass system to automatically infer the Dedekind domain structure when an appropriate instance is declared,
 such as for principal ideal domains or rings of integers.
 
-\section{Equivalence of the definitions}
+\section{Equivalence of the definitions} \label{sec:equivalence}
 
 In this section, we describe how we proved that the two definitions of Dedekind domain \lean{is\_dedekind\_domain} and \lean{is\_dedekind\_domain\_inv} are equivalent.
 
@@ -545,7 +574,7 @@ which states that for polynomial $p : R[X]$ and $x$ an element of the fraction f
 If $x$ is integral with minimal polynomial $p$, the leading coefficient is $1$, therefore the denominator is a unit and $x$ is an element of $R$.
 This gives us the required lemma \lean{unique\_factorization\_monoid.integrally\_closed}, which states that the integral closure of A in its fraction field is A itself.
 
-\section{Ring of integers are Dedekind domains}
+\section{Ring of integers are Dedekind domains} \label{sec:integral-closure}
 
 An important class of Dedekind domains consists of the rings of integers of number fields.
 We defined the ring of integers of a number field $K$ as the integral closure $\Z$ in $K$.
@@ -753,7 +782,7 @@ lemma trace_eq_sum_embeddings
 The advantage of using these embeddings is that $\sigma\ x^{i + j} = (\sigma\ x)^{i + j}$,
 so we can directly go from the conjugates of $x^{i + j}$ to the $i + j$'th powers of conjugates of $x$.
 
-\section{Class number}
+\section{Class number} \label{sec:class-number}
 
 The class group is the quotient \lean{units (fractional\_ideal f)} modulo the principal fractional ideals, or equivalently the ideals of $R$ (except $0$) modulo the elements of $R$ (except $0$).
 
