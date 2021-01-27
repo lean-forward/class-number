@@ -523,7 +523,16 @@ This is accomplished by the lemma \lean{submodule.mem\_span\_mul\_finite\_of\_me
 Now considering an ideal $s$ of the ring $A$, due to its invertibility, by \lean{submodule.mem\_span\_mul\_finite\_of\_mem\_span\_mul}, we obtain \lean{finset A} $T \subset s$ and $T' \subset 1/s$, such that 1 is contained in the span of $T*T'$.
 This is then sufficient to show that $s$ is finitely generated, as shown in the lemma \lean{fg\_of\_one\_mem\_span\_mul}.
 
-The theorem \lean{fractional\_ideal.mul\_inv\_cancel} proves the converse. The proof goes along these lines : We differentiate into cases when the Dedekind domain $A$ is and isn't a field. This is done because we require that every non-zero ideal must contain a product of non-zero prime ideals (\lean{exists\_prime\_spectrum\_prod\_le\_and\_ne\_bot\_of\_domain}), and fields don't have non-zero prime ideals. The field case is trivial, since the only non-zero fractional ideal in a field is the field itself (\lean{fractional\_ideal.eq\_zero\_or\_one\_of\_is\_field}). When $A$ is not a field, most books show that it is sufficient to look at maximal ideals of $A$, but we show something more general. We show that it is sufficient to prove invertibility for non-zero ideals of $A$. This is done in the lemma \lean{coe\_ideal\_mul\_one\_div}. This lemma is proved by contradiction. We consider, for a non-zero ideal $I$, an ideal $J := I * (1/I)$, and show that $1/J \leq 1$, hence $J = 1$. 
+The theorem \lean{fractional\_ideal.mul\_inv\_cancel} proves the converse, that \lean{is\_dedekind\_domain} implies \lean{is\_dedekind\_domain\_inv}.
+The proof goes along these lines: we differentiate into cases when the Dedekind domain $A$ is and is not a field.
+This is done because our main argument requires that every non-zero ideal must contain a product of non-zero prime ideals (\lean{exists\_prime\_spectrum\_prod\_le\_and\_ne\_bot\_of\_domain}),
+and fields don't have non-zero prime ideals.
+The field case is trivial, since the only non-zero fractional ideal in a field is the field itself (\lean{fractional\_ideal.eq\_zero\_or\_one\_of\_is\_field}).
+When $A$ is not a field, the standard proof first shows that it is suffices that maximal ideals of $A$ are invertible~\cite[Proposition 3.8]{Neukirch}.
+% using the factorization of into prime ideals (which are maximal in a Dedekind domain), but we show something more general.
+We show in general that it is sufficient to prove invertibility for non-zero ideals of $A$.
+This is done in the lemma \lean{coe\_ideal\_mul\_one\_div}.
+We consider, for a non-zero ideal $I$, the ideal $J := I * (1/I)$, and show that $1/J \leq 1 \le J$, hence $J = 1$ since $J \le 1$ holds in an arbitrary domain.
 
 \section{Principal ideal domains are Dedekind}
 
