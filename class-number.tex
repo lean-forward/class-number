@@ -262,21 +262,31 @@ and we register this map as a \lean{algebra S K} instance, also allowing us to t
 Similarly, for $F : \lean{intermediate\_field K L}$, we defined the corresponding \lean{algebra K F}, \lean{algebra F L} and \lean{is\_scalar\_tower K F L} instances.
 
 \subsection{Fraction fields}
-The fraction field $\Frac R$ of an integral domain $R$ can be defined explicitely as a certain set of equivalence classes as follows: starting from the set of pairs $(a,b)$ with $a,b \in R$ such that $b\neq 0$, one imposes the usual equivalence relation stating that $(\lambda a,\lambda b)\sim (a,b)$ for all $\lambda \in R\setminus\{0\}$, denoting $\frac{a}{b}$ the equivalence class of a pair $(a,b)$. It can easily be proved that the ring structure on $R$ extends uniquely to a ring structure turning $K$ into a field. When $R=\Z$, this yields the classical description of $\Q$ as the set of equivalence classes of fractions, so where $\frac{2}{3}=\frac{-4}{-6}$, etc. The drawback of this construction is that it hides a crucial property of fraction fields, which can be informally phrased as being ``the smallest field containing $R$''. Indeed, although it is easy to check that no subfield of $\Frac R$ can contain $R$, one can often encounter a field $K$, with an injective map $f\colon R\to K$, having no subfield with this property, and yet not being equal to $\Frac R$, but simply \emph{isomorphic} to it. For instance, although there is an isomorphism of $\Frac \C[\![t]\!]$ with the field 
+The fraction field $\Frac R$ of an integral domain $R$ can be defined explicitly as a quotient type as follows:
+starting from the set of pairs $(a,b)$ with $a,b \in R$ such that $b\neq 0$,
+one quotiens by the equivalence relation stating that $(\alpha a, \alpha b) \sim (a,b)$ for all $\alpha \ne 0 : R$, writing the equivalence class of $(a,b)$ as $\frac{a}{b}$.
+It can easily be proved that the ring structure on $R$ extends uniquely to a ring structure turning $K$ into a field.
+When $R=\Z$, this yields the traditional description of $\Q$ as the set of equivalence classes of fractions, where $\frac{2}{3}=\frac{-4}{-6}$, etc.
+The drawback of this construction is that it hides a crucial property of fraction fields, which can be informally phrased as being ``the smallest field containing $R$''.
+Indeed, although it is easy to check that no subfield of $\Frac R$ can contain $R$, one can often encounter a field $K$, with an injective map $f\colon R\to K$, having no subfield with this property, and yet not being equal to $\Frac R$, but simply \emph{isomorphic} to it. For instance, although there is an isomorphism of $\Frac \C[\![t]\!]$ with the field
 \[
-\C(\!(t)\!)=\big\{\sum_{i=a}^+\infty a_it^i\quad\text{ with }a \in \Z\big\}
+\C(\!(t)\!)=\big\{\sum_{i=a}^{+\infty} a_it^i\quad\text{ with }a \in \Z\big\}
 \]
-of Laurent series, as sets they don't coincide. Another example comes from the field
+of Laurent series, there is no (definitional) equality between the types. Another example comes from the field
 \[
 \Q(i)=\{z \in \C : \Re z \in \Q, \Im z\in\Q\}
 \]
-which is isomorphic to $\Frac (\Z[i])$, but not definitionally equal to it. A definition like
+which is isomorphic to $\Frac (\Z[i])$, but not definitionally equal to it.
+In fact, even the rational numbers in Lean are a counterexample:
+for computational efficiency, they are defined as a subtype where the numerator and denominator are coprime,
+instead of a quotient by ``scalar multiplication''.
+
+A definition like
 \begin{lstlisting}
-def fraction_field (R : Type*) [comm_ring R] [intrgral_domain R] : field :=
-{ carrier := { (a,b) | a b : R (hb : b \ne 0) },
-  .. /- proofs omitted -/ }
+def fraction_field (R : Type*) : Type* :=
+{ab : R × R // ab.2 ≠ 0}
 \end{lstlisting}
-would lead to cumbersome verifications as soon as one needs to handle a different construction of a field isomorphic to $\Frac R$.
+would require transferring results across isomorphisms as soon as one needs to handle a different construction of a field isomorphic to $\Frac R$.
 
 The strategy we have chosen is to rather allow for many different \emph{fraction fields} of our given integral domain $R$, as fields $K$ receving an injective map $f\colon R\to K$ which satisfies a certain ``minimality property'', and to make this part of the data of every result. To make this precise\dots
 
