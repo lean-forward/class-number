@@ -530,9 +530,10 @@ and fields don't have non-zero prime ideals.
 The field case is trivial, since the only non-zero fractional ideal in a field is the field itself (\lean{fractional\_ideal.eq\_zero\_or\_one\_of\_is\_field}).
 When $A$ is not a field, the standard proof first shows that it is suffices that maximal ideals of $A$ are invertible~\cite[Proposition 3.8]{Neukirch}.
 % using the factorization of into prime ideals (which are maximal in a Dedekind domain), but we show something more general.
-We show in general that it is sufficient to prove invertibility for non-zero ideals of $A$.
+We show in general that it is sufficient to prove invertibility for non-zero ideals of $R$.
 This is done in the lemma \lean{coe\_ideal\_mul\_one\_div}.
-We consider, for a non-zero ideal $I$, the ideal $J := I * (1/I)$, and show that $1/J \leq 1 \le J$, hence $J = 1$ since $J \le 1$ holds in an arbitrary domain.
+We consider, for a non-zero ideal $I$, the ideal $J := I * (1/I)$, and show that $1/J \leq 1 \le J$, hence $J = 1$ since $J \le 1$ holds in an arbitrary domain. So, we want to show that any element $x \in 1/J$ is in $R$, or equivalently, since we have \lean{is\_dedekind\_domain R}, it suffices to prove that $x$ is in the integral closure of $R$. We consider $A := R[x]$, and show that $A \leq 1/I$, which is Noetherian, hence $A$ is a finitely generated subalgebra containing $x$. It suffices to prove that for every $n \in \mathbb{N}$, $x^n \in 1/I$. This follows from \lean{h₁ : (submodule.span R {x} * (1 / ↑I : fractional_ideal f).val) ≤
+      (1 / ↑I : fractional_ideal f).val}. This follows from repeated usage of the lemma \lean{submodule.mem\_div\_iff\_forall\_mul\_mem} and \lean{fractional\_ideal.coe\_div}. The latter statement requires $I$ and $J$ to be non-zero. 
 
 \section{Principal ideal domains are Dedekind}
 
