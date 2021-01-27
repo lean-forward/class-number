@@ -47,6 +47,7 @@
 
 \usepackage{xcolor}
 \usepackage{xspace}
+\usepackage{soul}
 \usepackage{listings}
 \def\lstlanguagefiles{lstlean.tex}
 \lstset{language=lean}
@@ -317,35 +318,48 @@ def fraction_field (R : Type*) : Type* :=
 \end{lstlisting}
 would require transferring results across isomorphisms as soon as one needs to handle a different construction of a field isomorphic to $\Frac R$.
 
-The strategy we have chosen is to rather allow for many different \emph{fraction fields} of our given integral domain $R$, as fields $K$ receving an injective map $f\colon R\to K$ which satisfies a certain ``minimality property'', and to make this part of the data of every result. To make this precise\dots
+The strategy we have chosen is to rather allow for many different \emph{fraction fields} of our given integral domain $R$, as fields $K$ receving an injective map $f\colon R\to K$ which satisfies a certain ``minimality property'', and to make this part of the data of every result. To make this precise, and without entering into too many details concerning the localization procedure in Commutative Algebra, recall that there is a notion of a ``field of fraction'' of an integral domain, as a field $K$ together with an injective map $f\colon R\to K$ satisfying a universal property: for every other ring $A$ with an injective map $g_A\colon R\to A$ such that $g_A(x) : A$ has a (multiplicative) inverse for all $x : R, x\neq 0$, there exists a unique map $K\to A$ extending $f$ and compatible with $g_A$. In particular, given any pair $K_1,K_2$ of fields of fractions, they turn out to be isomorphic, even \emph{uniquely} isomorphic, but yet yielding different types. Needless to say, \emph{the} fraction field $\Frac R$ is a field of fractions, but it is certainly not the only one. As the notion of \emph{fractional ideals}, which is pivotal to the definition of the (ideal) class group, depends on the choice of an ambient field of fraction $K$ and on the map $f\colon R\to K$, we could either fix a field of fractions (say, $\Frac R$) once and for all, or rather let all our construction be relative to this choice.  As Lean already contained the following
+\begin{lstlisting}
+def fraction_map [comm_ring K] := localization_map (non_zero_divisors R) K
+\end{lstlisting}
+and because the non-zero divisor of an integral domain coincide with $R\setminus\{0\}$, we opted for this setting for our development of fields of fractions and of fractional ideals. 
 
-\bigskip
+This came at a price: one is normally used to consider that $\Z\leq \Q$ and that $2 : \Q$, for instance.  Likewise, in the abstract framework of integral domains, it would be natural to consider that at any given stage of one's reasoning, the field $K$ is fixed and that the map $f\colon R\to K$ can be neglected, just looking at every $x:R$ as $x:K$. This is clearly false from a type-theoretical point of view, but we could not even consider the image $f.range \leq K$ as being fixed, because it was through this map that $K$ was endowed with the structure of an $R$-algebra and that any of our results might have been applied in a setting where the field of fractions under consideration was different, although isomorphic, to $K$.
 
-
-A fraction field $K$ of an integral domain $R$ is the smallest field that contains $R$ (or some other equivalent definitions).
-The choice of $K$ is only unique up to isomorphism.
-In particular, the generic construction of a fraction field of $\Z$ does not yield $\Q$.
-One solution is to build a transfer tactic, the other is to state our theorems parametrized by $K$, along with a proof that $K$ is a fraction field of $R$.
-
-The mathlib definition of fraction fields is based around the localization map. Let $R$ and $K$ be (commutative) rings with submonoid $P \subset R$, then $f : R \to K$ is a localization map if ..., expressed formally as the following structure:
-
-The localization map $f$ endows $K$ with an $R$-algebra structure.
-
-If the submonoid $P$ consists of all non-zero-divisors of $R$, we say that $f$ is a fraction map, and if $R$ is an integral domain, $K$ is a field. We call $K$ the fraction field of $R$.
+This applies, in particular, to all algebraic structures related to $\lean{R}$ and to its embedding in $\lean{K}$, and was approached through Lean's management of coercions. This will become even more relevant in the following section, concerning fractional ideals, and suffices here, as an example, to consider 
+\begin{lstlisting}
+lemma mul_inv_cancel [comm_ring K] (f : fraction_map R K) (x : K) (hx : x ≠ 0) :
+x * φ.inv x = 1 :=
+\end{lstlisting}
+showing that the inverse of an element $x$ will be defined in terms of the localization map $f$.
+%In particular, given any ideal $\lean{I : ideal R}$, one can consider it a 
+%
+%As our main aim in the project was the construction of the ideal class group, which relies on the construction of the group 
+%
+%\bigskip
+%
+%
+%A fraction field $K$ of an integral domain $R$ is the smallest field that contains $R$ (or some other equivalent definitions).
+%The choice of $K$ is only unique up to isomorphism.
+%In particular, the generic construction of a fraction field of $\Z$ does not yield $\Q$.
+%One solution is to build a transfer tactic, the other is to state our theorems parametrized by $K$, along with a proof that $K$ is a fraction field of $R$.
+%
+%The mathlib definition of fraction fields is based around the localization map. Let $R$ and $K$ be (commutative) rings with submonoid $P \subset R$, then $f : R \to K$ is a localization map if ..., expressed formally as the following structure:
+%
+%The localization map $f$ endows $K$ with an $R$-algebra structure.
+%
+%If the submonoid $P$ consists of all non-zero-divisors of $R$, we say that $f$ is a fraction map, and if $R$ is an integral domain, $K$ is a field. We call $K$ the fraction field of $R$.
 
 The choice of $R$-algebra structure on $K$ is not unique, so we use a type synonym \lean{f.codomain}. This instructs the type class system to use the algebra instance derived from the localization map $f$.
 
 In the following sections, let $f : R \to K$ be a fraction map.
-
 \subsection{Fractional ideals}
 
-When working with fraction fields, it is useful to extend the notion of $R$-ideals to fractional ideals:
-these are $R$-ideals divided by some $x : R$,
-or equivalently $R$-submodules $I$ of $K$ such that there is an $x : R$ with $x I \subseteq R$.
-We formalized the latter definition as a type \lean{fractional\_ideal f}.
-The dependency on $f$ follows from the module structure on $K$ being determined by $f$.
-Despite the dependency, the structure of fractional ideals does not depend on the choice of fraction map $f$,
-which we formalized as an isomorphism \lean{fractional\_ideal.canonical\_equiv} between the fractional ideals on two different fraction fields $K, K'$ of $R$.
+\st{When working with fraction fields, it is useful to extend the notion of $R$-ideals to fractional ideals:} The notion which is pivotal to the definition of the ideal class group of a Dedekind domain is that of \emph{fractional ideals}: given any integral domain $R$, these are $R$-ideals divided by some $x : R$,
+or equivalently $R$-submodules $I$ of $K$ such that there is an $x : R$ with $x I \subseteq R$. The reason for introducing them is that, unlike their subset of proper ideals, they form a group under multiplication. As it should be clear from the previous section, this notion depends on the field $K$ as well as on the localization map $f\colon R\to K$ allowing to speak about $R$-submodules of $K$ and, more importantly, to see an element $x:R$ as the element $f x : K$, so as to be able to write the inclusion $f(x)I\subseteq f(R)$. We formalized the definition of fractional ideals relative to a map $f\colon R\to K$ as a type \lean{fractional\_ideal f}.
+\st{The dependency on $f$ follows from the module structure on $K$ being determined by $f$.
+Despite the dependency, } We encoded that the structure of fractional ideals does not depend on the choice of fraction map $f$,
+which we formalized as an isomorphism \lean{fractional\_ideal.canonical\_equiv} between the fractional ideals relative to embeddings $f_1\colon R\to K_1$ and $f_2\colon R\to K_2$.
 
 We defined the addition, multiplication and intersection operations on fractional ideals,
 by showing the corresponding operations on submodules map fractional ideals to fractional ideals.
@@ -532,8 +546,10 @@ When $A$ is not a field, the standard proof first shows that it is suffices that
 % using the factorization of into prime ideals (which are maximal in a Dedekind domain), but we show something more general.
 We show in general that it is sufficient to prove invertibility for non-zero ideals of $R$.
 This is done in the lemma \lean{coe\_ideal\_mul\_one\_div}.
-We consider, for a non-zero ideal $I$, the ideal $J := I * (1/I)$, and show that $1/J \leq 1 \le J$, hence $J = 1$ since $J \le 1$ holds in an arbitrary domain. So, we want to show that any element $x \in 1/J$ is in $R$, or equivalently, since we have \lean{is\_dedekind\_domain R}, it suffices to prove that $x$ is in the integral closure of $R$. We consider $A := R[x]$, and show that $A \leq 1/I$, which is Noetherian, hence $A$ is a finitely generated subalgebra containing $x$. It suffices to prove that for every $n \in \mathbb{N}$, $x^n \in 1/I$. This follows from \lean{h₁ : (submodule.span R {x} * (1 / ↑I : fractional_ideal f).val) ≤
-      (1 / ↑I : fractional_ideal f).val}. This follows from repeated usage of the lemma \lean{submodule.mem\_div\_iff\_forall\_mul\_mem} and \lean{fractional\_ideal.coe\_div}. The latter statement requires $I$ and $J$ to be non-zero. 
+We consider, for a non-zero ideal $I$, the ideal $J := I * (1/I)$, and show that $1/J \leq 1 \le J$, hence $J = 1$ since $J \le 1$ holds in an arbitrary domain. So, we want to show that any element $x \in 1/J$ is in $R$, or equivalently, since we have \lean{is\_dedekind\_domain R}, it suffices to prove that $x$ is in the integral closure of $R$. We consider $A := R[x]$, and show that $A \leq 1/I$, which is Noetherian, hence $A$ is a finitely generated subalgebra containing $x$. It suffices to prove that for every $n \in \mathbb{N}$, $x^n \in 1/I$. This follows from
+%\lean{h₁ : (submodule.span R {x} * (1 / ↑I : fractional_ideal f).val) ≤
+%(1 / ↑I : fractional_ideal f).val}.
+This follows from repeated usage of the lemma \lean{submodule.mem\_div\_iff\_forall\_mul\_mem} and \lean{fractional\_ideal.coe\_div}. The latter statement requires $I$ and $J$ to be non-zero. 
 
 \section{Principal ideal domains are Dedekind}
 
