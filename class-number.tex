@@ -69,9 +69,11 @@
 \definecolor{symbolcolor}{rgb}{0.4, 0.4, 0.4}    % grey
 \definecolor{sortcolor}{rgb}{0.1, 0.5, 0.1}      % green
 
+\DeclareUnicodeCharacter{2081}{\ensuremath{_1}}
 \DeclareUnicodeCharacter{2090}{\ensuremath{_a}}
 \DeclareUnicodeCharacter{2097}{\ensuremath{_l}}
 \DeclareUnicodeCharacter{211A}{\ensuremath{\Q}}
+\DeclareUnicodeCharacter{2264}{\ensuremath{\l}}
 \DeclareUnicodeCharacter{22A4}{\ensuremath{\top}}
 \DeclareUnicodeCharacter{22A5}{\ensuremath{\bot}}
 
@@ -411,7 +413,7 @@ along with a field $\lean{div\_eq\_mul\_inv} : \forall\ a\ b, a / b = a * b^{-1}
 This resulted in weakening $a / b = a * b^{-1}$ from a definitional equality to a propositional equality.
 As a consequence, many \lean{group\_with\_zero} instances and proofs throughout \mathlib needed slight changes to explicily rewrite $x / y$ to $x * y^{-1}$ instead of using unification to implicitly do so; in total hundreds of lines of code needed to be changed.
 
-\subsection{Representing simple field extensions}
+\subsection{Representing simple field extensions} \label{sec:simple-field-extension}
 
 A number field $K$ is defined as a finite extension of $\Q$, or equivalently a field of the form $\Q(\alpha)$ for some algebraic number $\alpha$.
 A field extension $L / K$ is called \emph{simple} if there is an $\alpha$ algebraic over $K$, called the \emph{primitive element}, such that $L = K(\alpha)$.
@@ -526,7 +528,8 @@ such as for principal ideal domains or rings of integers.
 
 In this section, we describe how we proved that the two definitions of Dedekind domain \lean{is\_dedekind\_domain} and \lean{is\_dedekind\_domain\_inv} are equivalent.
 
-We use the proof given in Cassels and Frohlich's Algebraic Number Theory (Chapter 1, Section 2, Proposition 1) to show that \lean{is\_dedekind\_domain\_inv} implies \lean{is\_dedekind\_domain}. A constant challenge that was faced while coding this proof is that one must work with pushforwards and pull backs of elements that belong to the ring, and hence to its localisation. The proofs for integrally closed and dimension being less than or equal to one are fairly straightforward.
+We use the proof given in Cassels and Frohlich's Algebraic Number Theory (Chapter 1, Section 2, Proposition 1) % TODO:cite
+to show that \lean{is\_dedekind\_domain\_inv} implies \lean{is\_dedekind\_domain}. A constant challenge that was faced while coding this proof is that one must work with pushforwards and pull backs of elements that belong to the ring, and hence to its localisation. The proofs for integrally closed and dimension being less than or equal to one are fairly straightforward.
 
 Proving the Noetherian condition was the most challenging.
 In the original proof by Cassels and Frohlich, they consider elements $a_1, \dots, a_n \in I$ and $b_1, \dots, b_n \in I^{-1}$ for any nonempty fractional ideal $I$,
@@ -546,10 +549,15 @@ When $A$ is not a field, the standard proof first shows that it is suffices that
 % using the factorization of into prime ideals (which are maximal in a Dedekind domain), but we show something more general.
 We show in general that it is sufficient to prove invertibility for non-zero ideals of $R$.
 This is done in the lemma \lean{coe\_ideal\_mul\_one\_div}.
+<<<<<<< HEAD
 We consider, for a non-zero ideal $I$, the ideal $J := I * (1/I)$, and show that $1/J \leq 1 \le J$, hence $J = 1$ since $J \le 1$ holds in an arbitrary domain. So, we want to show that any element $x \in 1/J$ is in $R$, or equivalently, since we have \lean{is\_dedekind\_domain R}, it suffices to prove that $x$ is in the integral closure of $R$. We consider $A := R[x]$, and show that $A \leq 1/I$, which is Noetherian, hence $A$ is a finitely generated subalgebra containing $x$. It suffices to prove that for every $n \in \mathbb{N}$, $x^n \in 1/I$. This follows from
 %\lean{h₁ : (submodule.span R {x} * (1 / ↑I : fractional_ideal f).val) ≤
 %(1 / ↑I : fractional_ideal f).val}.
 This follows from repeated usage of the lemma \lean{submodule.mem\_div\_iff\_forall\_mul\_mem} and \lean{fractional\_ideal.coe\_div}. The latter statement requires $I$ and $J$ to be non-zero. 
+=======
+We consider, for a non-zero ideal $I$, the ideal $J := I * (1/I)$, and show that $1/J \leq 1 \le J$, hence $J = 1$ since $J \le 1$ holds in an arbitrary domain. So, we want to show that any element $x \in 1/J$ is in $R$, or equivalently, since we have \lean{is\_dedekind\_domain R}, it suffices to prove that $x$ is in the integral closure of $R$. We consider $A := R[x]$, and show that $A \leq 1/I$, which is Noetherian, hence $A$ is a finitely generated subalgebra containing $x$. It suffices to prove that for every $n \in \mathbb{N}$, $x^n \in 1/I$. This follows from \lean{h₁ : (submodule.span R {x} * (1 / ↑I : fractional\_ideal f).val) ≤
+      (1 / ↑I : fractional\_ideal f).val}. This follows from repeated usage of the lemma \lean{submodule.mem\_div\_iff\_forall\_mul\_mem} and \lean{fractional\_ideal.coe\_div}. The latter statement requires $I$ and $J$ to be non-zero. 
+>>>>>>> 7a0dab11f13dff3ac50d310ebebecb3f5b9ae0fa
 
 \section{Principal ideal domains are Dedekind}
 
@@ -600,34 +608,32 @@ which states that for polynomial $p : R[X]$ and $x$ an element of the fraction f
 If $x$ is integral with minimal polynomial $p$, the leading coefficient is $1$, therefore the denominator is a unit and $x$ is an element of $R$.
 This gives us the required lemma \lean{unique\_factorization\_monoid.integrally\_closed}, which states that the integral closure of A in its fraction field is A itself.
 
-\section{Ring of integers are Dedekind domains} \label{sec:integral-closure}
+\section{Rings of integers are Dedekind domains} \label{sec:integral-closure}
 
 An important class of Dedekind domains consists of the rings of integers of number fields.
-We defined the ring of integers of a number field $K$ as the integral closure $\Z$ in $K$.
+Recall that we defined the ring of integers of a number field $K$ as the integral closure $\Z$ in $K$.
 We proved a stronger result: let $R$ be a Dedekind domain with fraction field $K$, if $L$ is a finite separable extension of $K$, then the integral closure of $R$ in $L$ is a Dedekind domain with fraction field $L$.
-Our approach is based on Neukirch, theorem 3.1, with adaptations to match the available results in \mathlib. % TODO: cite
-Throughout this section, $R$ will be an integral domain with fraction field $K$ (given by the map $f : R \to K$), $L$ a field extension of $K$ and $S$ the integral closure of $R$ in $L$,
-corresponding to the following Lean declarations:
-\begin{lstlisting}
-variables {R K L : Type*} [integral_domain R] [field K] [field L]
-variables (f : fraction_map R K)
-variables [algebra f.codomain L] [algebra R L] [is_scalar_tower R L]
-notation `S` := integral_closure R L
-\end{lstlisting}
+Our approach adapts \cite{Neukirch}, theorem 3.1.
+Throughout this section, $R$ will be an integral domain with fraction field $K$ (given by the map $f : R \to K$), $L$ a field extension of $K$ and $S$ the integral closure of $R$ in $L$.
+% corresponding to the following Lean declarations:
+%% either the above or below, both might be unnecessary
+%% \begin{lstlisting}
+%% variables {R K L : Type*} [integral_domain R] [field K] [field L]
+%% variables (f : fraction_map R K)
+%% variables [algebra f.codomain L] [algebra R L] [is_scalar_tower R L]
+%% notation `S` := integral_closure R L
+%% \end{lstlisting}
 
 The first step is showing $L$ is indeed the fraction field of the integral closure,
-i.e. that there is a \lean{fraction\_map (integral\_closure R L) L}.
-We formalized the following two results, where the first implies the second:
+i.e. that there is a map \lean{fraction\_map\_of\_finite\_extension f L : fraction\_map S L}.
+We formalized the following definition, which implies the desired result:
 \begin{lstlisting}
 def fraction_map_of_algebraic (alg : is_algebraic R L)
   (inj : function.injective (algebra_map R L)) :
   fraction_map S L
-
-def fraction_map_of_finite_extension [finite_dimensional f.codomain L] :
-  fraction_map S L
 \end{lstlisting}
-The main contents of \lean{fraction\_map\_of\_algebraic} consist of showing that all elements $x : L$ can be written as $y / z$ for integral elements $y, z$;
-the standard proof of this fact formalizes readily. % TODO: a nice proof to refer to: Neukirch?
+The main contents of \lean{fraction\_map\_of\_algebraic} consist of showing that all elements $x : L$ can be written as $y / z$ for elements $y \in S$, $z \in R \subseteq S$;
+the standard proof of this fact (e.g. \cite[Theorem 15.29]{Dummit-and-Foote}) formalizes readily.
 %Since $x$ is algebraic over $A$, it satisfies an equation $a_n x^n + a_{n-1} x^{n-1} + \cdots + a_0 = 0$, with $a_n, \dots, a_0 : A$.
 %Multiplying each term by $a_n^{n-1}$, we see $(a_n x)^{n} + a_{n-1} (a_n x)^{n - 1} + \cdots + a_0 a_n^{n-1} = 0$,
 %therefore $a_n x$ is integral, and we can write $x = (a_n x) / a_n$.
@@ -639,6 +645,7 @@ The fact that the integral closure is integrally closed is immediate.
 To show the Krull dimension is at most one, we needed to develop basic going-up theory for ideals.
 In particular, we show that an ideal $I$ in an integral extension is maximal if it lies over a maximal ideal,
 and use a result already available in \mathlib that a prime ideal $I$ in an integral extension lies over a prime ideal.
+%% Do the lemmas need to be stated, especially the second one?
 \begin{lstlisting}
 lemma is_maximal_of_is_integral_of_is_maximal_comap
   {S : Type*} [integral_domain S] [algebra R S]
@@ -648,124 +655,94 @@ lemma is_maximal_of_is_integral_of_is_maximal_comap
 theorem is_prime.comap [hK : K.is_prime] : (comap f K).is_prime
 \end{lstlisting}
 
-\subsection{Integral closure is Noetherian}
-The final condition, that the integral closure of $R$ in $L$ is a Noetherian ring, requires the most work.
-It suffices to show that the integral closure is contained in a finitely generated $R$-module $M$,
+The final condition, that the integral closure $S$ of $R$ in $L$ is a Noetherian ring, requires the most work.
+It suffices to show that $S$ is contained in a finitely generated $R$-module $M$,
 since the well-founded order on $R$-submodules of $M$ restricts to a well-founded order on ideals of $S$.
-\cite{Dummit-and-Foote}, theorem 15.29, proves that the integral closure of $\Z$ in $L$ is a finitely generated free $\Z$-module,
-by first showing it is contained in a finitely generated $\Z$-module, and deriving the conclusion from this result.
-If we weaken the assumptions, taking the integral closure of an arbitrary Dedekind domain $R$,
-the first part of the proof still goes through.
 
-Our formal proof that $S$ is a Noetherian ring adapts this first half of Dummit and Foote's proof.
-Suppose we have a family of basis elements $b : \iota \to L$, such that each $b_i$ is integral,
+We start by following the first half of \cite[Theorem 15.29]{Dummit-and-Foote}:
+let $b : \iota \to L$ be a finite $K$-basis of $L$ such that each $b_i$ is integral
+(which exists since any finite set $s \subseteq L$ can be multiplied by some $x \ne 0 : K$ to find a set of integral elements $x \cdot s$),
 and let $B$ be a nondegenerate bilinear form such that all integral $x, y : L$ satisfy $B(x, y) \in \lean{integral\_closure}\ R\ L$.
 If $L$ is separable over $K$ and $R$ is integrally closed in $K$,
 then there is a ``dual basis'' $b'$ also indexed by $\iota$, such that the integral closure is contained within the $R$-span of $b'$.
 In particular, the $i$'th coordinate of $x : L$ according to the dual basis $b'$ satisfies $x_i = B(b_i, x)$,
-therefore $x_i \in R$ if $x \in S$.
-This gives the following result:
-\begin{lstlisting}
-lemma integral_closure_le_span
-  [is_separable (localization_map.codomain f) L]
-  {ι : Type*} [fintype ι] {b : ι → L} (hb : is_basis f.codomain b)
-  (hb_int : ∀ i, is_integral R (b i))
-  (int_cl : integral_closure R f.codomain = ⊥) :
-  (S : submodule R L) ≤ submodule.span R (set.range (dual_basis hb))
-\end{lstlisting}
+therefore $x_i \in R$ if $x \in S$,
+and we conclude that $S$ is contained in a finitely generated $R$-module, hence Noetherian.
+We formalized the results in \cite{Neukirch}, 2.5--2.8, to show the \emph{trace form} is a bilinear form satisfying these requirements.
 
-Since $L$ is a finite extension of $K$, it has a finite basis $b : \iota \to L$ (as a vector space over $K$).
-Each $b_i$ is algebraic, so there is a (nonzero) $c_i$ such that $c_i b_i$ is integral over $R$.
-Thus, we can multiply $b$ by the product of all $c_i$ to give a basis of $L$ over $K$ consisting of integral elements.
-That this is indeed a basis follows from the fact that each $c_i$ is invertible as element of $L$,
-thus multiplying by each in turn is a linear automorphism $\lean{lsmul\_equiv}\ c_i : L \to L$.
-
-The remaning ingredient is to find a bilinear form $B$ that is nondegenerate and maps pairs of integral elements to integral elements. In the next subsection, we will discuss how we proved the \emph{trace form} satisfies these criteria.
-
-\subsection{Trace form}
-Our formalization of the trace form is based on \cite{Neukirch}, 2.5--2.8.
+\subsection{The trace form}
 In an $R$-algebra $S$ that is free and finitely generated as an $R$-module,
-the map $\lean{lmul} = \lambda x y : S, xy$ is $R$-linear map in both $x$ and $y$, so it can be represented by a matrix $M_x$.
-The \emph{algebra trace} of $x : S$ over $R$, denoted $\Tr_{S : R} x$ is the trace of $\lean{lmul}\ x$, i.e. the sum of the diagonal entries of $M_x$\footnote{Although the entries of $M_x$ depend on the choice of basis, the sum does not.}.
-We defined the trace as an $R$-linear map from $S$ to $R$ as the composition of $\lean{lmul}$ and the trace operator for linear maps:
+the map $\lean{lmul} = \lambda x y : S, xy$ is $R$-linear map in both $x$ and $y$, so it can be represented for a fixed $x$ as a \emph{multiplication matrix} $M_x \in \mathrm{M}(R)$.
+We defined the algebra trace $\Tr_{S / R}$ as an $R$-linear map from $S$ to $R$ as the composition of $\lean{lmul}$ and the trace operator for linear maps, that sums the entries along the diagonal of a matrix representation\footnote{Although the matrix representation depends on the choice of a basis for $S$ over $R$, the trace does not.}:
 \begin{lstlisting}
 noncomputable def trace : S →ₗ[R] R :=
 (linear_map.trace R S).comp (lmul R S).to_linear_map
 \end{lstlisting}
 This definition is marked noncomputable since \lean{linear\_map.trace} makes a case distinction on the existence of a basis,
-using an arbitrary basis if one exists and returning $0$ otherwise.
+choosing an arbitrary basis if one exists and returning $0$ otherwise.
 This latter case does not occur in our development.
 
 The \emph{trace form} is a $R$-bilinear form on $S$, mapping $x, y : S$ to $\Tr(xy)$.
 \begin{lstlisting}
 noncomputable def trace_form : bilin_form R S :=
-{ bilin := λ x y, trace R S (x * y), .. }
+{ bilin := λ x y, trace R S (x * y), .. /- proofs omitted -/ }
 \end{lstlisting}
 
 Although the trace form can be defined for any algebra,
-for simplicity of exposition we will only consider finite field extensions in this paper.
+for simplicity of exposition we will only consider finite field extensions in this paper. %% We are only considering trace forms of finite field extensions in this paper.
 In the formalization, we weakened assumptions to commutative rings or integral domains whenever this was practical.
-In the following, let $K : L : F$ be a tower of finite field extensions,
-i.e. we have the following declarations:
-\begin{lstlisting}
-variables {K L F : Type*} [field K] [field L] [field F]
-variables [algebra K L] [algebra L F] [algebra K F] [is_scalar_tower K L F]
-\end{lstlisting}
-Note the use of \lean{is\_scalar\_tower K L F} to indicate that the extensions fit in a tower, as described in Section \ref{sec:scalar_tower}.
+In the following, let $K / L / F$ be a tower of finite field extensions,
+i.e. we assume \lean{[algebra K L] [algebra L F] [algebra K F] [is\_scalar\_tower K L F]}, as described in Section \ref{sec:scalar_tower}.
 
-The value of the trace depends on the choice of $K$ and $L$: if $x : L$ and $L$ is a subfield of $F$,
-then the trace of $(x : F)$ is an integer multiple of the trace of $(x : L)$.
-This is a consequence of the following two results, formalizing \cite{Neukirch}, corollary 2.7:
-\begin{lstlisting}
-lemma trace_algebra_map (x : K) :
-  trace K L (algebra_map K L x) = findim K L • x
+The value of the trace depends on the choice of $K$ and $L$;
+we formalized this as lemmas \lean{trace\_algebra\_map x : trace K L (algebra\_map K L x) = findim K L • x}
+and \lean{trace\_comp L x : trace K F x = trace K L (trace L F x)}.
+%Since a basis $b : \iota \to L$ for $K : L$ and a basis $c : \kappa \to F$ for $L : F$ induce a basis $b \cdot c : \iota \times \kappa \to F$ for $K : F$,
+These results follow by direct computation of the multiplication matrices $M_x$.
 
-lemma trace_comp (x : F) :
-  trace K F x = trace K L (trace L F x)
-\end{lstlisting}
-Since a basis $b : \iota \to L$ for $K : L$ and a basis $c : \kappa \to F$ for $L : F$ induce a basis $b \cdot c : \iota \times \kappa \to F$ for $K : F$,
-these results follow by direct computation of the multiplication matrices $M_x$.
-
-To compute $\Tr_{K : L}(x)$ it therefore suffices to consider the trace of $x$ in the smallest field containing $x$ and $K$, which is $K(x)$.
-It turns out that the trace of $x$ in $K(x)$ is the sum of all conjugate roots to $x$,
-i.e. if the field extension $F$ contains all roots of the minimal polynomial of $x$, then the sum of its roots is exactly (the image of) $\Tr_{K : K(x)}(x)$.
-We formalize this using the power basis, as follows:
+To compute $\Tr_{K : L}(x)$ it therefore suffices to consider the trace of $x$ in the smallest field containing $x$ and $K$, which is the simple extension $K(x)$ discussed in Section \ref{sec:simple-field-extension}.
+There is a nice formula for the trace in $K(x)$, although the terms in this formula are elements in a larger field $F$
+(such as the \emph{splitting field} of the minimal polynomial of $x$).
+In formalizing this formula, we must first map the trace to $F$ using the canonical embedding $\lean{algebra\_map K F}$,
+giving the following lemma statement:
 \begin{lstlisting}
 lemma power_basis.trace_gen_eq_sum_roots (pb : power_basis K L)
   (h : polynomial.splits (algebra_map K F) pb.minpoly_gen) :
   algebra_map K F (trace K L pb.gen) =
     (pb.minpoly_gen.map (algebra_map K F)).roots.sum
 \end{lstlisting}
-Applying this result to a specific $x$ is then a question of applying it to the power basis for $K(x)$ generated by $x$, to give:
-\begin{lstlisting}
-lemma trace_eq_sum_roots [finite_dimensional K L]
-  {x : L} (hx : is_integral K x)
-  (hF : (minimal_polynomial hx).splits (algebra_map K F)) :
-  algebra_map K F (algebra.trace K L x) =
-  (findim K(x) L) • ((minimal_polynomial hx).map (algebra_map K F)).roots.sum
-\end{lstlisting}
-We formulate the lemma in terms of the power basis, since we will also use it for a finite simple extension $L : K$ later in the proof.
+%Applying this result to a specific $x$ is then a question of applying it to the power basis for $K(x)$ generated by $x$, to give:
+%\begin{lstlisting}
+%lemma trace_eq_sum_roots [finite_dimensional K L]
+%  {x : L} (hx : is_integral K x)
+%  (hF : (minimal_polynomial hx).splits (algebra_map K F)) :
+%  algebra_map K F (algebra.trace K L x) =
+%  (findim K(x) L) • ((minimal_polynomial hx).map (algebra_map K F)).roots.sum
+%\end{lstlisting}
+We formulate the lemma in terms of the power basis, since we will need to use it for $K(x)$ and for an arbitary finite separable extension $L / K$ later in the proof.
 
-Each conjugate element of $x$ is integral since they are roots of (the same) monic polynomial,
+The elements of \lean{(pb.minpoly\_gen.map (algebra\_map K F)).roots} are called \emph{conjugates} of $x$.
+Each conjugates of $x$ is integral since it is a roots of (the same) monic polynomial,
 and integer multiples and sums of integral elements are integral.
-Since \lean{trace\_eq\_sum\_roots} shows that the trace of $x$ is an integer (\lean{findim K(x) L}) multiple of a sum of conjugate roots,
+Since \lean{trace\_gen\_eq\_sum\_roots} and \lean{trace\_algebra\_map} together show that the trace of $x$ is an integer multiple (namely \lean{findim K(x) L}) of a sum of conjugate roots,
 we conclude that the trace (and trace form) of an integral element is also integral.
 % It would be marginally easier if `is_integral' was just an auxiliary definition for the subalgebra
 % `integral_closure', since subalgebras are closed under sums and smul "for free".
 
+% TODO: the remainder of this section should probably be shortened to one or two paragraphs.
 To show the trace form is nondegenerate, we adapted \cite{Neukirch}, Proposition 2.8 as follows:
-Suppose $L : K$ is a separable field extension of finite degree $n$,
+Suppose $L / K$ is a separable field extension of finite degree $n$,
 thus it has a primitive element $x$ generating a power basis \lean{pb} of dimension $n$.
-Let $F$ be the algebraic closure of $K$. Since $L$ is a finite extension, hence algebraic over $K$, we find a tower of field extensions $F : L : K$.
+Let $F$ be the algebraic closure of $K$. Since $L$ is a finite extension, hence algebraic over $K$, we find a tower of field extensions $F / L / K$.
 Let $A$ be the matrix corresponding to \lean{trace\_form K L}, written out with respect to the basis \lean{pb}.
-Computing the entries of this matrix, we see $A_{ij} = \Tr_{L : K} (x^{i + j})$.
+Computing the entries of this matrix, we see $A_{ij} = \Tr_{L / K} (x^{i + j})$.
 We want to show that $\det A \ne 0$.
 
-Let $x_0, \dots, x_{n - 1} : F$ enumerate the roots of the minimal polynomial of $x$,
-since $L : K$ is separable and of degree $n$, there are indeed exactly $n$ distinct roots in $F$.
+Let $x_0, \dots, x_{n - 1} : F$ enumerate the roots of the minimal polynomial of $x$ (formalized as a vector \lean{fin n → F});
+since $L / K$ is separable and of degree $n$, there are indeed exactly $n$ distinct roots in $F$.
 Consider the $n$-by-$n$ matrix $B$ such that $B_{ij} = x_i^j$.
 This is a Vandermonde matrix, which has determinant $\prod_{i < j} (x_i - x_j)^2$.
-In particular, since $L : K$ is separable, the conjugates are distinct, meaning each factor $x_i - x_j$ is nonzero,
+In particular, since $L / K$ is separable, the conjugates are distinct, meaning each factor $x_i - x_j$ is nonzero,
 so $\det B = \prod_{i < j} (x_i - x_j)^2 \ne 0$.
 Therefore, $\det (B^T B) = (\det B)^2 \ne 0$.
 We claim that $B^T B$ is equal to $A$('s image in $F$), whhich implies our desired result.
@@ -778,17 +755,9 @@ while the conclusion of \lean{trace\_eq\_sum\_roots} results in a sum over conju
 
 Instead of directly proving that the conjugates of $x^{i + j}$ (counted with the correct multiplicities) correspond to $i + j$'th powers of the conjugates of $x$,
 we need to use an equivalent definition of conjugate:
-the conjugates of $x$ in $F$ are the (distinct) images of $x$ under each embedding $K(x) \to F$ that fixes $K$.
-The equivalence between these two notions of conjugates was developed in Berkeley at the same time as our project, and mapping the equivalence through a sum shows: % TODO: awkward, rephrase
-\begin{lstlisting}
-lemma power_basis.sum_embeddings_gen
-  [is_alg_closed F] [is_separable K L] (f : F → R) :
-  ∑ σ in (@finset.univ _ (@alg_hom.fintype_of_separable _ _ _ _ _ _ _ _ _
-      pb.finite_dimensional)),
-    f (σ pb.gen) =
-  ((pb.minpoly_gen.map (algebra_map K F)).roots.map f).sum
-\end{lstlisting}
-Combining this result with \lean{trace\_gen\_eq\_sum\_roots} gives:
+the conjugates of $x$ in $F$ are the images (counted with multiplicity) of $x$ under each embedding $K(x) \to F$ that fixes $K$.
+This equivalence between the two notions of conjugate was contributed to \mathlib by the Berkeley group in the week before we realized we needed it.
+Mapping \lean{trace\_eq\_sum\_roots} through the equivalence gives:
 \begin{lstlisting}
 lemma power_basis.trace_gen_eq_sum_embeddings [is_separable K L]
   (h : pb.minpoly_gen.splits (algebra_map K F)) :
@@ -798,15 +767,8 @@ lemma power_basis.trace_gen_eq_sum_embeddings [is_separable K L]
           pb.finite_dimensional)),
       σ pb.gen
 \end{lstlisting}
-Taking the power basis of $K(y)$ generated by $y$, we generalize the above to all $y : L$.
-\begin{lstlisting}
-lemma trace_eq_sum_embeddings
-  [is_alg_closed F] [finite_dimensional K L] [is_separable K L]
-  {x : L} (hx : is_integral K x) :
-  algebra_map K F (algebra.trace K L x) = ∑ σ : L →ₐ[K] F, σ x
-\end{lstlisting}
-The advantage of using these embeddings is that $\sigma\ x^{i + j} = (\sigma\ x)^{i + j}$,
-so we can directly go from the conjugates of $x^{i + j}$ to the $i + j$'th powers of conjugates of $x$.
+Since $\sigma\ x^{i + j} = (\sigma\ x)^{i + j}$,
+we can directly go from the conjugates of $x^{i + j}$ to the $i + j$'th powers of conjugates of $x$, and the result follows.
 
 \section{Class number} \label{sec:class-number}
 
