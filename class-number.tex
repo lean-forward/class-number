@@ -718,7 +718,7 @@ Since $L / K$ is a finite, separable field extension, it has a power basis \lean
 Letting $x_k$ denote the $k$'th conjugate of $x$ in an algebraically closed field $F / L / K$,
 the main difficulty lies in checking the equality $\sum_k x_k^{i + j} = \Tr_{L / K} (x^{i + j})$.
 Directly applying \lean{trace\_gen\_eq\_sum\_roots} is tempting, since we have a sum over conjugates of powers on both sides.
-However, the two expressions will not precisely match: $B^T B$ contains a sum over conjugates of $x$, with each conjugate raised to the power $i + j$,
+However, the two expressions will not precisely match: the left hand side is a conjugates of $x$, with each conjugate raised to the power $i + j$,
 while the conclusion of \lean{trace\_gen\_eq\_sum\_roots} results in a sum over conjugates of $x^{i + j}$.
 
 Instead, the informal proof switches here to an equivalent definition of conjugate:
