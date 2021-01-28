@@ -69,6 +69,7 @@
 \definecolor{symbolcolor}{rgb}{0.4, 0.4, 0.4}    % grey
 \definecolor{sortcolor}{rgb}{0.1, 0.5, 0.1}      % green
 
+\DeclareUnicodeCharacter{03B1}{\ensuremath{\alpha}}
 \DeclareUnicodeCharacter{03C3}{\ensuremath{\sigma}}
 \DeclareUnicodeCharacter{2081}{\ensuremath{_1}}
 \DeclareUnicodeCharacter{2090}{\ensuremath{_a}}
@@ -129,15 +130,16 @@ and that the class group of a number field is finite (Section \ref{sec:class-num
 
 Apart from the achievement of formalizing a non-trivial amount of mathematical theory,
 our formal definition of the class number is an essential requirement
-for theorem provers assisting in modern number theory research.
+for the use of theorem provers in modern number theory research.
 % doing ``fashionable mathematics'' in a theorem prover, borrowing a term from prof. Kevin Buzzard~\cite{fashionable-mathematics}.
-Additionally, our formalization opens the door to the verification of software used for number theoretic research,
+Additionally, our formalization opens the door to the verification of number theoretic software,
 such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}.
 
 Our work is developed as part of the mathematical library \mathlib~\cite{mathlib} for the Lean 3 theorem prover~\cite{lean-prover}.
 The formal system of Lean is a dependent type theory based on the calculus of inductive constructions,
 with a proof-irrelevant impredicative universe \lean{Prop} at the bottom of a noncumulative hierarchy of universes \lean{Prop : Type : Type 1 : Type 2 : \dots}.\footnote{In our code samples, we use \lean{Type*} as abbreviation of ``\lean{Type u} for an arbitrary choice of \lean{u}''.}
 Other important characteristics of Lean as used in \mathlib are the use of quotient types, ubiquitous classical reasoning and the use of typeclasses to define the hierarchy of algebraic structures.
+
 Organizationally, \mathlib is characterized by a distributed set of contributors, a willingness to refactor its basic definitions, and a preference for complete and regular contributions over larger projects added all at once.
 Our own project, being part of the development of \mathlib, follows this philosophy by contributing pieces of our work as they are finished,
 in turn taking advantage of results contributed by others after the start of the project.
@@ -149,11 +151,11 @@ The source files of the formalization are currently in the process of being merg
 
 \section{Mathematical background}\label{sec math background}
 
-Let us now introduce some of the main objects we study, described in a \lq standard\rq\ mathematical way. In the later sections we will go into the details concerning formalizing them in Lean.
+Let us now introduce some of the main objects we study, described in a \lq standard\rq\ mathematical way. In the later sections we will detail their formalization in Lean.
 
-A \emph{number field} $K$ is a finite field extensions of $\Q$, and as such has the structure of a finite dimensional vector space over $\Q$. The smallest example is $\Q$ itself, and the two-dimensional cases are given by the quadratic number fields
+A \emph{number field} $K$ is a finite field extension of $\Q$, and as such has the structure of a finite dimensional vector space over $\Q$. The smallest example is $\Q$ itself, and the two-dimensional cases are given by the quadratic number fields
 \[\Q(\sqrt{d})=\{a+b\sqrt{d} : a,b \in \Q\}\]
-where $d\not=1$ is a squarefree (i.e. not divisible by $p^2$ for any prime $p$) integer, and there is no loss in generality in considering $\sqrt{d}$ as a complex number (since every number field can be embedded into the complex numbers).
+where $d\not=1$ is a squarefree (i.e. not divisible by $p^2$ for any prime $p$) integer.%, and there is no loss in generality in considering $\sqrt{d}$ as a complex number (since every number field can be embedded into the complex numbers).
 A cubic example is
 \[K:=\{a+b\alpha+c \alpha^2: a,b,c \in \Q\}\]
 where $\alpha$ satisfies $\alpha^3 + \alpha^2 - 2\alpha + 8=0$ (e.g. the unique real number with this property).
@@ -177,7 +179,7 @@ For example, $6$ can be factorized in exactly 4 ways, namely $6=2\cdot 3=3\cdot2
 As it turns out, there is a beautiful way to remedy this. Namely by considering factorization of \emph{ideals} instead of elements: for a number field $K$, with ring of integers $\OK$, every nonzero ideal of $\OK$ can be factored into prime ideals in a unique way, up to the order of the factors.
 %TODO? ?Talk about unique factorization monoid?
 
-Although unique factorization in terms of ideals is of great importance and beauty, it is still very interesting, and for many arithmetic applications necessary, to also consider factorization properties in terms of elements. For this, one can consider the nonzero fractional ideals of $\OK$ modulo the units $K^*$, which a priori has the structure of a commutative monoid, but actually turns out to be a group, called the \emph{class group} of $\OK$. An important theorem is that $\OK$ is finite. The interpretation is that its order, called the \emph{class number}, measures how far away $\OK$ is from being a UFD. In particular, the class group of $\OK$ is trivial if and only if $\OK$ is a UFD.
+Although unique factorization in terms of ideals is of great importance and beauty, it is still very interesting, and for many arithmetic applications necessary, to also consider factorization properties in terms of elements. For this, one can consider the nonzero fractional ideals of $\OK$ modulo the units $K^*$, which a priori has the structure of a commutative monoid, but actually turns out to be a group, called the \emph{class group} of $\OK$. An important theorem is that the class group of $\OK$ is finite. The interpretation is that the order of this group, called the \emph{class number}, measures how far away $\OK$ is from being a UFD. In particular, the class group of $\OK$ is trivial if and only if $\OK$ is a UFD.
 
 
 %%
@@ -210,7 +212,6 @@ In informal mathematics, a field $L$ containing a subfield $K$ is said to be a f
 Often we encounter towers of field extensions: we might have that $\Q$ is contained in $K$, $K$ is contained in $L$, $L$ is contained in an algebraic closure $\bar{K}$ of $K$, and $\bar{K}$ is contained in $\C$.
 We might formalize this situation by viewing $\Q$, $K$, $L$ and $\bar{K}$ to be sets of complex numbers $\C$ and defining field extensions as subset relations between these subfields.
 This way, no coercions need to be inserted to map elements of one field into a larger field.
-% I believe this is what mathcomp does; verify?
 In type theory we cannot define $\Q$ as a subset of $\C$ since we need $\Q$ to define $\C$.
 Thus, some coercion is always needed to go from the original definition of $\Q$ to its image in $\C$; and similar issues arise for other subfields that were not originally defined as such.
 Moreover, such an approach loses flexibility since we need to fix the top field, of which all others are subfields, at the start of our development and cannot adjoin more elements when needed.
@@ -312,7 +313,7 @@ of Laurent series, there is no (definitional) equality between the types. Anothe
 \]
 which is isomorphic to $\Frac (\Z[i])$, but not definitionally equal to it.
 In fact, even the rational numbers in Lean are a counterexample:
-for computational efficiency, they are defined as a subtype where the numerator and denominator are coprime,
+for computational efficiency, $\Q$ is defined as a subtype where the numerator and denominator are coprime,
 instead of a quotient by ``scalar multiplication''. A definition like
 \begin{lstlisting}
 def fraction_field (R : Type*) : Type* :=
@@ -320,20 +321,38 @@ def fraction_field (R : Type*) : Type* :=
 \end{lstlisting}
 would require transferring results across isomorphisms as soon as one needs to handle a different construction of a field isomorphic to $\Frac R$.
 
-The strategy we have chosen is to rather allow for many different \emph{fraction fields} of our given integral domain $R$, as fields $K$ receiving an injective map $f\colon R\to K$ which satisfies a certain ``minimality property'', and to make this part of the data of every result. To make this precise, and without entering into too many details concerning the localization procedure in Commutative Algebra, recall that there is a notion of a ``field of fractions'' of an integral domain, as a field $K$ together with an injective map $f\colon R\to K$ satisfying a universal property: for every other ring $A$ with an injective map $g_A\colon R\to A$ such that $g_A(x) : A$ has a (multiplicative) inverse for all $x : R, x\neq 0$, there exists a unique map $K\to A$ extending $f$ and compatible with $g_A$. In particular, given any pair $K_1,K_2$ of fields of fractions, they turn out to be isomorphic, even \emph{uniquely} isomorphic, but yet yielding different types. Needless to say, \emph{the} fraction field $\Frac R$ is a field of fractions, but it is certainly not the only one. As the notion of \emph{fractional ideals}, which is pivotal to the definition of the (ideal) class group, depends on the choice of an ambient field of fractions $K$ and on the map $f\colon R\to K$, we could either fix a field of fractions (say, $\Frac R$) once and for all, or rather let all our construction be relative to this choice.  As Lean already contained the following
-\begin{lstlisting}
-def fraction_map [comm_ring K] := localization_map (non_zero_divisors R) K
-\end{lstlisting}
-and because the non-zero divisor of an integral domain coincide with $R\setminus\{0\}$, we opted for this setting for our development of fields of fractions and of fractional ideals. 
+The strategy used in \mathlib is to rather allow for many different \emph{fraction fields} of our given integral domain $R$,
+as fields $K$ along with an injective \emph{fraction map} $f : R \to K$ which witnesses that all elements of $K$ are ``fractions'' of elements of $R$,%
+\footnote{In the definition used by \mathlib, a fraction map is a special case of a \emph{localization map}. Different localizations restrict the denominators to different subsets of $R \setminus \{0\}$.}.
+and to parametrize every result over the choice of $f$.
+The conditions on $f$ imply that $K$ is the smallest field containing $R$,
+by showing each injective map $g : R \to A$ such that $g(x)$ has a multiplicative inverse for all $x \ne 0 : R$,
+can be extended uniquely to a map $K \to A$ compatible with $f$ and $g$.
+In particular, if $f_1 : R \to K_1$ and $f_2 : R \to K_2$ are fraction maps, they induce an isomorphism $K_1 \simeq K_2$.
+The construction of $\Frac R$ then results in \emph{a} field of fractions rather than \emph{the} field of fractions.
 
-This came at a price: one is normally used to consider that $\Z\leq \Q$ and that $2 : \Q$, for instance.  Likewise, in the abstract framework of integral domains, it would be natural to consider that at any given stage of one's reasoning, the field $K$ is fixed and that the map $f\colon R\to K$ can be neglected, just looking at every $x:R$ as $x:K$. This is clearly false from a type-theoretical point of view, but we could not even consider the image $f.range \leq K$ as being fixed, because it was through this map that $K$ was endowed with the structure of an $R$-algebra and that any of our results might have been applied in a setting where the field of fractions under consideration was different, although isomorphic, to $K$.
+% As the notion of \emph{fractional ideals}, which is pivotal to the definition of the (ideal) class group, depends on the choice of an ambient field of fraction $K$ and on the map $f\colon R\to K$, we could either fix a field of fractions (say, $\Frac R$) once and for all, or rather let all our construction be relative to this choice.  As Lean already contained the following
+%\begin{lstlisting}
+%def fraction_map [comm_ring K] := localization_map (non_zero_divisors R) K
+%\end{lstlisting}
+%and because the non-zero divisor of an integral domain coincide with $R\setminus\{0\}$, we opted for this setting for our development of fields of fractions and of fractional ideals. 
 
-This applies, in particular, to all algebraic structures related to $\lean{R}$ and to its embedding in $\lean{K}$, and was approached through Lean's management of coercions. This will become even more relevant in the following section, concerning fractional ideals, and suffices here, as an example, to consider 
-\begin{lstlisting}
-lemma mul_inv_cancel [comm_ring K] (f : fraction_map R K) (x : K) (hx : x ≠ 0) :
-x * φ.inv x = 1 :=
-\end{lstlisting}
-showing that the inverse of an element $x$ will be defined in terms of the localization map $f$.
+This came at a price: % one is normally used to consider that $\Z \subseteq \Q$ and that $(2 : \Z) \in \Q$, for instance.  Likewise, in the abstract framework of integral domains,
+informally, at any given stage of one's reasoning, the field $K$ is fixed and the map $f\colon R\to K$ is applied implicitly, just viewing every $x:R$ as $x:K$.
+%This is clearly false from a type-theoretical point of view, but
+It is now impossible to view $\mathop{range} f \leq K$ as an inclusion of subalgebras,
+because the map $f$ is needed explicitly to give the $R$-algebra structure on $K$.
+%because the extra structure on the map $f$ that $K$ was endowed with the structure of an $R$-algebra and that any of our results might have been applied in a setting where the field of fractions under consideration was different, although isomorphic, to $K$.
+We use a type synonym \lean{f.codomain := K} and instantiate the $R$-algebra structure given by $f$ on this synonym.
+
+In the following sections, let $f : R \to K$ be a fraction map.
+
+%This applies, in particular, to all algebraic structures related to $\lean{R}$ and to its embedding in $\lean{K}$, and was approached through Lean's management of coercions. This will become even more relevant in the following section, concerning fractional ideals, and suffices here, as an example, to consider 
+%\begin{lstlisting}
+%lemma mul_inv_cancel [comm_ring K] (f : fraction_map R K) (x : K) (hx : x ≠ 0) :
+%x * φ.inv x = 1 :=
+%\end{lstlisting}
+%showing that the inverse of an element $x$ will be defined in terms of the localization map $f$.
 %In particular, given any ideal $\lean{I : ideal R}$, one can consider it a 
 %
 %As our main aim in the project was the construction of the ideal class group, which relies on the construction of the group 
@@ -351,10 +370,6 @@ showing that the inverse of an element $x$ will be defined in terms of the local
 %The localization map $f$ endows $K$ with an $R$-algebra structure.
 %
 %If the submonoid $P$ consists of all non-zero-divisors of $R$, we say that $f$ is a fraction map, and if $R$ is an integral domain, $K$ is a field. We call $K$ the fraction field of $R$.
-
-The choice of $R$-algebra structure on $K$ is not unique, so we use a type synonym \lean{f.codomain}. This instructs the typeclass system to use the algebra instance derived from the localization map $f$.
-
-In the following sections, let $f : R \to K$ be a fraction map.
 \subsection{Fractional ideals}
 
 \st{When working with fraction fields, it is useful to extend the notion of $R$-ideals to fractional ideals:} The notion which is pivotal to the definition of the ideal class group of a Dedekind domain is that of \emph{fractional ideals}: given any integral domain $R$, these are $R$-ideals divided by some $x : R$,
@@ -421,54 +436,55 @@ The primitive element theorem states that a finite, separable extension is simpl
 
 The exact choice of these $\alpha$ and $K(\alpha)$ are underspecified in informal mathematical usage.
 We can find $K(\alpha)$ by adjoining the root of a polynomial: there is an irreducible polynomial $p \in K[X]$ such that $K[X] / p \simeq L$; we set $\alpha$ to be the image of $X$ in $K[X] / p$.
-We can also take $\alpha : \bar{K}$, the algebraic closure of $K$, set $K(\alpha)$ to be the smallest subfield of $\bar{K}$ that contains $\alpha$ and the image of $K$, and have an equality $L = K(\alpha)$ as subsets of $\bar{K}$.
-Similarly, we can take $\alpha : L$ and $K(\alpha)$ to be the smallest subfield of $L$ containing $\alpha$ and the image of $K$; then $L = K(\alpha)$ means that $K(\alpha)$, as a subfield of $L$, is equal to the subfield $\top$ containing all elements of $L$.
-
-Because $\alpha$ is algebraic the smallest subring containing $\alpha$ and $\Q$ will be a field, thus we can add two more representations, replacing ``smallest subfield'' with ``smallest subring''.
+%We can also take $\alpha : \bar{K}$, the algebraic closure of $K$, set $K(\alpha)$ to be the smallest subfield of $\bar{K}$ that contains $\alpha$ and the image of $K$, and have an equality $L = K(\alpha)$ as subsets of $\bar{K}$.
+We can also take $\alpha : L$ and $K(\alpha)$ to be the smallest subfield of $L$ containing $\alpha$ and the image of $K$; then $L = K(\alpha)$ means that $K(\alpha)$, as a subfield of $L$, is equal to the subfield $\top$ containing all elements of $L$.
+We could also view $K$, $L$ and $K(\alpha)$ as subfields of an arbitrary larger field $F$.
+Because $\alpha$ is algebraic the smallest subring containing $\alpha$ and $K$ will be a field, thus we can add two more representations, replacing ``smallest subfield'' with ``smallest subring''.
 Moreover, all subfields/subrings containing $K$ are also $K$-algebras, so we can additionally replace ``subfield'' with ``intermediate field'' and ``subring'' with ``$K$-subalgebra''.
 
 The ability to switch between these representations is important: sometimes $K$ and $L$ are fixed and we want an arbitrary $\alpha$; sometimes $\alpha$ is fixed and we want an arbitrary type representing $K(\alpha)$.
-The different constructions of $K(\alpha)$ have already been formalized in \mathlib:
-$K[X] / p$ is a type called \lean{adjoin\_root p};
-$K(\alpha)$ as smallest $K$-subalgebra containing $\alpha$ is called \lean{subalgebra.adjoin $K$ \{$\alpha$\}},
-which itself is defined as the smallest subring containing the image of $K$ and $\alpha$.
-After we contributed intermediate fields and subfields to \mathlib,
-the smallest intermediate field containing $\alpha$ was defined \lean{intermediate\_field.adjoin $K$ \{$\alpha$\}},
-which itself is defined as the smallest field containing the image of $K$ and $\alpha$,
-along with a formalization of the primitive element theorem:
-\begin{lstlisting}
-theorem exists_primitive_element
-  [finite_dimensional F E] [is_separable F E] :
-  ∃ α : E, intermediate_field.adjoin F {α} = ⊤
-\end{lstlisting}
+The different constructions of $K(\alpha)$ have already been formalized in \mathlib,
+%$K[X] / p$ is a type called \lean{adjoin\_root p};
+%$K(\alpha)$ as smallest $K$-subalgebra containing $\alpha$ is called \lean{subalgebra.adjoin $K$ \{$\alpha$\}},
+%which itself is defined as the smallest subring containing the image of $K$ and $\alpha$.
+%After we contributed intermediate fields and subfields to \mathlib,
+%the smallest intermediate field containing $\alpha$ was defined \lean{intermediate\_field.adjoin $K$ \{$\alpha$\}},
+%which itself is defined as the smallest field containing the image of $K$ and $\alpha$,
+%along with a formalization of the primitive element theorem as a statement of intermediate fields:
+%\begin{lstlisting}
+%theorem exists_primitive_element [finite_dimensional K L] [is_separable K L] :
+%  ∃ α : L, intermediate_field.adjoin K {α} = ⊤
+%\end{lstlisting}
 
-Note that the choice of $\alpha$ (or the irreducible polynomial $p$) is not unique in general; both $3^\frac{1}{3}$ and $3^\frac{2}{3}$ generate $\Q(\sqrt[3]{3})$.
-This means none of the above conditions provides a uniform way of reasoning about simple extensions:
-if we use a predicate like ``finite, separable extension'' we cannot guarantee that the primitive element chosen for $K(\alpha)$ is indeed $\alpha$.
-If we need to choose an $\alpha$ ahead of time and prove a result about $K(\alpha)$, we need extra work to transfer the result across the isomorphism $K(\alpha) \simeq L$.
+%Note that the choice of $\alpha$ (or the irreducible polynomial $p$) is not unique in general; both $3^\frac{1}{3}$ and $3^\frac{2}{3}$ generate $\Q(\sqrt[3]{3})$.
+%This means none of the above conditions provides a uniform way of reasoning about simple extensions:
+%if we use a predicate like ``finite, separable extension'' we cannot guarantee that the primitive element chosen for $K(\alpha)$ is indeed $\alpha$.
+%If we need to choose an $\alpha$ ahead of time and prove a result about $K(\alpha)$, we need extra work to transfer the result across the isomorphism $K(\alpha) \simeq L$.
 
-We chose instead to use a \emph{power basis} to represent simple field extensions, a basis of the form $1, x, x^2, \dots, x^{n-1} : A$ (viewing $A$ as an $R$-module).
+To find a uniform way to reason about all these equivalent definitions,
+we chose to formalize the notion of \emph{power basis} to represent simple field extensions, a basis of the form $1, x, x^2, \dots, x^{n-1} : L$ (viewing $L$ as a $K$-vector space)\footnote{In the formalization we generalize this notion to any algebra $A$ over a commutative ring $R$}.
 We call $x$ the \emph{generator} and $n$ the \emph{dimension} of this power basis.
-In Lean, we defined the following structure, bundling the information of a power basis:
+We defined the following structure, bundling the information of a power basis:
 \begin{lstlisting}
-structure power_basis (R A : Type*) [comm_ring R] [ring A]
-  [algebra R A] :=
+structure power_basis (K L : Type*) [field K] [field L] [algebra K L] :=
 (gen : S) (dim : ℕ)
-(is_basis : is_basis R (λ (i : fin dim), gen ^ (i : ℕ)))
+(is_basis : is_basis K (λ (i : fin dim), gen ^ (i : ℕ)))
 \end{lstlisting}
+We proved that the various notions of simple field extensions are equivalent to the existence of a power basis.
 
 % TODO: or just refer here to the names of the Lean functions?
-If $x : A$ is the generator of a power basis over $R$, it is also integral over $R$:
-let $n$ be the dimension of the power basis, then $x^n : A$ can be written as $x^n = \sum_i c_i x^i$ for some coefficients $c_i : R$;
-thus $p(X) = X^n - \sum_i c_i X^i$ is a polynomial with root $x$.
-That $p$ has minimal degree, follows from the linear independence of the powers of $x$ up to $n$.
-Conversely, for algebraic (and therefore integral) $\alpha$, $\Q(\alpha)$ has a power basis generated by $\alpha$.
-This shows that the condition of having a power basis is equivalent to being a simple field extension.
+%If $x : A$ is the generator of a power basis over $R$, it is also integral over $R$:
+%let $n$ be the dimension of the power basis, then $x^n : A$ can be written as $x^n = \sum_i c_i x^i$ for some coefficients $c_i : R$;
+%thus $p(X) = X^n - \sum_i c_i X^i$ is a polynomial with root $x$.
+%That $p$ has minimal degree, follows from the linear independence of the powers of $x$ up to $n$.
+%Conversely, for algebraic (and therefore integral) $\alpha$, $\Q(\alpha)$ has a power basis generated by $\alpha$.
+%This shows that the condition of having a power basis is equivalent to being a simple field extension.
 
 With the \lean{power\_basis} structure, we have the ability to parametrize our results,
 being able to choose the $K$ and $L$ in a simple field extension $L / K$,
-or being able to choose the $\alpha$ generating $K(\alpha)$ (packaged up as \lean{power\_basis.gen\ pb}).
-Specializing a result from an arbitrary $L$ with a power basis over $K$, to \lean{adjoin K \{$\alpha$\}} specifically, is a matter of applying the result to the power basis generated by $\alpha$, and rewriting $\lean{power\_basis.gen (adjoin.power\_basis K $\alpha$)} = \alpha$.
+or being able to choose the $\alpha$ generating $K(\alpha)$ (by setting \lean{power\_basis.gen\ pb} equal to $\alpha$).
+Specializing a result from an arbitrary $L$ with a power basis over $K$,
+to a specific value of $L$ such as $K(\alpha) = \lean{algebra.adjoin K \{α\}}$, is a matter of applying the result to the power basis generated by $\alpha$, and rewriting $\lean{power\_basis.gen (adjoin.power\_basis K $\alpha$)} = \alpha$.
 
 
 \section{Defining Dedekind domains} \label{sec:Dedekind-domain}
