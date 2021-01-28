@@ -69,10 +69,12 @@
 \definecolor{symbolcolor}{rgb}{0.4, 0.4, 0.4}    % grey
 \definecolor{sortcolor}{rgb}{0.1, 0.5, 0.1}      % green
 
+\DeclareUnicodeCharacter{03C3}{\ensuremath{\sigma}}
 \DeclareUnicodeCharacter{2081}{\ensuremath{_1}}
 \DeclareUnicodeCharacter{2090}{\ensuremath{_a}}
 \DeclareUnicodeCharacter{2097}{\ensuremath{_l}}
 \DeclareUnicodeCharacter{211A}{\ensuremath{\Q}}
+\DeclareUnicodeCharacter{2211}{\ensuremath{\sum}}
 \DeclareUnicodeCharacter{2264}{\ensuremath{\l}}
 \DeclareUnicodeCharacter{22A4}{\ensuremath{\top}}
 \DeclareUnicodeCharacter{22A5}{\ensuremath{\bot}}
@@ -647,41 +649,30 @@ theorem is_prime.comap [hK : K.is_prime] : (comap f K).is_prime
 \end{lstlisting}
 
 The final condition, that the integral closure $S$ of $R$ in $L$ is a Noetherian ring, requires the most work.
-It suffices to show that $S$ is contained in a finitely generated $R$-module $M$,
-since the well-founded order on $R$-submodules of $M$ restricts to a well-founded order on ideals of $S$.
-
-We start by following the first half of \cite[Theorem 15.29]{Dummit-and-Foote}:
-let $b : \iota \to L$ be a finite $K$-basis of $L$ such that each $b_i$ is integral
-(which exists since any finite set $s \subseteq L$ can be multiplied by some $x \ne 0 : K$ to find a set of integral elements $x \cdot s$),
-and let $B$ be a nondegenerate bilinear form such that all integral $x, y : L$ satisfy $B(x, y) \in \lean{integral\_closure}\ R\ L$.
-If $L$ is separable over $K$ and $R$ is integrally closed in $K$,
-then there is a ``dual basis'' $b'$ also indexed by $\iota$, such that the integral closure is contained within the $R$-span of $b'$.
-In particular, the $i$'th coordinate of $x : L$ according to the dual basis $b'$ satisfies $x_i = B(b_i, x)$,
-therefore $x_i \in R$ if $x \in S$,
-and we conclude that $S$ is contained in a finitely generated $R$-module, hence Noetherian.
+We start by following the first half of \cite[Theorem 15.29]{Dummit-and-Foote},
+so that it suffices to find a nondegenerate bilinear form $B$ such that all integral $x, y : L$ satisfy $B(x, y) \in \lean{integral\_closure}\ R\ L$.
 We formalized the results in \cite{Neukirch}, 2.5--2.8, to show the \emph{trace form} is a bilinear form satisfying these requirements.
 
 \subsection{The trace form}
-In an $R$-algebra $S$ that is free and finitely generated as an $R$-module,
-the map $\lean{lmul} = \lambda x y : S, xy$ is $R$-linear map in both $x$ and $y$, so it can be represented for a fixed $x$ as a \emph{multiplication matrix} $M_x \in \mathrm{M}(R)$.
-We defined the algebra trace $\Tr_{S / R}$ as an $R$-linear map from $S$ to $R$ as the composition of $\lean{lmul}$ and the trace operator for linear maps, that sums the entries along the diagonal of a matrix representation\footnote{Although the matrix representation depends on the choice of a basis for $S$ over $R$, the trace does not.}:
+If $L / K$ is a field extension, we have a bilinear form $\lean{lmul} = \lambda x y : S, xy$.
+The trace of the linear map \lean{lmul x} is called the \emph{algebra trace} $\Tr_{L / K}(x)$ of $x$
+We define the algebra trace as a linear map from $L$ to $K$:
 \begin{lstlisting}
-noncomputable def trace : S →ₗ[R] R :=
-(linear_map.trace R S).comp (lmul R S).to_linear_map
+noncomputable def trace : L →ₗ[K] K :=
+(linear_map.trace K L).comp (lmul K L).to_linear_map
 \end{lstlisting}
 This definition is marked noncomputable since \lean{linear\_map.trace} makes a case distinction on the existence of a basis,
 choosing an arbitrary basis if one exists and returning $0$ otherwise.
 This latter case does not occur in our development.
 
-The \emph{trace form} is a $R$-bilinear form on $S$, mapping $x, y : S$ to $\Tr(xy)$.
+The \emph{trace form} is a $K$-bilinear form on $L$, mapping $x, y : L$ to $\Tr(xy)$.
 \begin{lstlisting}
-noncomputable def trace_form : bilin_form R S :=
-{ bilin := λ x y, trace R S (x * y), .. /- proofs omitted -/ }
+noncomputable def trace_form : bilin_form K L :=
+{ bilin := λ x y, trace K L (x * y), .. /- proofs omitted -/ }
 \end{lstlisting}
 
-Although the trace form can be defined for any algebra,
-for simplicity of exposition we will only consider finite field extensions in this paper. %% We are only considering trace forms of finite field extensions in this paper.
-In the formalization, we weakened assumptions to commutative rings or integral domains whenever this was practical.
+In fact, we define the trace and trace form for any algebra over a commutative ring.
+For simplicity of exposition in this paper we will only consider finite field extensions. %% We are only considering trace forms of finite field extensions in this paper.
 In the following, let $K / L / F$ be a tower of finite field extensions,
 i.e. we assume \lean{[algebra K L] [algebra L F] [algebra K F] [is\_scalar\_tower K L F]}, as described in Section \ref{sec:scalar_tower}.
 
@@ -689,7 +680,7 @@ The value of the trace depends on the choice of $K$ and $L$;
 we formalized this as lemmas \lean{trace\_algebra\_map x : trace K L (algebra\_map K L x) = findim K L • x}
 and \lean{trace\_comp L x : trace K F x = trace K L (trace L F x)}.
 %Since a basis $b : \iota \to L$ for $K : L$ and a basis $c : \kappa \to F$ for $L : F$ induce a basis $b \cdot c : \iota \times \kappa \to F$ for $K : F$,
-These results follow by direct computation of the multiplication matrices $M_x$.
+These results follow by direct computation.
 
 To compute $\Tr_{K : L}(x)$ it therefore suffices to consider the trace of $x$ in the smallest field containing $x$ and $K$, which is the simple extension $K(x)$ discussed in Section \ref{sec:simple-field-extension}.
 There is a nice formula for the trace in $K(x)$, although the terms in this formula are elements in a larger field $F$
@@ -710,10 +701,11 @@ lemma power_basis.trace_gen_eq_sum_roots (pb : power_basis K L)
 %  algebra_map K F (algebra.trace K L x) =
 %  (findim K(x) L) • ((minimal_polynomial hx).map (algebra_map K F)).roots.sum
 %\end{lstlisting}
-We formulate the lemma in terms of the power basis, since we will need to use it for $K(x)$ and for an arbitary finite separable extension $L / K$ later in the proof.
+We formulate the lemma in terms of the power basis, since we will need to use it for $K(x)$ here
+and for an arbitary finite separable extension $L / K$ later in the proof.
 
-The elements of \lean{(pb.minpoly\_gen.map (algebra\_map K F)).roots} are called \emph{conjugates} of $x$.
-Each conjugates of $x$ is integral since it is a roots of (the same) monic polynomial,
+The elements of \lean{(pb.minpoly\_gen.map (algebra\_map K F)).roots} are called \emph{conjugates} of $x$ in $F$.
+Each conjugate of $x$ is integral since it is a root of (the same) monic polynomial,
 and integer multiples and sums of integral elements are integral.
 Since \lean{trace\_gen\_eq\_sum\_roots} and \lean{trace\_algebra\_map} together show that the trace of $x$ is an integer multiple (namely \lean{findim K(x) L}) of a sum of conjugate roots,
 we conclude that the trace (and trace form) of an integral element is also integral.
@@ -721,45 +713,22 @@ we conclude that the trace (and trace form) of an integral element is also integ
 % `integral_closure', since subalgebras are closed under sums and smul "for free".
 
 % TODO: the remainder of this section should probably be shortened to one or two paragraphs.
-To show the trace form is nondegenerate, we adapted \cite{Neukirch}, Proposition 2.8 as follows:
-Suppose $L / K$ is a separable field extension of finite degree $n$,
-thus it has a primitive element $x$ generating a power basis \lean{pb} of dimension $n$.
-Let $F$ be the algebraic closure of $K$. Since $L$ is a finite extension, hence algebraic over $K$, we find a tower of field extensions $F / L / K$.
-Let $A$ be the matrix corresponding to \lean{trace\_form K L}, written out with respect to the basis \lean{pb}.
-Computing the entries of this matrix, we see $A_{ij} = \Tr_{L / K} (x^{i + j})$.
-We want to show that $\det A \ne 0$.
-
-Let $x_0, \dots, x_{n - 1} : F$ enumerate the roots of the minimal polynomial of $x$ (formalized as a vector \lean{fin n → F});
-since $L / K$ is separable and of degree $n$, there are indeed exactly $n$ distinct roots in $F$.
-Consider the $n$-by-$n$ matrix $B$ such that $B_{ij} = x_i^j$.
-This is a Vandermonde matrix, which has determinant $\prod_{i < j} (x_i - x_j)^2$.
-In particular, since $L / K$ is separable, the conjugates are distinct, meaning each factor $x_i - x_j$ is nonzero,
-so $\det B = \prod_{i < j} (x_i - x_j)^2 \ne 0$.
-Therefore, $\det (B^T B) = (\det B)^2 \ne 0$.
-We claim that $B^T B$ is equal to $A$('s image in $F$), whhich implies our desired result.
-
-The $(i, j)$'th entry of $B^T B$ is equal to $\sum_k x_k^{i + j}$,
-and we want to show this is equal to \lean{algebra\_map K F (trace (x \pow (i + j)))}.
-Directly applying \lean{trace\_eq\_sum\_roots} is tempting, since we have a sum over conjugates of powers on both sides.
+Finally, we show the trace form is nondegenerate, following \cite{Neukirch}, Proposition 2.8.
+Since $L / K$ is a finite, separable field extension, it has a power basis \lean{pb} generated by $x$.
+Letting $x_k$ denote the $k$'th conjugate of $x$ in an algebraically closed field $F / L / K$,
+the main difficulty lies in checking the equality $\sum_k x_k^{i + j} = \Tr_{L / K} (x^{i + j})$.
+Directly applying \lean{trace\_gen\_eq\_sum\_roots} is tempting, since we have a sum over conjugates of powers on both sides.
 However, the two expressions will not precisely match: $B^T B$ contains a sum over conjugates of $x$, with each conjugate raised to the power $i + j$,
-while the conclusion of \lean{trace\_eq\_sum\_roots} results in a sum over conjugates of $x^{i + j}$.
+while the conclusion of \lean{trace\_gen\_eq\_sum\_roots} results in a sum over conjugates of $x^{i + j}$.
 
-Instead of directly proving that the conjugates of $x^{i + j}$ (counted with the correct multiplicities) correspond to $i + j$'th powers of the conjugates of $x$,
-we need to use an equivalent definition of conjugate:
-the conjugates of $x$ in $F$ are the images (counted with multiplicity) of $x$ under each embedding $K(x) \to F$ that fixes $K$.
+Instead, the informal proof switches here to an equivalent definition of conjugate:
+the conjugates of $x$ in $F$ are the images (counted with multiplicity) of $x$ under each embedding $\sigma : K(x) \to F$ that fixes $K$.
 This equivalence between the two notions of conjugate was contributed to \mathlib by the Berkeley group in the week before we realized we needed it.
-Mapping \lean{trace\_eq\_sum\_roots} through the equivalence gives:
-\begin{lstlisting}
-lemma power_basis.trace_gen_eq_sum_embeddings [is_separable K L]
-  (h : pb.minpoly_gen.splits (algebra_map K F)) :
-  algebra_map K F (trace K L pb.gen) =
-    ∑ σ in (@finset.univ _
-        (@alg_hom.fintype_of_separable _ _ _ _ _ F _ _ _
-          pb.finite_dimensional)),
-      σ pb.gen
-\end{lstlisting}
-Since $\sigma\ x^{i + j} = (\sigma\ x)^{i + j}$,
-we can directly go from the conjugates of $x^{i + j}$ to the $i + j$'th powers of conjugates of $x$, and the result follows.
+Mapping \lean{trace\_gen\_eq\_sum\_roots} through the equivalence gives
+$\Tr_{L / K}(x) = \sum_{σ : L \to_a[K] F} \sigma x$.
+% \lean{algebra\_map K F (trace K L pb.gen) = ∑ (σ : L →ₐ[K] F), σ pb.gen}.
+Since $\sigma$ is a ring homomorphism, $\sigma\ x^{i + j} = (\sigma\ x)^{i + j}$,
+so the conjugates of $x^{i + j}$ are the $i + j$'th powers of conjugates of $x$, concluding the proof.
 
 \section{Class number} \label{sec:class-number}
 
