@@ -390,11 +390,43 @@ instance : has_mul (fractional_ideal f) :=
 ⟨λ I J, ⟨I.1 * J.1, fractional_mul I J⟩⟩
 \end{lstlisting}
 
-Defining the quotient of two fractional ideals requires slightly more work.
-The submodule quotient $I / J$\footnote{The $:$ operator typically used for the submodule quotient is already reserved by the type theory, so \mathlib uses $/$ instead.} is characterized by the property
+Defining the quotient of two fractional ideals requires slightly more work. Consider any $R$-algebra $A$ and an injection $R\hookrightarrow A$, allowing to look at $x:R$ as $x:A$: given ideals $I,J\le R$, the submodule quotient $I / J\le A$ %\footnote{The $:$ operator typically used for the submodule quotient is already reserved by the type theory, so \mathlib uses $/$ instead.}
+is characterized by the property
 \begin{lstlisting}
 lemma submodule.mem_div_iff_forall_mul_mem {x : A} {I J : submodule R A} :
   x ∈ I / J ↔ ∀ y ∈ J, x * y ∈ I
+\end{lstlisting}
+In our setting, we consider a field of fractions $K$, together with a localization map $f\colon R\to K$: we can look at every ideal as the fractional ideal $I/1 \le K$. The first main theoretical result that we need to define the ideal class group is to show that every non-zero ideal $0<I \le R$ becomes invertible when seen as a fractional ideal: this means, by definition, that the equality 
+\begin{equation}\label{eq:mul_div_frac_ideals}
+f(I) \ast \frac{1}{f(I)} = 1=f(R)\le K
+\end{equation}
+as $R$-submodules of $K$, holds. Beware that the notation $1/I$ might be misleading here: indeed, for general integral domains, equation~\eqref{eq:mul_div_frac_ideals} might not hold. An example comes from the product
+\[
+\frac{1}{(X,Y)}\ast (X,Y)=(X,Y)<\C[X,Y]
+\]
+of the fractional ideals $1/(X,Y)$ and $(X,Y)$ in the fraction field $\C(X,Y)$ of $\C[X,Y]$. On the other hand, it can be proved that Dedekind domain are precisely the right class of integral domains for which~\eqref{eq:mul_div_frac_ideals} always holds. This was formalised as the following
+\begin{lstlisting}
+lemma fractional_ideal.is_unit {hR : is_dedekind_domain R}
+  (I : fractional_ideal f) (hne : I ≠ ⊥) : is_unit I :=
+\end{lstlisting}
+together with
+\begin{lstlisting}
+noncomputable instance [is_dedekind_domain R] (g : fraction_map R K) :
+  has_inv (fractional_ideal g) :=
+⟨λ I, 1 / I⟩
+\end{lstlisting}
+asserting that the inverse of any fractional ideal $I$ (defined as another fractional ideal $J$ such that $I\ast J=1$)---which always exists thanks to the \lean{lemma fractional\_ideal.is\_unit}---is unique and coincides with $1/I$.
+
+Two remarks are in order. The first is that in \lean{lemma fractional\_ideal.is\_unit} the hypothesis \lean{(hne : $I \ne \bot)$} that $I$ be non-zero is added, and apparently dropped in the \lean{has\_inv} instance: this reflects the existence of the typeclass \lean{group\_with\_zero} in \mathlib, consisting of groups endowed with an extra element \lean{0} whose inverse is again \lean{0}. In particular, the zero fractional ideal is invertible (in the \mathlib sense) but is not a unit, leading to the strange phenomenon above. Even more fundamentally, the fact that~\eqref{eq:mul_div_frac_ideals} might fail to hold in certain circumstances shows that, for general domains, $1/I\neq I^{-1}$. Since \lean{a / b} used to have the built-in definition $a / b = a \ast b^{-1}$, the notation $1 / I$, defined for every non-zero $I$, was conflicting with the fact that $I$ might not be invertible. Since, for Dedekind domains, we wanted to \emph{define} $I^{-1}$ as $1 / I$, a major refactor of a core definition was needed. In particular, to break the circularity, we had to weaken the definitional equality to a proposition; this involved many small changes throughout \mathlib.
+
+\bigskip
+END?
+\bigskip
+
+\begin{lstlisting}
+noncomputable instance [is_dedekind_domain R] (g : fraction_map R K) :
+  has_inv (fractional_ideal g) :=
+⟨λ I, 1 / I⟩
 \end{lstlisting}
 However, if $J$ contains only the element $0$,
 then $xy = 0 \in I$ for all $y \in J$, so all $x : A$ are elements of $I / J$.
