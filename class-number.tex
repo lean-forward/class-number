@@ -137,7 +137,7 @@ such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}.
 Our work is developed as part of the mathematical library \mathlib~\cite{mathlib} for the Lean 3 theorem prover~\cite{lean-prover}.
 The formal system of Lean is a dependent type theory based on the calculus of inductive constructions,
 with a proof-irrelevant impredicative universe \lean{Prop} at the bottom of a noncumulative hierarchy of universes \lean{Prop : Type : Type 1 : Type 2 : \dots}.\footnote{In our code samples, we use \lean{Type*} as abbreviation of ``\lean{Type u} for an arbitrary choice of \lean{u}''.}
-Other important characteristics of Lean as used in \mathlib are the use of quotient types, ubiquitous classical reasoning and the use of type classes to define the hierarchy of algebraic structures.
+Other important characteristics of Lean as used in \mathlib are the use of quotient types, ubiquitous classical reasoning and the use of typeclasses to define the hierarchy of algebraic structures.
 Organizationally, \mathlib is characterized by a distributed set of contributors, a willingness to refactor its basic definitions, and a preference for complete and regular contributions over larger projects added all at once.
 Our own project, being part of the development of \mathlib, follows this philosophy by contributing pieces of our work as they are finished,
 in turn taking advantage of results contributed by others after the start of the project.
@@ -352,7 +352,7 @@ showing that the inverse of an element $x$ will be defined in terms of the local
 %
 %If the submonoid $P$ consists of all non-zero-divisors of $R$, we say that $f$ is a fraction map, and if $R$ is an integral domain, $K$ is a field. We call $K$ the fraction field of $R$.
 
-The choice of $R$-algebra structure on $K$ is not unique, so we use a type synonym \lean{f.codomain}. This instructs the type class system to use the algebra instance derived from the localization map $f$.
+The choice of $R$-algebra structure on $K$ is not unique, so we use a type synonym \lean{f.codomain}. This instructs the typeclass system to use the algebra instance derived from the localization map $f$.
 
 In the following sections, let $f : R \to K$ be a fraction map.
 \subsection{Fractional ideals}
