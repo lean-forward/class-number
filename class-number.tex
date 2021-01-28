@@ -584,8 +584,13 @@ satisfying $ \sum_i a_i b_i = 1 $.
 However, it is quite challenging to prove that an element of the multiplication of two $R$-submodules $M$ and $N$ must be of the form $\sum_{i = 1}^m a_i*b_i$, for $a_i \in A$ and $b_i \in B$ for all $1 \leq i \leq m$.
 Instead, we show that, for every element of an ideal, there exists a \lean{finset} whose span is contained in the ideal, and which contains the element.
 This is accomplished by the lemma \lean{submodule.mem\_span\_mul\_finite\_of\_mem\_span\_mul}.
-Now considering an ideal $s$ of the ring $R$, due to its invertibility, by \lean{submodule.mem\_span\_mul\_finite\_of\_mem\_span\_mul}, we obtain \lean{finset R} $T \subset s$ and $T' \subset 1/s$, such that 1 is contained in the span of $T*T'$.
-This is then sufficient to show that $s$ is finitely generated, as shown in the lemma \lean{fg\_of\_one\_mem\_span\_mul}.
+Now considering an ideal $I$ of the ring $R$, due to its invertibility (as a fractional ideal), by \lean{submodule.mem\_span\_mul\_finite\_of\_mem\_span\_mul}, we obtain finite sets $T \subset I$ and $T' \subset 1/I$ of type \lean{finset R}, such that 1 is contained in the $R$-span of $T*T'$. With coercions, the actual statement of the latter expression in Lean is \lean{↑T' ⊆ ↑↑(1 / ↑s)}, which reads :
+
+\begin{lstlisting}
+(T' : set (localization_map.codomain (fraction_ring.of A)) ) ⊆ (((1 / (s : fractional_ideal (fraction_ring.of A))) : submodule A (localization_map.codomain (fraction_ring.of A))) set (localization_map.codomain (fraction_ring.of A)) )
+\end{lstlisting}
+
+This is then sufficient to show that $I$ is finitely generated, as shown in the lemma \lean{fg\_of\_one\_mem\_span\_mul}.
 
 The theorem \lean{fractional\_ideal.mul\_inv\_cancel} proves the converse, that \lean{is\_dedekind\_domain} implies \lean{is\_dedekind\_domain\_inv}.
 The proof goes along these lines: we differentiate into cases when the Dedekind domain $A$ is and is not a field.
