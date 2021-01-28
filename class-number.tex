@@ -270,7 +270,7 @@ Some examples of rings of integers include $\Z$ and $\Z[\iota]$. We prove ahead 
 
 %Will add more after completing proof
 
-\subsection{Subobjects}
+\subsection{Subobjects} \label{sec:subobjects}
 
 The ring of integers are one example of a subobject, such as a subfield, subring or subalgebra, defined through a characteristic predicate.
 In mathlib, a subobject is defined as a bundled structure comprising the carrier set,
@@ -800,15 +800,28 @@ Apart from the general theory of algebraic numbers, there are formalizations of 
 The Isabelle/HOL formalization deserves special mention since it introduces techniques from algebraic number theory,
 defining the integer-valued norm on $\Z[i]$ and classifying the prime elements of $\Z[i]$.
 
-\section{Conclusion}
+\subsection{Conclusion}
+
+In this project, we found that the rule holds that the hardest part of formalization is to get the definitions just right.
+Once this is accomplished, the informal proof almost always translated to a formal proof without too much effort.
+% Informal mathematics effortlessly switches between different viewpoints, choosing whichever suits the situation best.
+In particular, we regularly had to invent abstractions to treat instances the ``same'' situation uniformly.
+Instead of fixing a canonical representation such $K \subseteq L \subseteq F$ as subfields, $\Frac F$ as the field of fractions, or $K(\alpha)$ as the simple field extension,
+we find that making the essence of the situation an explicit parameter, as in \lean{is\_scalar\_tower}, \lean{fraction\_map} or \lean{power\_basis},
+treats equivalent viewpoints uniformly without the need for transferring results.
 
 The formalization efforts described in this paper cannot be cleanly separated from the development of \mathlib as a whole.
+The decentralized organization and highly integrated design of \mathlib meant we could contribute our formalizations as we completed them,
+resulting in a quick integration into the rest of the library.
+Other contributors building on these results often extended them to meet our requirements,
+before we could identify that we needed them, as the anecdote in Section \ref{sec:subobjects} illustrates.
+In other words, the low barriers for contributions ensured mutually beneficial collaboration.
 
-Stuff was formalized\ldots
-Working together with people formalizing Galois theory turned out to me mutually beneficial.
-
-\ldots
- 
+The formalization project described in this paper resulted in the contribution of thousands of lines of Lean code involving hundreds of declarations.
+We validated existing design choices used in \mathlib, refactored those that did not scale well
+and contributed our own set of designs.
+The real achievement was not to complete each proof,
+but to build a better foundation for formal mathematics.
 
 
 \bibliography{lean}
