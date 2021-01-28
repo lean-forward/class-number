@@ -77,6 +77,7 @@
 \DeclareUnicodeCharacter{211A}{\ensuremath{\Q}}
 \DeclareUnicodeCharacter{2211}{\ensuremath{\sum}}
 \DeclareUnicodeCharacter{2264}{\ensuremath{\l}}
+\DeclareUnicodeCharacter{2286}{\ensuremath{\subseteq}}
 \DeclareUnicodeCharacter{22A4}{\ensuremath{\top}}
 \DeclareUnicodeCharacter{22A5}{\ensuremath{\bot}}
 
@@ -140,7 +141,7 @@ The formal system of Lean is a dependent type theory based on the calculus of in
 with a proof-irrelevant impredicative universe \lean{Prop} at the bottom of a noncumulative hierarchy of universes \lean{Prop : Type : Type 1 : Type 2 : \dots}.\footnote{In our code samples, we use \lean{Type*} as abbreviation of ``\lean{Type u} for an arbitrary choice of \lean{u}''.}
 Other important characteristics of Lean as used in \mathlib are the use of quotient types, ubiquitous classical reasoning and the use of typeclasses to define the hierarchy of algebraic structures.
 
-Organizationally, \mathlib is characterized by a distributed set of contributors, a willingness to refactor its basic definitions, and a preference for complete and regular contributions over larger projects added all at once.
+Organizationally, \mathlib is characterized by a distributed and decentralized community of contributors, a willingness to refactor its basic definitions, and a preference for small yet complete contributions over larger projects added all at once.
 Our own project, being part of the development of \mathlib, follows this philosophy by contributing pieces of our work as they are finished,
 in turn taking advantage of results contributed by others after the start of the project.
 At several points, we had just merged a formalization into \mathlib that another contributor needed,
