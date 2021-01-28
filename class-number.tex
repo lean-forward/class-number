@@ -301,10 +301,10 @@ starting from the set of pairs $(a,b)$ with $a,b \in R$ such that $b\neq 0$,
 one quotients by the equivalence relation stating that $(\alpha a, \alpha b) \sim (a,b)$ for all $\alpha \ne 0 : R$, writing the equivalence class of $(a,b)$ as $\frac{a}{b}$.
 It can easily be proved that the ring structure on $R$ extends uniquely to a ring structure turning $K$ into a field.
 When $R=\Z$, this yields the traditional description of $\Q$ as the set of equivalence classes of fractions, where $\frac{2}{3}=\frac{-4}{-6}$, etc.
-The drawback of this construction is that it hides a crucial property of fraction fields, which can be informally phrased as being ``the smallest field containing $R$''.
-Indeed, although it is easy to check that no subfield of $\Frac R$ can contain $R$, one can often encounter a field $K$, with an injective map $f\colon R\to K$, having no subfield with this property, and yet not being equal to $\Frac R$, but simply \emph{isomorphic} to it. For instance, although there is an isomorphism of $\Frac \C[\![t]\!]$ with the field
+The drawback of this construction is that it can somehow be too explicit in certain circumstances.\st{hides a crucial property of fraction fields, which can be informally phrased as being ``the smallest field containing $R$''.
+Indeed, although it is easy to check that no subfield of $\Frac R$ can contain $R$, one can often encounter a field $K$, with an injective map $f\colon R\to K$, having no subfield with this property, and yet not being equal to $\Frac R$, but simply \emph{isomorphic} to it}. For instance, although there is an isomorphism of $\Frac \C[\![t]\!]$ with the field
 \[
-\C(\!(t)\!)=\big\{\sum_{i=a}^{+\infty} a_it^i\quad\text{ with }a \in \Z\big\}
+\C(\!(t)\!)=\Big\{\sum_{i=a}^{+\infty} a_it^i\quad\text{ with }a \in \Z\Big\}
 \]
 of Laurent series, there is no (definitional) equality between the types. Another example comes from the field
 \[
@@ -313,16 +313,14 @@ of Laurent series, there is no (definitional) equality between the types. Anothe
 which is isomorphic to $\Frac (\Z[i])$, but not definitionally equal to it.
 In fact, even the rational numbers in Lean are a counterexample:
 for computational efficiency, they are defined as a subtype where the numerator and denominator are coprime,
-instead of a quotient by ``scalar multiplication''.
-
-A definition like
+instead of a quotient by ``scalar multiplication''. A definition like
 \begin{lstlisting}
 def fraction_field (R : Type*) : Type* :=
 {ab : R × R // ab.2 ≠ 0}
 \end{lstlisting}
 would require transferring results across isomorphisms as soon as one needs to handle a different construction of a field isomorphic to $\Frac R$.
 
-The strategy we have chosen is to rather allow for many different \emph{fraction fields} of our given integral domain $R$, as fields $K$ receving an injective map $f\colon R\to K$ which satisfies a certain ``minimality property'', and to make this part of the data of every result. To make this precise, and without entering into too many details concerning the localization procedure in Commutative Algebra, recall that there is a notion of a ``field of fraction'' of an integral domain, as a field $K$ together with an injective map $f\colon R\to K$ satisfying a universal property: for every other ring $A$ with an injective map $g_A\colon R\to A$ such that $g_A(x) : A$ has a (multiplicative) inverse for all $x : R, x\neq 0$, there exists a unique map $K\to A$ extending $f$ and compatible with $g_A$. In particular, given any pair $K_1,K_2$ of fields of fractions, they turn out to be isomorphic, even \emph{uniquely} isomorphic, but yet yielding different types. Needless to say, \emph{the} fraction field $\Frac R$ is a field of fractions, but it is certainly not the only one. As the notion of \emph{fractional ideals}, which is pivotal to the definition of the (ideal) class group, depends on the choice of an ambient field of fraction $K$ and on the map $f\colon R\to K$, we could either fix a field of fractions (say, $\Frac R$) once and for all, or rather let all our construction be relative to this choice.  As Lean already contained the following
+The strategy we have chosen is to rather allow for many different \emph{fraction fields} of our given integral domain $R$, as fields $K$ receiving an injective map $f\colon R\to K$ which satisfies a certain ``minimality property'', and to make this part of the data of every result. To make this precise, and without entering into too many details concerning the localization procedure in Commutative Algebra, recall that there is a notion of a ``field of fractions'' of an integral domain, as a field $K$ together with an injective map $f\colon R\to K$ satisfying a universal property: for every other ring $A$ with an injective map $g_A\colon R\to A$ such that $g_A(x) : A$ has a (multiplicative) inverse for all $x : R, x\neq 0$, there exists a unique map $K\to A$ extending $f$ and compatible with $g_A$. In particular, given any pair $K_1,K_2$ of fields of fractions, they turn out to be isomorphic, even \emph{uniquely} isomorphic, but yet yielding different types. Needless to say, \emph{the} fraction field $\Frac R$ is a field of fractions, but it is certainly not the only one. As the notion of \emph{fractional ideals}, which is pivotal to the definition of the (ideal) class group, depends on the choice of an ambient field of fractions $K$ and on the map $f\colon R\to K$, we could either fix a field of fractions (say, $\Frac R$) once and for all, or rather let all our construction be relative to this choice.  As Lean already contained the following
 \begin{lstlisting}
 def fraction_map [comm_ring K] := localization_map (non_zero_divisors R) K
 \end{lstlisting}
