@@ -371,112 +371,21 @@ In the following sections, let $f : R \to K$ be a fraction map.
 %The localization map $f$ endows $K$ with an $R$-algebra structure.
 %
 %If the submonoid $P$ consists of all non-zero-divisors of $R$, we say that $f$ is a fraction map, and if $R$ is an integral domain, $K$ is a field. We call $K$ the fraction field of $R$.
-\subsection{Fractional ideals}
-
-\st{When working with fraction fields, it is useful to extend the notion of $R$-ideals to fractional ideals:} The notion which is pivotal to the definition of the ideal class group of a Dedekind domain is that of \emph{fractional ideals}: given any integral domain $R$, these are $R$-ideals divided by some $x : R$,
-or equivalently $R$-submodules $I$ of $K$ such that there is an $x : R$ with $x I \subseteq R$. The reason for introducing them is that, unlike their subset of proper ideals, they form a group under multiplication. As it should be clear from the previous section, this notion depends on the field $K$ as well as on the localization map $f\colon R\to K$ allowing to speak about $R$-submodules of $K$ and, more importantly, to see an element $x:R$ as the element $f x : K$, so as to be able to write the inclusion $f(x)I\subseteq f(R)$. We formalized the definition of fractional ideals relative to a map $f\colon R\to K$ as a type \lean{fractional\_ideal f}.
-\st{The dependency on $f$ follows from the module structure on $K$ being determined by $f$.
-Despite the dependency, } We encoded that the structure of fractional ideals does not depend on the choice of fraction map $f$,
-which we formalized as an isomorphism \lean{fractional\_ideal.canonical\_equiv} between the fractional ideals relative to embeddings $f_1\colon R\to K_1$ and $f_2\colon R\to K_2$.
-
-We defined the addition, multiplication and intersection operations on fractional ideals,
-by showing the corresponding operations on submodules map fractional ideals to fractional ideals.
-We also proved that these operations give a commutative semiring structure on the type of fractional ideals.
-For example, multiplication of fractional ideals is defined as:
-\begin{lstlisting}
-lemma fractional_mul (I J : fractional_ideal f) :
-  is_fractional f (I.1 * J.1) := _ -- proof omitted
-
-instance : has_mul (fractional_ideal f) :=
-⟨λ I J, ⟨I.1 * J.1, fractional_mul I J⟩⟩
-\end{lstlisting}
-
-Defining the quotient of two fractional ideals requires slightly more work. Consider any $R$-algebra $A$ and an injection $R\hookrightarrow A$, allowing to look at $x:R$ as $x:A$: given ideals $I,J\le R$, the submodule quotient $I / J\le A$ %\footnote{The $:$ operator typically used for the submodule quotient is already reserved by the type theory, so \mathlib uses $/$ instead.}
-is characterized by the property
-\begin{lstlisting}
-lemma submodule.mem_div_iff_forall_mul_mem {x : A} {I J : submodule R A} :
-  x ∈ I / J ↔ ∀ y ∈ J, x * y ∈ I
-\end{lstlisting}
-In our setting, we consider a field of fractions $K$, together with a localization map $f\colon R\to K$: we can look at every ideal as the fractional ideal $I/1 \le K$. The first main theoretical result that we need to define the ideal class group is to show that every non-zero ideal $0<I \le R$ becomes invertible when seen as a fractional ideal: this means, by definition, that the equality 
-\begin{equation}\label{eq:mul_div_frac_ideals}
-f(I) \ast \frac{1}{f(I)} = 1=f(R)\le K
-\end{equation}
-as $R$-submodules of $K$, holds. Beware that the notation $1/I$ might be misleading here: indeed, for general integral domains, equation~\eqref{eq:mul_div_frac_ideals} might not hold. An example comes from the product
-\[
-\frac{1}{(X,Y)}\ast (X,Y)=(X,Y)<\C[X,Y]
-\]
-of the fractional ideals $1/(X,Y)$ and $(X,Y)$ in the fraction field $\C(X,Y)$ of $\C[X,Y]$. On the other hand, it can be proved that Dedekind domain are precisely the right class of integral domains for which~\eqref{eq:mul_div_frac_ideals} always holds. This was formalised as the following
-\begin{lstlisting}
-lemma fractional_ideal.is_unit {hR : is_dedekind_domain R}
-  (I : fractional_ideal f) (hne : I ≠ ⊥) : is_unit I :=
-\end{lstlisting}
-together with
-\begin{lstlisting}
-noncomputable instance [is_dedekind_domain R] (g : fraction_map R K) :
-  has_inv (fractional_ideal g) :=
-⟨λ I, 1 / I⟩
-\end{lstlisting}
-asserting that the inverse of any fractional ideal $I$ (defined as another fractional ideal $J$ such that $I\ast J=1$)---which always exists thanks to the \lean{lemma fractional\_ideal.is\_unit}---is unique and coincides with $1/I$.
-
-Two remarks are in order. The first is that in \lean{lemma fractional\_ideal.is\_unit} the hypothesis \lean{(hne : $I \ne \bot)$} that $I$ be non-zero is added, and apparently dropped in the \lean{has\_inv} instance: this reflects the existence of the typeclass \lean{group\_with\_zero} in \mathlib, consisting of groups endowed with an extra element \lean{0} whose inverse is again \lean{0}. In particular, the zero fractional ideal is invertible (in the \mathlib sense) but is not a unit, leading to the strange phenomenon above. Even more fundamentally, the fact that~\eqref{eq:mul_div_frac_ideals} might fail to hold in certain circumstances shows that, for general domains, $1/I\neq I^{-1}$. Since \lean{a / b} used to have the built-in definition $a / b = a \ast b^{-1}$, the notation $1 / I$, defined for every non-zero $I$, was conflicting with the fact that $I$ might not be invertible. Since, for Dedekind domains, we wanted to \emph{define} $I^{-1}$ as $1 / I$, a major refactor of a core definition was needed. In particular, to break the circularity, we had to weaken the definitional equality to a proposition; this involved many small changes throughout \mathlib.
-
-\bigskip
-END?
-\bigskip
-
-\begin{lstlisting}
-noncomputable instance [is_dedekind_domain R] (g : fraction_map R K) :
-  has_inv (fractional_ideal g) :=
-⟨λ I, 1 / I⟩
-\end{lstlisting}
-However, if $J$ contains only the element $0$,
-then $xy = 0 \in I$ for all $y \in J$, so all $x : A$ are elements of $I / J$.
-The submodule consisting of all $x : A$ is not a fractional ideal in general,
-so we cannot simply define the quotient of two fractional ideals to be the submodule quotient.
-Instead we set $I / 0 = 0$, resulting in the following definition of the fractional ideal quotient:
-\begin{lstlisting}
-noncomputable instance fractional_ideal.has_div :
-  has_div (fractional_ideal g) :=
-⟨λ I J, if h : J = 0 then 0 else ⟨I.1 / J.1, fractional_div_of_nonzero h⟩⟩
-\end{lstlisting}
-
-In general, if there is a multiplicative inverse $J$ of $I$, such that $I J = J I = 1$, then $J = 1 / I$.
-However, the converse does not always hold: $1 / I$ is not always the multiplicative inverse of $I$.
-Indeed, the condition that $1 / I$ is an inverse for all $I$ is one of the equivalent definitions of a Dedekind domain.
-Therefore, we defined the inverse operator $\cdot^{-1}$ only for fractional ideals in a Dedekind domain:
-\begin{lstlisting}
-noncomputable instance [is_dedekind_domain R] (g : fraction_map R K) :
-  has_inv (fractional_ideal g) :=
-⟨λ I, 1 / I⟩
-\end{lstlisting}
-
-Defining the inverse in terms of the quotient caused a problem later on, when we tried to define a \lean{group\_with\_zero} instance for fractional ideals in a Dedekind domain.
-Groups with zero are defined in \mathlib as monoids with multiplication $*$ and identity $1$ along with an absorbing element $0$ and an inverse $x^{-1}$ for all $x \ne 0$; for completeness $0^{-1}$ is defined as $0$.
-An important class of examples are fields, if we ignore the addition operator $+$.
-
-The \lean{group\_with\_zero} typeclass defines its own division operator, $x / y := x y^{-1}$,
-resulting in a definitionally unequal second interpretation of $I / J = I * (1 / J)$.
-We were able to fix this issue by including the division operator as a field in \lean{group\_with\_zero},
-along with a field $\lean{div\_eq\_mul\_inv} : \forall\ a\ b, a / b = a * b^{-1}$.
-This resulted in weakening $a / b = a * b^{-1}$ from a definitional equality to a propositional equality.
-As a consequence, many \lean{group\_with\_zero} instances and proofs throughout \mathlib needed slight changes to explicily rewrite $x / y$ to $x * y^{-1}$ instead of using unification to implicitly do so; in total hundreds of lines of code needed to be changed.
 
 \subsection{Representing simple field extensions} \label{sec:simple-field-extension}
 
-A number field $K$ is defined as a finite extension of $\Q$, or equivalently a field of the form $\Q(\alpha)$ for some algebraic number $\alpha$.
-A field extension $L / K$ is called \emph{simple} if there is an $\alpha$ algebraic over $K$, called the \emph{primitive element}, such that $L = K(\alpha)$.
-The primitive element theorem states that a finite, separable extension is simple; the converse holds if the primitive element $\alpha$ is separable.
-
-The exact choice of these $\alpha$ and $K(\alpha)$ are underspecified in informal mathematical usage.
-We can find $K(\alpha)$ by adjoining the root of a polynomial: there is an irreducible polynomial $p \in K[X]$ such that $K[X] / p \simeq L$; we set $\alpha$ to be the image of $X$ in $K[X] / p$.
+A number field $K$ is defined as a finite extension of $\Q$, or equivalently (by the primitive element theorem) a field of the form $\Q(\alpha)$ for some algebraic number $\alpha$. 
+%A field extension $L / K$ is called \emph{simple} if there is an $\alpha$ algebraic over $K$, called the \emph{primitive element}, such that $L = K(\alpha)$.
+%The primitive element theorem states that a finite, separable extension is simple; the converse holds if the primitive element $\alpha$ is separable.
+The choice of $\alpha$ and is normally underspecified in informal mathematical usage. We can find $\Q(\alpha)$ by adjoining the root of a polynomial: there is an irreducible polynomial $p \in \Q[X]$ such that $\Q[X] / p \simeq K$; we set $\alpha$ to be the image of $X$ in $\Q[X] / p$.
 %We can also take $\alpha : \bar{K}$, the algebraic closure of $K$, set $K(\alpha)$ to be the smallest subfield of $\bar{K}$ that contains $\alpha$ and the image of $K$, and have an equality $L = K(\alpha)$ as subsets of $\bar{K}$.
-We can also take $\alpha : L$ and $K(\alpha)$ to be the smallest subfield of $L$ containing $\alpha$ and the image of $K$; then $L = K(\alpha)$ means that $K(\alpha)$, as a subfield of $L$, is equal to the subfield $\top$ containing all elements of $L$.
-We could also view $K$, $L$ and $K(\alpha)$ as subfields of an arbitrary larger field $F$.
-Because $\alpha$ is algebraic the smallest subring containing $\alpha$ and $K$ will be a field, thus we can add two more representations, replacing ``smallest subfield'' with ``smallest subring''.
-Moreover, all subfields/subrings containing $K$ are also $K$-algebras, so we can additionally replace ``subfield'' with ``intermediate field'' and ``subring'' with ``$K$-subalgebra''.
+We can also take $\alpha : K$ and let $\Q(\alpha)$ to be the smallest subfield of $K$ containing $\alpha$; %and the image of $K$
+then $K = \Q(\alpha)$ means that $\Q(\alpha)$, as a subfield of $K$, is equal to the subfield $\top$ containing all elements of $K$.
+We could also view $K$ and $\Q(\alpha)$ as subfields of an arbitrary larger field $F$.
+Because $\alpha$ is algebraic the smallest subring containing $\alpha$ and $\Q$ will be a field, thus we can add two more representations, replacing ``smallest subfield'' with ``smallest subring''.
+Moreover, all subfields/subrings containing $\Q$ are also $\Q$-algebras, so we can additionally replace ``subfield'' with ``intermediate field'' and ``subring'' with ``$\Q$-subalgebra''. The same continues to hold if we replace the base field $\Q$ with $F$, thus considering extensions of the form $F(\alpha)$, now requiring that $\alpha$ be a root of some $p\in F[X]$.
 
-The ability to switch between these representations is important: sometimes $K$ and $L$ are fixed and we want an arbitrary $\alpha$; sometimes $\alpha$ is fixed and we want an arbitrary type representing $K(\alpha)$.
-The different constructions of $K(\alpha)$ have already been formalized in \mathlib,
+The ability to switch between these representations is important: sometimes $K$ and $F$ are fixed and we want an arbitrary $\alpha$; sometimes $\alpha$ is fixed and we want an arbitrary type representing $F(\alpha)$. The different constructions of $F(\alpha)$ have already been formalized in \mathlib,
 %$K[X] / p$ is a type called \lean{adjoin\_root p};
 %$K(\alpha)$ as smallest $K$-subalgebra containing $\alpha$ is called \lean{subalgebra.adjoin $K$ \{$\alpha$\}},
 %which itself is defined as the smallest subring containing the image of $K$ and $\alpha$.
@@ -495,13 +404,13 @@ The different constructions of $K(\alpha)$ have already been formalized in \math
 %If we need to choose an $\alpha$ ahead of time and prove a result about $K(\alpha)$, we need extra work to transfer the result across the isomorphism $K(\alpha) \simeq L$.
 
 To find a uniform way to reason about all these equivalent definitions,
-we chose to formalize the notion of \emph{power basis} to represent simple field extensions, a basis of the form $1, x, x^2, \dots, x^{n-1} : L$ (viewing $L$ as a $K$-vector space)\footnote{In the formalization we generalize this notion to any algebra $A$ over a commutative ring $R$}.
+we chose to formalize the notion of \emph{power basis} to represent simple field extensions, a basis of the form $1, x, x^2, \dots, x^{n-1} : K$ (viewing $K$ as a $F$-vector space)\footnote{In the formalization we generalize this notion to any algebra $A$ over a commutative ring $R$}.
 We call $x$ the \emph{generator} and $n$ the \emph{dimension} of this power basis.
 We defined the following structure, bundling the information of a power basis:
 \begin{lstlisting}
-structure power_basis (K L : Type*) [field K] [field L] [algebra K L] :=
+structure power_basis (F K : Type*) [field F] [field K] [algebra F K] :=
 (gen : S) (dim : ℕ)
-(is_basis : is_basis K (λ (i : fin dim), gen ^ (i : ℕ)))
+(is_basis : is_basis F (λ (i : fin dim), gen ^ (i : ℕ)))
 \end{lstlisting}
 We proved that the various notions of simple field extensions are equivalent to the existence of a power basis.
 
@@ -514,22 +423,18 @@ We proved that the various notions of simple field extensions are equivalent to 
 %This shows that the condition of having a power basis is equivalent to being a simple field extension.
 
 With the \lean{power\_basis} structure, we have the ability to parametrize our results,
-being able to choose the $K$ and $L$ in a simple field extension $L / K$,
-or being able to choose the $\alpha$ generating $K(\alpha)$ (by setting \lean{power\_basis.gen\ pb} equal to $\alpha$).
-Specializing a result from an arbitrary $L$ with a power basis over $K$,
-to a specific value of $L$ such as $K(\alpha) = \lean{algebra.adjoin K \{α\}}$, is a matter of applying the result to the power basis generated by $\alpha$, and rewriting $\lean{power\_basis.gen (adjoin.power\_basis K $\alpha$)} = \alpha$.
+being able to choose the $F$ and $K$ in a simple field extension $K / F$, or being able to choose the $\alpha$ generating $F(\alpha)$ (by setting \lean{power\_basis.gen\ pb} equal to $\alpha$). Specializing a result from an arbitrary $K$ with a power basis over $F$,
+to a specific value of $K$ such as $F(\alpha) = \lean{algebra.adjoin F \{α\}}$, is a matter of applying the result to the power basis generated by $\alpha$, and rewriting $\lean{power\_basis.gen (adjoin.power\_basis F $\alpha$)} = \alpha$.
 
 
-\section{Defining Dedekind domains} \label{sec:Dedekind-domain}
-
-The ring of integers $\OK$ satisfies many useful algebraic properties.
-An important class of integral domains that satisfy many of these properties is the class of \emph{Dedekind domains},
-and these play a fundamental role in algebraic number theory.
+\section{Dedekind domains} \label{sec:Dedekind-domain}
+The aim of this section is to introduce the notion of \emph{Dedekind domain} which, as discussed in Section~\ref{sec math background} is the right setting to study algebraic properties of number fields.
+\subsection{Definitions}\label{subsec:definitions_DD}
 There are various equivalent conditions, used at various times, for an integral domain $R$ being a Dedekind domain,
 of which the following three have been formalized in \mathlib:
 \begin{itemize}
-\item \lean{is\_dedekind\_domain R}: $R$ is a Noetherian integral domain, integrally closed in its fraction field and has Krull dimension at most $1$.
-\item \lean{is\_dedekind\_domain\_inv R}: $R$ is an integral domain and nonzero fractional ideals of $R$ have a multiplicative inverse.
+\item \lean{is\_dedekind\_domain R}: $R$ is a Noetherian integral domain, integrally closed in its fraction field and has Krull dimension at most $1$;
+\item \lean{is\_dedekind\_domain\_inv R}: $R$ is an integral domain and nonzero fractional ideals of $R$ have a multiplicative inverse (we discuss the notion and formalization of fractional ideals in Section~\ref{subsection:frac_ideals});
 \item \lean{is\_dedekind\_domain\_dvr R}: $R$ is a Noetherian integral domain and the localization of $R$ at each prime ideal is a discrete valuation ring.
 \end{itemize}
 We did not use \lean{is\_dedekind\_domain\_dvr} in our project, so we will not discuss this definition further.
@@ -573,17 +478,109 @@ We mark \lean{is\_dedekind\_domain} as a typeclass by using the keyword \lean{cl
 allowing the typeclass system to automatically infer the Dedekind domain structure when an appropriate instance is declared,
 such as for principal ideal domains or rings of integers.
 
-\section{Equivalence of the definitions} \label{sec:equivalence}
+\subsection{Fractional ideals}\label{subsection:frac_ideals}
+%\st{When working with fraction fields, it is useful to extend the notion of $R$-ideals to fractional ideals:} 
+The notion which is pivotal to the definition of the ideal class group of a Dedekind domain is that of \emph{fractional ideals}: given any integral domain $R$, these are $R$-ideals divided by some $x : R$,
+or equivalently $R$-submodules $J$ of $K$ such that there is an $x : R$ with $x J \subseteq R$. The reason for introducing them is that, unlike their subset of proper ideals, they form a group under multiplication. As it should be clear from Section~\ref{subsection : fields of fractions}, this notion depends on the field $K$ as well as on the localization map $f\colon R\to K$ allowing to speak about $R$-submodules of $K$ and, more importantly, to see an element $x:R$ as the element $f x : K$, so as to be able to write the inclusion $f(x)J\subseteq f(R)$. We formalized the definition of fractional ideals relative to a map $f\colon R\to K$ as a type \lean{fractional\_ideal f}. 
+%\st{The dependency on $f$ follows from the module structure on $K$ being determined by $f$.
+%Despite the dependency, }
+We encoded that the structure of fractional ideals does not depend on the choice of fraction map $f$,
+which we formalized as an isomorphism \lean{fractional\_ideal.canonical\_equiv} between the fractional ideals relative to embeddings $f_1\colon R\to K_1$ and $f_2\colon R\to K_2$.
 
-In this section, we describe how we proved that the two definitions of Dedekind domain \lean{is\_dedekind\_domain} and \lean{is\_dedekind\_domain\_inv} are equivalent.
+We defined the addition, multiplication and intersection operations on fractional ideals,
+by showing the corresponding operations on submodules map fractional ideals to fractional ideals.
+We also proved that these operations give a commutative semiring structure on the type of fractional ideals.
+For example, multiplication of fractional ideals is defined as:
+\begin{lstlisting}
+lemma fractional_mul (I J : fractional_ideal f) :
+  is_fractional f (I.1 * J.1) := _ -- proof omitted
 
-We use the proof given by Fr\"ohlich in ``Algebraic Number Theory'' (Cassels and Fr\"ohlich', eds) (Chapter 1, Section 2, Proposition 1) % TODO:cite
-to show that \lean{is\_dedekind\_domain\_inv} implies \lean{is\_dedekind\_domain}. A constant challenge that was faced while coding this proof was already mentioned in Ssection \ref{subsection : fields of fractions}, namely the fact that elements of the ring must be traced along the fixed morphism to the fields of fractions.\st{ that one must work with pushforwards and pull backs of elements that belong to the ring, and hence to its localisation.} The proofs for integrally closed and dimension being less than or equal to $1$ are fairly straightforward.
+instance : has_mul (fractional_ideal f) :=
+⟨λ I J, ⟨I.1 * J.1, fractional_mul I J⟩⟩
+\end{lstlisting}
 
-Proving the Noetherian condition was the most challenging. In the original proof by Fr\"ohlich, \st{they}he considers elements $a_1, \dots, a_n \in I$ and $b_1, \dots, b_n \in I^{-1}$ for any nonempty fractional ideal $I$,
+Defining the quotient of two fractional ideals requires slightly more work. Consider any $R$-algebra $A$ and an injection $R\hookrightarrow A$, allowing to look at $x:R$ as $x:A$: given ideals $I,J\le R$, the submodule quotient $I / J\le A$ %\footnote{The $:$ operator typically used for the submodule quotient is already reserved by the type theory, so \mathlib uses $/$ instead.}
+is characterized by the property
+\begin{lstlisting}
+lemma submodule.mem_div_iff_forall_mul_mem {x : A} {I J : submodule R A} :
+  x ∈ I / J ↔ ∀ y ∈ J, x * y ∈ I
+\end{lstlisting}
+In our setting, we consider a field of fractions $K$, together with a localization map $f\colon R\to K$: we can look at every ideal as the fractional ideal $I/1 \le K$. The first main theoretical result that we need to define the ideal class group is to show that every non-zero ideal $0<I \le R$ becomes invertible when seen as a fractional ideal: this means, by definition, that the equality 
+\begin{equation}\label{eq:mul_div_frac_ideals}
+f(I) \ast \frac{1}{f(I)} = 1=f(R)\le K
+\end{equation}
+as $R$-submodules of $K$, holds. Beware that the notation $1/I$ might be misleading here: indeed, for general integral domains, equation~\eqref{eq:mul_div_frac_ideals} might not hold. An example comes from the product
+\[
+\frac{1}{(X,Y)}\ast (X,Y)=(X,Y)<\C[X,Y]
+\]
+of the fractional ideals $1/(X,Y)$ and $(X,Y)$ in the fraction field $\C(X,Y)$ of $\C[X,Y]$. On the other hand, it can be proved that Dedekind domain are precisely the right class of integral domains for which~\eqref{eq:mul_div_frac_ideals} always holds. This was formalised as the following
+\begin{lstlisting}
+lemma fractional_ideal.is_unit {hR : is_dedekind_domain R}
+  (I : fractional_ideal f) (hne : I ≠ ⊥) : is_unit I :=
+\end{lstlisting}
+together with
+\begin{lstlisting}
+noncomputable instance [is_dedekind_domain R] (g : fraction_map R K) :
+  has_inv (fractional_ideal g) :=
+⟨λ I, 1 / I⟩
+\end{lstlisting}
+asserting that the inverse of any fractional ideal $I$ (defined as another fractional ideal $J$ such that $I\ast J=1$)---which always exists thanks to the \lean{lemma fractional\_ideal.is\_unit}---is unique and coincides with $1/I$.
+
+Two remarks are in order. The first is that in \lean{lemma fractional\_ideal.is\_unit} the hypothesis \lean{(hne : $I \ne \bot)$} that $I$ be non-zero is added, and apparently dropped in the \lean{has\_inv} instance: this reflects the existence of the typeclass \lean{group\_with\_zero} in \mathlib, consisting of groups endowed with an extra element \lean{0} whose inverse is again \lean{0}. In particular, the zero fractional ideal is invertible (in the \mathlib sense) but is not a unit, leading to the strange phenomenon above. Even more fundamentally, the fact that~\eqref{eq:mul_div_frac_ideals} might fail to hold in certain circumstances shows that, for general domains, $1/I\neq I^{-1}$. Since \lean{a / b} used to have the built-in definition $a / b = a \ast b^{-1}$, the notation $1 / I$, defined for every non-zero $I$, was conflicting with the fact that $I$ might not be invertible. Since, for Dedekind domains, we wanted to \emph{define} $I^{-1}$ as $1 / I$, a major refactor of a core definition was needed. In particular, to break the circularity, we had to weaken the definitional equality to a proposition; this involved many small changes throughout \mathlib.
+%
+%\bigskip
+%END?
+%\bigskip
+%
+%\begin{lstlisting}
+%noncomputable instance [is_dedekind_domain R] (g : fraction_map R K) :
+%  has_inv (fractional_ideal g) :=
+%⟨λ I, 1 / I⟩
+%\end{lstlisting}
+%However, if $J$ contains only the element $0$,
+%then $xy = 0 \in I$ for all $y \in J$, so all $x : A$ are elements of $I / J$.
+%The submodule consisting of all $x : A$ is not a fractional ideal in general,
+%so we cannot simply define the quotient of two fractional ideals to be the submodule quotient.
+%Instead we set $I / 0 = 0$, resulting in the following definition of the fractional ideal quotient:
+%\begin{lstlisting}
+%noncomputable instance fractional_ideal.has_div :
+%  has_div (fractional_ideal g) :=
+%⟨λ I J, if h : J = 0 then 0 else ⟨I.1 / J.1, fractional_div_of_nonzero h⟩⟩
+%\end{lstlisting}
+%
+%In general, if there is a multiplicative inverse $J$ of $I$, such that $I J = J I = 1$, then $J = 1 / I$.
+%However, the converse does not always hold: $1 / I$ is not always the multiplicative inverse of $I$.
+%Indeed, the condition that $1 / I$ is an inverse for all $I$ is one of the equivalent definitions of a Dedekind domain.
+%Therefore, we defined the inverse operator $\cdot^{-1}$ only for fractional ideals in a Dedekind domain:
+%\begin{lstlisting}
+%noncomputable instance [is_dedekind_domain R] (g : fraction_map R K) :
+%  has_inv (fractional_ideal g) :=
+%⟨λ I, 1 / I⟩
+%\end{lstlisting}
+%
+%Defining the inverse in terms of the quotient caused a problem later on, when we tried to define a \lean{group\_with\_zero} instance for fractional ideals in a Dedekind domain.
+%Groups with zero are defined in \mathlib as monoids with multiplication $*$ and identity $1$ along with an absorbing element $0$ and an inverse $x^{-1}$ for all $x \ne 0$; for completeness $0^{-1}$ is defined as $0$.
+%An important class of examples are fields, if we ignore the addition operator $+$.
+%
+%The \lean{group\_with\_zero} typeclass defines its own division operator, $x / y := x y^{-1}$,
+%resulting in a definitionally unequal second interpretation of $I / J = I * (1 / J)$.
+%We were able to fix this issue by including the division operator as a field in \lean{group\_with\_zero},
+%along with a field $\lean{div\_eq\_mul\_inv} : \forall\ a\ b, a / b = a * b^{-1}$.
+%This resulted in weakening $a / b = a * b^{-1}$ from a definitional equality to a propositional equality.
+%As a consequence, many \lean{group\_with\_zero} instances and proofs throughout \mathlib needed slight changes to explicily rewrite $x / y$ to $x * y^{-1}$ instead of using unification to implicitly do so; in total hundreds of lines of code needed to be changed.
+%
+
+\subsection{Equivalence of the definitions} \label{sec:equivalence}
+
+We now describe how we proved and formalized that the two definitions \lean{is\_dedekind\_domain} and \lean{is\_dedekind\_domain\_inv} of being a Dedekind domain are equivalent.
+
+To show that \lean{is\_dedekind\_domain\_inv} implies \lean{is\_dedekind\_domain}, we follow the proof given by Fr\"ohlich in \cite[Chapter 1,\S~2,~Proposition 1]{frohlich} . A constant challenge that was faced while coding this proof was already mentioned in Section \ref{subsection : fields of fractions}, namely the fact that elements of the ring must be traced along the fixed morphism to the fields of fractions.%\st{ that one must work with pushforwards and pull backs of elements that belong to the ring, and hence to its localisation.}
+The proofs for being integrally closed and of dimension being less than or equal to $1$ are fairly straightforward.
+
+Proving the Noetherian condition was the most challenging. In the original proof by Fr\"ohlich, he considers elements $a_1, \dots, a_n \in I$ and $b_1, \dots, b_n \in I^{-1}$ for any nonempty fractional ideal $I$,
 satisfying $ \sum_i a_i b_i = 1 $.
-However, it is quite challenging to prove that an element of the multiplication of two $R$-submodules $M$ and $N$ must be of the form $\sum_{i = 1}^m a_i*b_i$, for $a_i \in A$ and $b_i \in B$ for all $1 \leq i \leq m$.
-Instead, we show that, for every element of an ideal, there exists a \lean{finset} whose span is contained in the ideal, and which contains the element.
+However, it is quite challenging to prove that an element of the product of two $R$-submodules $M$ and $N$ must be of the form $\sum_{i = 1}^m a_i*b_i$, for $a_i \in A$ and $b_i \in B$ for all $1 \leq i \leq m$.
+Instead, we show that, for every element of an ideal, there exists a \lean{s : finset R} whose span is contained in the ideal, and which contains the element.
 This is accomplished by the lemma \lean{submodule.mem\_span\_mul\_finite\_of\_mem\_span\_mul}.
 Now considering an ideal $I$ of the ring $R$, due to its invertibility (as a fractional ideal), by \lean{submodule.mem\_span\_mul\_finite\_of\_mem\_span\_mul}, we obtain finite sets $T \subset I$ and $T' \subset 1/I$ of type \lean{finset R}, such that 1 is contained in the $R$-span of $T*T'$. With coercions, the actual statement of the latter expression in Lean is \lean{↑T' ⊆ ↑↑(1 / ↑s)}, which reads :
 
@@ -593,17 +590,27 @@ Now considering an ideal $I$ of the ring $R$, due to its invertibility (as a fra
 
 This is then sufficient to show that $I$ is finitely generated, as shown in the lemma \lean{fg\_of\_one\_mem\_span\_mul}.
 
-The theorem \lean{fractional\_ideal.mul\_inv\_cancel} proves the converse, that \lean{is\_dedekind\_domain} implies \lean{is\_dedekind\_domain\_inv}.
-The proof goes along these lines: we differentiate into cases when the Dedekind domain $A$ is and is not a field.
-This is done because our main argument requires that every non-zero ideal must contain a product of non-zero prime ideals (\lean{exists\_prime\_spectrum\_prod\_le\_and\_ne\_bot\_of\_domain}),
-and fields don't have non-zero prime ideals.
-The field case is trivial, since the only non-zero fractional ideal in a field is the field itself (\lean{fractional\_ideal.eq\_zero\_or\_one\_of\_is\_field}).
-When $R$ is not a field, the standard proof first shows that it is suffices that maximal ideals of $R$ are invertible~\cite[Proposition 3.8]{Neukirch}.
-% using the factorization of into prime ideals (which are maximal in a Dedekind domain), but we show something more general.
-We show in general that it is sufficient to prove invertibility for non-zero ideals of $R$.
-This is done in the lemma \lean{coe\_ideal\_mul\_one\_div}.
+The theorem \lean{fractional\_ideal.mul\_inv\_cancel} proves the converse, namely that \lean{is\_dedekind\_domain} implies \lean{is\_dedekind\_domain\_inv}. The classical proof first shows that every maximal ideal $\lean{M : ideal R}$, seen as a fractional ideal, is invertible; from this, some work allows to show that every non-zero ideal is inverible, using that it is contained in a maximal ideals; and, finally, the fact that every fractional ideal $\lean{J : fractional\_ideal f}$ satisfies $xJ\leq I$ for a suitable $\lean{x : R}$ and $\lean{I : ideal R}$ allows to show that every fractional ideal is invertible, concluding the proof that non-zero fractional ideals form a group. We have found that formalizing the second step, so passing from the case where $\lean{M}$ is maximal to the general case, required more code that directly showing invertibility of arbitrary non-zero ideals. We have coded this in the following
+\begin{lstlisting}
+lemma coe_ideal_mul_one_div [hR : is_dedekind_domain R] (hNF : ¬ is_field R)
+  (I : ideal R) (hne : I ≠ ⊥) :
+  ↑I * ((1 : fractional_ideal f) / ↑I) = (1 : fractional_ideal f) :=
+\end{lstlisting}
+from where it becomes apparent that, over and over again, we had to carefully distinguish between the ideal $I$, which is a term of type $\lean{ideal R}$, and its coercion $\lean{↑I}$, which is of type $\lean{fractional\_ideal f}$, although these objects, from a mathematical point of view, are identical.
 
-We consider, for a non-zero ideal $I$, the ideal $J := I * (1/I)$, and show that $1/J \leq 1 \le J$, hence $J = 1$ since $J \le 1$ holds in an arbitrary domain. So, we want to show that any element $x \in 1/J$ is in $R$, or equivalently, since we have \lean{is\_dedekind\_domain R}, it suffices to prove that $x$ is in the integral closure of $R$. We consider $A := R[x]$, and show that $A \leq 1/I$, which is Noetherian, hence $A$ is a finitely generated subalgebra containing $x$. It suffices to prove that for every $n \in \mathbb{N}$, $x^n \in 1/I$. This follows from repeated usage of the lemma \lean{submodule.mem\_div\_iff\_forall\_mul\_mem} and \lean{fractional\_ideal.coe\_div}. The latter statement requires $I$ and $J$ to be non-zero. 
+The proof of the above result relies mainly on the lemma \lean{exists\_not\_mem\_one\_of\_ne\_bot}, which says that for every non-trivial ideal $0\lneq I\lneq R$, there exists an element in the field $K$ which is not integral (so, not in $\lean{f.range}$) but lies in $1/I$. This depends crucially on $R$ being Noetherian, since the proof begins by invoking that every non-zero ideal in a Noetherian ring contains a product of non-zero prime ideals. This result was not previously available in \mathlib, and we formalized it as \lean{exists\_prime\_spectrum\_prod\_le\_and\_ne\_bot\_of\_domain}. It is when applying this that the dimension condition shows its full force: the constructed prime ideal, being non-zero, will be maximal because the Krull dimension of $R$ is at most $1$; from this, the conclusion follows straightforwardly. Having the above lemma at our disposal, we can prove that every ideal $I\ne 0$ is invertible by arguing by contradiction: if $I\ast 1/I\lneq R$, we can find an element $x\in K\setminus f(R)$ which is in $1/(1\ast 1/I)$ thanks to \lean{exists\_not\_mem\_one\_of\_ne\_bot} and some easy algebraic manipulation will imply that $x$ is actually integral over $R$. Since $R$ is integrally closed, it must lie in $f(R)$, contradicting its construction.
+
+The final step, when we prove that invertibility of ideals implies that of fractional ones as well, was easy: the material developed for the general theory of \lean{fractional\_ideals f} allowed to smootly deduce that a fractional ideal $J$ must be invertible as soon as a certain multiple $xJ$ of it is, and since there always exists a $\lean{x : R}$ satisfying the latter condition (because $xJ$ can be made into a ``usual'' ideal), this leads to the final \lean{lemma fractional\_ideal.is\_unit} quoted above.
+%The proof goes along these lines: we differentiate into cases when the Dedekind domain $A$ is and is not a field.
+%This is done because our main argument requires that every non-zero ideal must contain a product of non-zero prime ideals (\lean{exists\_prime\_spectrum\_prod\_le\_and\_ne\_bot\_of\_domain}),
+%and fields don't have non-zero prime ideals.
+%The field case is trivial, since the only non-zero fractional ideal in a field is the field itself (\lean{fractional\_ideal.eq\_zero\_or\_one\_of\_is\_field}).
+%When $R$ is not a field, the standard proof first shows that it is suffices that maximal ideals of $R$ are invertible~\cite[Proposition 3.8]{Neukirch}.
+%% using the factorization of into prime ideals (which are maximal in a Dedekind domain), but we show something more general.
+%We show in general that it is sufficient to prove invertibility for non-zero ideals of $R$.
+%This is done in the lemma \lean{coe\_ideal\_mul\_one\_div}.
+%
+%We consider, for a non-zero ideal $I$, the ideal $J := I * (1/I)$, and show that $1/J \leq 1 \le J$, hence $J = 1$ since $J \le 1$ holds in an arbitrary domain. So, we want to show that any element $x \in 1/J$ is in $R$, or equivalently, since we have \lean{is\_dedekind\_domain R}, it suffices to prove that $x$ is in the integral closure of $R$. We consider $A := R[x]$, and show that $A \leq 1/I$, which is Noetherian, hence $A$ is a finitely generated subalgebra containing $x$. It suffices to prove that for every $n \in \mathbb{N}$, $x^n \in 1/I$. This follows from repeated usage of the lemma \lean{submodule.mem\_div\_iff\_forall\_mul\_mem} and \lean{fractional\_ideal.coe\_div}. The latter statement requires $I$ and $J$ to be non-zero. 
 \section{Principal ideal domains are Dedekind}
 
 As an example of our definitions, we will discuss in some detail our formalization of the fact that a principal ideal domain is a Dedekind domain.
