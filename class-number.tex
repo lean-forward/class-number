@@ -406,7 +406,7 @@ The ability to switch between these representations is important: sometimes $K$ 
 To find a uniform way to reason about all these equivalent definitions,
 we chose to formalize the notion of \emph{power basis} to represent simple field extensions, a basis of the form $1, x, x^2, \dots, x^{n-1} : K$ (viewing $K$ as a $F$-vector space)\footnote{In the formalization we generalize this notion to any algebra $A$ over a commutative ring $R$}.
 We call $x$ the \emph{generator} and $n$ the \emph{dimension} of this power basis.
-We defined the following structure, bundling the information of a power basis:
+We defined the following type of power basis, bundling the information of a power basis:
 \begin{lstlisting}
 structure power_basis (F K : Type*) [field F] [field K] [algebra F K] :=
 (gen : S) (dim : ℕ)
