@@ -54,7 +54,7 @@
 
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\lean}[1]{\texttt{#1}\xspace} % for writing Lean expressions
-\newcommand{\OK}{\mathcal{O}_K}
+\newcommand{\OK}[1][K]{\mathcal{O}_{#1}}
 \DeclareMathOperator{\Tr}{\mathrm{Tr}}
 \newcommand{\mathlib}{\textsf{mathlib}\xspace}
 \newcommand{\N}{\mathbb{N}}
@@ -163,24 +163,25 @@ A cubic example is
 \[K:=\{a+b\alpha+c \alpha^2: a,b,c \in \Q\}\]
 where $\alpha$ satisfies $\alpha^3 + \alpha^2 - 2\alpha + 8=0$ (it is the unique real number with this property).
 
-The \emph{ring of integers} $\mathcal{O}_K$ of a number field $K$ is defined as the integral closure of $\Z$ in $K$, which boils down to
+The \emph{ring of integers} $\OK$ of a number field $K$ is defined as the integral closure of $\Z$ in $K$, which boils down to
 \[
   \OK := \{x \in K : f(x)=0 \text{ for some \emph{monic} polynomial } f \text{ with integer coefficients}\},\]
 where we recall that a polynomial is called \emph{monic} if its leading coefficient equals $1$.
-While it might not be immediately obvious that $\mathcal{O}_K$ forms a ring, this follows form general algebraic properties of integral closures.
+While it might not be immediately obvious that $\OK$ forms a ring, this follows form general algebraic properties of integral closures.
 Some examples of $\OK$ are as follows. Taking $K=\Q$, we get $\OK=\Z$ back. For $K=\Q(\sqrt{2})$ we get $\OK=\Z[\sqrt{2}]=\{a+b\sqrt{2} : a,b \in \Z\}$. But for $K=\Q(\sqrt{5})$ we do \emph{not} simply get $\Z[\sqrt{5}]=\{a+b\sqrt{5} : a,b \in \Z\}$ as $\OK$, since the golden ratio $\varphi:=(1+\sqrt{5})/2\not\in \Z[\sqrt{5}]$ satisfies the monic polynomial equation $\varphi^2-\varphi-1=0$, hence by definition $\varphi \in \OK$; it turns out that $\OK=\Z[\varphi]=\{a+b\varphi : a,b \in \Z\}$. For quadratic numbers field $\Q(\sqrt{d})$, with $d$ as above, the previous two examples in fact generalize to
 \begin{equation*}
-\mathcal{O}_{\Q(\sqrt{d})}=
+\OK[\Q(\sqrt{d})]=
 \begin{cases}
 \Z[\sqrt{d}]=\{a+b\sqrt{d}: a,b \in \Z\} \text { if } d \not\equiv 1 \pmod{4}\\
  \Z\left[\frac{1+\sqrt{d}}{2}\right]=\left\{a+b \frac{1+\sqrt{d}}{2} : a,b \in \Z \right\} \text { if } d \equiv 1 \pmod{4}.
 \end{cases}
-\end{equation*}
+\end{equation*}%[F] TODO I wonder if this is not too much.
 Finally, if $K=\Q(\alpha)$ with $\alpha$ as before, then $\OK=\{a+b \alpha+c (\alpha+\alpha^2)/2 : a,b,c \in \Z\}$, illustrating that explicitly writing down $\OK$ can quickly become complicated.
 %TODO do we want to say something here about the existence of an integral basis? And the existence/nonexistence of a power basis for number fields/rings of integers?
-We could think of $\OK$ as generalization of $\Z$, and ask for properties of $\Z$ if they still hold in $\OK$, and if not, if a natural generalization still holds. An important property of $\Z$ is that it is a PID (i.e. a principal ideal domain), and hence a UFD (i.e. unique factorization domain); the latter meaning that every nonzero nonunit element can be written as a (nonempty) finite product of irreducible elements, which is unique up to the order of the elements and changing the elements by multiplication with units (which are $\pm 1$ in $\Z$).
-For example, $6$ can be factorized in exactly 4 ways, namely $6=2\cdot 3=3\cdot2=(-2)\cdot (-3)=(-3) \cdot (-2)$. Some well known rings of integers are e.g. the Gaussian integers $\Z[i]=\{a+b i : a,b, \in \Z\}$ (with $i$ some squareroot of $-1$), the Eisenstein integers $\Z[(1+\sqrt{-3})/2]$, and the \lq real\rq\ quadratic ring $\Z[\sqrt{2}]$. They all have in common that they are also UFD's, like $\Z$. However, this is certainly not true for all rings of integers. For example $\Z[\sqrt{-5}]$ is \emph{not} a UFD: $6=2\cdot3=(1+\sqrt{-5}) (1-\sqrt{-5})$ provide two essentially different ways to factor $6$ in irredicible elements in $\Z[\sqrt{-5}]$.
-As it turns out, there is a beautiful way to remedy this. Namely by considering factorization of \emph{ideals} instead of elements: for a number field $K$, with ring of integers $\OK$, every nonzero ideal of $\OK$ can be factored into prime ideals in a unique way, up to the order of the factors.
+
+We could think of $\OK$ as a generalization of $\Z$, and ask for properties of $\Z$ if they still hold in $\OK$, and if not, if a natural generalization still holds. An important property of $\Z$ is that it is a PID (i.e. a principal ideal domain), and hence a UFD (i.e. unique factorization domain); the latter meaning that every nonzero nonunit element can be written as a (nonempty) finite product of irreducible elements, which is unique up to the order of the elements and changing the elements by multiplication with units (which are $\pm 1$ in $\Z$).
+For example, $6$ can be factorized in exactly 4 ways, namely $6=2\cdot 3=3\cdot2=(-2)\cdot (-3)=(-3) \cdot (-2)$. Some well known rings of integers are the Gaussian integers $\Z[i]=\{a+b i : a,b, \in \Z\}$ (with $i$ some squareroot of $-1$), the Eisenstein integers $\Z[(1+\sqrt{-3})/2]$, and the ``real'' quadratic ring $\Z[\sqrt{2}]$. They all have in common that they are also UFD's, like $\Z$. However, this is certainly not true for all rings of integers. For example $\Z[\sqrt{-5}]$ is \emph{not} a UFD: $6=2\cdot3=(1+\sqrt{-5}) (1-\sqrt{-5})$ provide two essentially different ways to factor $6$ in irredicible elements in $\Z[\sqrt{-5}]$.
+As it turns out, there is a beautiful way to remedy this. Namely,  by considering factorization of \emph{ideals} instead of elements: for a number field $K$, with ring of integers $\OK$, every nonzero ideal of $\OK$ can be factored into prime ideals in a unique way, up to the order of the factors.
 %TODO? ?Talk about unique factorization monoid?
 
 Although unique factorization in terms of ideals is of great importance and beauty, it is still very interesting, and for many arithmetic applications necessary, to also consider factorization properties in terms of elements. For this, one can consider the nonzero fractional ideals of $\OK$ modulo the units $K^*$, which a priori has the structure of a commutative monoid, but actually turns out to be a group, called the \emph{class group} of $\OK$. An important theorem is that the class group of $\OK$ is finite. The interpretation is that the order of this group, called the \emph{class number}, measures how far away $\OK$ is from being a UFD. In particular, the class group of $\OK$ is trivial if and only if $\OK$ is a UFD.
@@ -189,7 +190,7 @@ Although unique factorization in terms of ideals is of great importance and beau
 Now talk about the more general setting and describe more explicitly  the different theorems concerning Dedekind domains, class groups, etc.
 %%
 
-The intrinsic algebraic properties of $\OK$ are very nice. In particular, every ring of integers $\OK$ is a \emph{Dedekind domain}. The latter can be defined as a domain $D$ which is Noetherian (i.e. every ideal of $D$ is finitely generated), integrally closed (i.e. if $x$ is in the fraction field of $D$ and a root of a monic polynonial with coefficients in  $D$, then actually $x \in D$), and of Krull dimension at most $1$ (i.e. every nonzero prime ideal of $D$ is maximal).
+The intrinsic algebraic properties of $\OK$ are very nice. In particular, every ring of integers $\OK$ is a \emph{Dedekind domain}. The latter can be defined as a domain $D$ which is Noetherian (every ideal of $D$ is finitely generated), integrally closed (if an element $x$ is in the fraction field of $D$ and is a root of a monic polynonial with coefficients in  $D$, then actually $x \in D$), and of Krull dimension at most $1$ (every nonzero prime ideal of $D$ is maximal).
 
 %% Generalize
 
@@ -205,8 +206,8 @@ We formalized number fields as the following typeclass:
 class is_number_field (K : Type*) [field K] :=
 [cz : char_zero K] [fd : finite_dimensional ℚ K]
 \end{lstlisting}
-The condition \lean{[cz : char\_zero K]} states that $K$ has characteristic zero, i.e. the canonical ring homomorphism $\Z \to K$ is an embedding.
-This implies that there is a $\Q$-algebra structure on $K$ (found by typeclass search), this gives the vector space structure used in the \lean{[fd : finite\_dimensional ℚ K]} hypothesis.
+The condition \lean{[cz : char\_zero K]} states that $K$ has characteristic zero, so the canonical ring homomorphism $\Z \to K$ is an embedding.
+This implies that there is a $\Q$-algebra structure on $K$ (found by typeclass search), and this provides the vector space structure used in the \lean{[fd : finite\_dimensional ℚ K]} hypothesis.
 
 \subsection{Field extensions}
 
