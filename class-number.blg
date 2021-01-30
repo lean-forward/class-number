@@ -1,0 +1,51 @@
+This is BibTeX, Version 0.99d (TeX Live 2020/W32TeX)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: class-number.aux
+The style file: plainurl.bst
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=200001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: lean.bib
+You've used 20 entries,
+            2882 wiz_defined-function locations,
+            765 strings with 9184 characters,
+and the built_in function-call counts, 9643 in all, are:
+= -- 1007
+> -- 328
+< -- 14
++ -- 120
+- -- 95
+* -- 503
+:= -- 1323
+add.period$ -- 77
+call.type$ -- 20
+change.case$ -- 97
+chr.to.int$ -- 0
+cite$ -- 20
+duplicate$ -- 315
+empty$ -- 933
+format.name$ -- 95
+if$ -- 2552
+int.to.chr$ -- 0
+int.to.str$ -- 20
+missing$ -- 19
+newline$ -- 114
+num.names$ -- 50
+pop$ -- 237
+preamble$ -- 1
+purify$ -- 81
+quote$ -- 0
+skip$ -- 698
+stack$ -- 0
+substring$ -- 370
+swap$ -- 133
+text.length$ -- 14
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 72
+warning$ -- 0
+while$ -- 67
+width$ -- 22
+write$ -- 246

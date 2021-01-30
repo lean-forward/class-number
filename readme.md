@@ -51,5 +51,24 @@ We will now provide an overview of the source code files containing results ment
  * subfield: [`src/field_theory/subfield.lean`](src/subfield.lean)
  * intermediate field: [`src/field_theory/intermediate_field.lean`](src/intermediate_field.lean)
  * fraction field, fraction map: [`src/ring_theory/localization.lean`](src/localization.lean)
- * fractional ideal: [`src/ring_theory/fractional_ideal.lean`](src/fractional_ideal.lean)
  * power basis: [`src/ring_theory/power_basis.lean`](src/power_basis.lean)
+
+
+### Section 4
+
+ * Dedekind domain: [`src\ring_theory\dedekind_domain.lean`](src/dedekind_domain.lean)
+ * Krull dimension: [`src\ring_theory\dedekind_domain.lean`](src/dedekind_domain.lean)
+ * integral closure: [`src\ring_theory\integral_closure.lean`](src/integral_closure.lean)<!-- this file is missing-->
+ * Noetherian ring: [`src\ring_theory\noetherian.lean`](src/noetherian.lean) <!-- this file is missing-->
+ * fractional ideal: [`src/ring_theory/fractional_ideal.lean`](src/fractional_ideal.lean)
+
+ ### Section 5
+ * principal ideal domain: [`src\ring_theory\principal_ideal_domain.lean`](src/principal_ideal_domain.lean) <!-- this file is missing-->
+ * unique factorization monoid (UFM): [`src\ring_theory\unique_factorization_domain.lean`](src.unique_factorization_domain.lean) <!-- this file is missing-->
+
+### Section 6
+ * trace form: [`src\ring_theory\trace.lean`](src/trace.lean)
+ * minimal polynomial: [`src/ring_theory/power_basis.lean`](src/power_basis.lean)
+ * conjugate element: [`src\ring_theory\trace.lean`](src/trace.lean)
+
+### Section 7
