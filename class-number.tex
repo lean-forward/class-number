@@ -101,7 +101,7 @@ In its basic form, number theory studies properties of the integers $\Z$
 %(say as a set together with the \lq standard\rq\ addition and multiplication operations)
 and its fraction field, the rational numbers $\Q$.\footnote{From a classical point of view, one could even argue that the positive, or perhaps nonnegative, integers and rational numbers are the most basic objects of study of number theory. From an algebraic point of view, this would still quickly lead into studying $\Z$ and $\Q$.}
 Both for the sake of generalization, as well as for providing powerful techniques to answer questions about the original objects $\Z$ and $\Q$,
-it is worthwhile to study finite field extensions of $\Q$, called \emph{number fields}, as well as their so called \emph{rings of integers} (defined in Section~\ref{sec math background} below),
+it is worthwhile to study finite extensions of $\Q$, called \emph{number fields}, as well as their so called \emph{rings of integers} (defined in Section~\ref{sec math background} below),
 whose relations mirror the way $\Q$ contains $\Z$ as a subring.
 These number fields and their rings of integers form the basic objects of study of algebraic number theory, an important brach of modern number theory.
 In this paper, we describe our project aiming to formalize these notions and some of their important properties.
@@ -156,7 +156,7 @@ The source files of the formalization are currently in the process of being merg
 
 Let us now introduce some of the main objects we study, described in a ``standard'' mathematical way. In the later sections we will detail their formalization in Lean.
 
-A \emph{number field} $K$ is a finite field extension of $\Q$, and as such has the structure of a finite dimensional vector space over $\Q$. The smallest example is $\Q$ itself, and the two-dimensional cases are given by the quadratic number fields
+A \emph{number field} $K$ is a finite extension of $\Q$, and as such has the structure of a finite dimensional vector space over $\Q$. The smallest example is $\Q$ itself, and the two-dimensional cases are given by the quadratic number fields
 \[
   \Q(\sqrt{d})=\{a+b\sqrt{d} : a,b \in \Q\}
 \]
@@ -215,8 +215,8 @@ performed for every ring of integers $\OK$. The fundamental theoretical notion b
 
 \section{Number fields, global fields and rings of integers}
 
-A number field is a finite field extension of $\Q$.
-Number fields are a basic concept in algebraic number theory. Examples: ....
+We refer the reader to Section~\ref{sec math background} for the mathematical background needed in this section.
+
 We formalized number fields as the following typeclass:
 \begin{lstlisting}
 class is_number_field (K : Type*) [field K] :=
@@ -750,9 +750,8 @@ noncomputable def trace_form : bilin_form K L :=
 \end{lstlisting}
 
 In fact, we define the trace and trace form for any algebra over a commutative ring.
-For simplicity of exposition in this paper we will only consider finite field extensions. %% We are only considering trace forms of finite field extensions in this paper.
-In the following, let $K / L / F$ be a tower of finite field extensions,
-i.e. we assume \lean{[algebra K L] [algebra L F] [algebra K F] [is\_scalar\_tower K L F]}, as described in Section \ref{sec:scalar_tower}.
+For simplicity of exposition in this paper we will only consider finite extensions of fields. %% We are only considering trace forms of finite field extensions in this paper.
+In the following, let $K / L / F$ be a tower of finite extensions of fields, namely we assume \lean{[algebra K L] [algebra L F] [algebra K F] [is\_scalar\_tower K L F]}, as described in Section \ref{sec:scalar_tower}.
 
 The value of the trace depends on the choice of $K$ and $L$;
 we formalized this as lemmas \lean{trace\_algebra\_map x : trace K L (algebra\_map K L x) = findim K L • x}

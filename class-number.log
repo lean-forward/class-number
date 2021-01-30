@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2021.1.29)  30 JAN 2021 19:58
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2021.1.29)  30 JAN 2021 20:05
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -761,18 +761,18 @@ Package rerunfilecheck Info: File `class-number.out' has not changed.
 (rerunfilecheck)             Checksum: E87FEAD41C1ADFDBB61E724E48BDE5EC;3698.
  ) 
 Here is how much of TeX's memory you used:
- 23135 strings out of 479304
- 382489 string characters out of 5871219
- 872209 words of memory out of 5000000
+ 23133 strings out of 479304
+ 382465 string characters out of 5871219
+ 865971 words of memory out of 5000000
  39419 multiletter control sequences out of 15000+600000
- 547689 words of font info for 292 fonts, out of 8000000 for 9000
+ 547559 words of font info for 291 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  98i,11n,102p,1528b,1301s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{c:/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{c:/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{c:/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{c:/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}{c:/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{c:/texlive/2020/texmf-dist/fonts/enc/dvips/fontawesome5/fa5free1.enc}<c:/texlive/2020/texmf-dist/fonts/type1/public/fontawesome5/FontAwesome5Free-Regular.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/fontawesome5/FontAwesome5Free-Solid.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmbx9.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmex10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi5.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi7.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi9.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr5.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr6.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr7.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr9.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmri10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmri9.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmss10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmss8.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmss9.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmsy10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmsy7.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmsy9.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmtt10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmtt9.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmtti10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on c:/Users/faenu/Desktop/Lean/class-number/class-number.pdf (18 pages, 707843 bytes).
+Output written on c:/Users/faenu/Desktop/Lean/class-number/class-number.pdf (18 pages, 707884 bytes).
 PDF statistics:
- 599 PDF objects out of 1000 (max. 8388607)
- 503 compressed objects within 6 object streams
+ 600 PDF objects out of 1000 (max. 8388607)
+ 504 compressed objects within 6 object streams
  152 named destinations out of 1000 (max. 500000)
  83134 words of extra memory for PDF output out of 89155 (max. 10000000)
 
