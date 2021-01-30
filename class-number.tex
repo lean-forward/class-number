@@ -54,7 +54,7 @@
 
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\lean}[1]{\texttt{#1}\xspace} % for writing Lean expressions
-\newcommand{\OK}{\mathrm{O}_K}
+\newcommand{\OK}{\mathcal{O}_K}
 \DeclareMathOperator{\Tr}{\mathrm{Tr}}
 \newcommand{\mathlib}{\textsf{mathlib}\xspace}
 \newcommand{\N}{\mathbb{N}}
@@ -152,19 +152,22 @@ The source files of the formalization are currently in the process of being merg
 
 \section{Mathematical background}\label{sec math background}
 
-Let us now introduce some of the main objects we study, described in a \lq standard\rq\ mathematical way. In the later sections we will detail their formalization in Lean.
+Let us now introduce some of the main objects we study, described in a ``standard'' mathematical way. In the later sections we will detail their formalization in Lean.
 
 A \emph{number field} $K$ is a finite field extension of $\Q$, and as such has the structure of a finite dimensional vector space over $\Q$. The smallest example is $\Q$ itself, and the two-dimensional cases are given by the quadratic number fields
-\[\Q(\sqrt{d})=\{a+b\sqrt{d} : a,b \in \Q\}\]
-where $d\not=1$ is a squarefree (i.e. not divisible by $p^2$ for any prime $p$) integer.%, and there is no loss in generality in considering $\sqrt{d}$ as a complex number (since every number field can be embedded into the complex numbers).
+\[
+  \Q(\sqrt{d})=\{a+b\sqrt{d} : a,b \in \Q\}
+\]
+where $d\not=1$ is a squarefree (i.e. not divisible by $p^2$ for any prime $p$) integer. %, and there is no loss in generality in considering $\sqrt{d}$ as a complex number (since every number field can be embedded into the complex numbers).
 A cubic example is
 \[K:=\{a+b\alpha+c \alpha^2: a,b,c \in \Q\}\]
-where $\alpha$ satisfies $\alpha^3 + \alpha^2 - 2\alpha + 8=0$ (e.g. the unique real number with this property).
+where $\alpha$ satisfies $\alpha^3 + \alpha^2 - 2\alpha + 8=0$ (it is the unique real number with this property).
 
 The \emph{ring of integers} $\mathcal{O}_K$ of a number field $K$ is defined as the integral closure of $\Z$ in $K$, which boils down to
-\[\OK := \{x \in K : f(x)=0 \text{ for some \emph{monic} polynomial } f \text{ with integer coefficients}\},\]
+\[
+  \OK := \{x \in K : f(x)=0 \text{ for some \emph{monic} polynomial } f \text{ with integer coefficients}\},\]
 where we recall that a polynomial is called \emph{monic} if its leading coefficient equals $1$.
-While it might not be immediately obvious that $\mathcal{O}_K$ forms indeed a ring, this follows form general algebraic properties of integral closures.
+While it might not be immediately obvious that $\mathcal{O}_K$ forms a ring, this follows form general algebraic properties of integral closures.
 Some examples of $\OK$ are as follows. Taking $K=\Q$, we get $\OK=\Z$ back. For $K=\Q(\sqrt{2})$ we get $\OK=\Z[\sqrt{2}]=\{a+b\sqrt{2} : a,b \in \Z\}$. But for $K=\Q(\sqrt{5})$ we do \emph{not} simply get $\Z[\sqrt{5}]=\{a+b\sqrt{5} : a,b \in \Z\}$ as $\OK$, since the golden ratio $\varphi:=(1+\sqrt{5})/2\not\in \Z[\sqrt{5}]$ satisfies the monic polynomial equation $\varphi^2-\varphi-1=0$, hence by definition $\varphi \in \OK$; it turns out that $\OK=\Z[\varphi]=\{a+b\varphi : a,b \in \Z\}$. For quadratic numbers field $\Q(\sqrt{d})$, with $d$ as above, the previous two examples in fact generalize to
 \begin{equation*}
 \mathcal{O}_{\Q(\sqrt{d})}=
@@ -181,7 +184,6 @@ As it turns out, there is a beautiful way to remedy this. Namely by considering 
 %TODO? ?Talk about unique factorization monoid?
 
 Although unique factorization in terms of ideals is of great importance and beauty, it is still very interesting, and for many arithmetic applications necessary, to also consider factorization properties in terms of elements. For this, one can consider the nonzero fractional ideals of $\OK$ modulo the units $K^*$, which a priori has the structure of a commutative monoid, but actually turns out to be a group, called the \emph{class group} of $\OK$. An important theorem is that the class group of $\OK$ is finite. The interpretation is that the order of this group, called the \emph{class number}, measures how far away $\OK$ is from being a UFD. In particular, the class group of $\OK$ is trivial if and only if $\OK$ is a UFD.
-
 
 %%
 Now talk about the more general setting and describe more explicitly  the different theorems concerning Dedekind domains, class groups, etc.
