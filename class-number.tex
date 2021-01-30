@@ -133,8 +133,8 @@ Apart from the achievement of formalizing a non-trivial amount of mathematical t
 our formal definition of the class number is an essential requirement
 for the use of theorem provers in modern number theory research.
 % doing ``fashionable mathematics'' in a theorem prover, borrowing a term from prof. Kevin Buzzard~\cite{fashionable-mathematics}.
-Additionally, our formalization opens the door to the verification of number theoretic software,
-such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}.
+%Additionally, our formalization opens the door to the verification of number theoretic software,
+%such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}.
 
 Our work is developed as part of the mathematical library \mathlib~\cite{mathlib} for the Lean 3 theorem prover~\cite{lean-prover}.
 The formal system of Lean is a dependent type theory based on the calculus of inductive constructions,
@@ -665,7 +665,7 @@ This gives us the required lemma \lean{unique\_factorization\_monoid.integrally\
 An important class of Dedekind domains consists of the rings of integers of number fields.
 Recall that we defined the ring of integers of a number field $K$ as the integral closure $\Z$ in $K$.
 We proved a stronger result: let $R$ be a Dedekind domain with fraction field $K$, if $L$ is a finite separable extension of $K$, then the integral closure of $R$ in $L$ is a Dedekind domain with fraction field $L$.
-Our approach adapts \cite{Neukirch}, theorem 3.1.
+Our approach adapts \cite{Neukirch}, Theorem 3.1.
 Throughout this section, $R$ will be an integral domain with fraction field $K$ (given by the map $f : R \to K$), $L$ a field extension of $K$ and $S$ the integral closure of $R$ in $L$.
 % corresponding to the following Lean declarations:
 %% either the above or below, both might be unnecessary
@@ -712,7 +712,7 @@ We start by following the first half of \cite[Theorem 15.29]{Dummit-and-Foote},
 so that it suffices to find a nondegenerate bilinear form $B$ such that all integral $x, y : L$ satisfy $B(x, y) \in \lean{integral\_closure}\ R\ L$.
 We formalized the results in \cite{Neukirch}, 2.5--2.8, to show the \emph{trace form} is a bilinear form satisfying these requirements.
 
-\subsection{The trace form}
+\subsection{The trace form}\label{sec:trace-form}
 If $L / K$ is a field extension, we have a bilinear form $\lean{lmul} = \lambda x y : S, xy$.
 The trace of the linear map \lean{lmul x} is called the \emph{algebra trace} $\Tr_{L / K}(x)$ of $x$
 We define the algebra trace as a linear map from $L$ to $K$:
@@ -803,7 +803,7 @@ We prove that the class group is finite using a simplified form of the tradition
 
 \subsection{Related work}
 
-Broadly speaking, one could see the formalization work as part of number theory. There are several formalization result in this direction; see e.g.~\cite[Section 6]{CapSetProblem}, most notably the formalization of a substantial part of analytic number theory~\cite{Eberl19}.
+Broadly speaking, one could see the formalization work as part of number theory. There are several formalization result in this direction; see e.g.~\cite[Section 6]{CapSetProblem}, most notably the formalization in Isabelle/HOL of a substantial part of analytic number theory~\cite{Eberl19}.
 Narrowing somewhat in on our more algebraic setting, we are not aware of any other formal developments of fractional ideals, Dedekind domains or class groups of global fields.
 Since our project touches upon the theories of field extensions, ideals, number fields and number rings,
 we provide here a partial overview of formalizations in these areas.
@@ -813,6 +813,22 @@ There are many libraries formalizing basic notions of commutative algebra such a
 Apart from the general theory of algebraic numbers, there are formalizations of specific number rings: the Gaussian integers $\Z[i]$ are available in Isabelle/HOL~\cite{gaussian_integers-isabelle}, MetaMath~\cite{gaussian_integers-metamath} and Mizar~\cite{gaussian_integers-mizar}.
 The Isabelle/HOL formalization deserves special mention since it introduces techniques from algebraic number theory,
 defining the integer-valued norm on $\Z[i]$ and classifying the prime elements of $\Z[i]$.
+
+\subsection{Future directions}
+
+Having formalized the basics of algebraic number theory, there are several natural directions for future formalization work. These include the following.
+\begin{itemize}
+\item Finiteness of the class group for the ring of integers in all global fields. This would entail dropping the separability condition in the result mentioned in the third line of Section~\ref{sec:integral-closure}, and consequently adapt some of the details in the final steps for the finiteness of the class group in the admissible case. Some basic prerequisites would be setting up some field theory dealing with (finite) inseparable field extensions, especially the purely inseparable ones. 
+Al in all this seems a tedious though reasonable project.
+\item Finite generation of the group of units of the ring of integers in a number field, or slightly stronger, Dirichlet's unit theorem~\cite[Theorem 7.4]{Neukirch}. This seems a somewhat more involved, but still reasonable, project. The finite generation result also holds for function fields, so actually it would be nice (and doable) to consider all global fields (which would  involve finite inseparable field extensions, as in the previous item).
+\item Other finiteness results in algebraic number theory, most notably Hermitte's theorem about the existence of only finitely many number fields (up to isomorphism, or embedded in a fixed algebraically closed field containing $\Q$, e.g. $\C$) with discriminant below a given bound~\cite[Theorem 2.16]{Neukirch}. This would be significantly more involved than the previous items and would require, amongst other things, setting up a lot of ramification theory (which is very important for algebraic number theory).
+%Also, Minkowski's lattice point theorem now becomes more essential (as far as we are aware).
+As usual, there are analogue results in the function field setting, though they are less straightforward. One reason being that the nondegenerateness of the trace form from Section~\ref{sec:trace-form} does not hold any more when the separability condition is dropped.
+\item Computational aspect. Our formalization lays some foundations to the verification of number theoretic software,
+such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}. Verifying computations for class groups, or just class numbers, in the case of \lq small\rq\ (e.g. some quadratic) number fields, looks within reach. Of course, getting really efficient algorithms (or certificates), is a hard research topic. 
+% Which relates to the ERC consolidator grant of Assia Mahboubi..
+\item Number theoretic applications. All of the above items consider theoretical of computational aspects within algebraic number theory itself. There are many applications of these, e.g. solving Diophantine equations. Solving Mordell equations, i.e. for a given nonzero integer $D$ determining all pairs of integers $(x,y)$ such that $y^2=x^3+D$, could be an interesting first case study (dealing with some values of $D$ where elementary methods fail).
+\end{itemize}
 
 \subsection{Conclusion}
 
