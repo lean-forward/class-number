@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2021.1.29)  30 JAN 2021 16:45
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2021.1.29)  30 JAN 2021 16:51
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -665,7 +665,7 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    Trying to load font information for U+fontawesomefree1 on input line 87.
  (c:/texlive/2020/texmf-dist/tex/latex/fontawesome5/ufontawesomefree1.fd)
-<orcid.pdf, id=7, 256.96pt x 256.96pt>
+<orcid.pdf, id=91, 256.96pt x 256.96pt>
 File: orcid.pdf Graphic file (type pdf)
 <use orcid.pdf>
 Package pdftex.def Info: orcid.pdf  used on input line 87.
@@ -703,20 +703,16 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <5.94997> on input line 100.
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <4.25> on input line 100.
-
-
-LaTeX Warning: Reference `sec math background' on page 1 undefined on input line 102.
-
-<cc-by.pdf, id=20, 88.33pt x 31.11626pt>
+<cc-by.pdf, id=105, 88.33pt x 31.11626pt>
 File: cc-by.pdf Graphic file (type pdf)
 <use cc-by.pdf>
 Package pdftex.def Info: cc-by.pdf  used on input line 109.
 (pdftex.def)             Requested size: 39.74274pt x 14.0pt.
 LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 109.
-(c:/texlive/2020/texmf-dist/tex/latex/lm/ts1lmr.fd
+ (c:/texlive/2020/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-<lipics-logo-bw.pdf, id=23, 591.44762pt x 144.42657pt>
+<lipics-logo-bw.pdf, id=108, 591.44762pt x 144.42657pt>
 File: lipics-logo-bw.pdf Graphic file (type pdf)
 <use lipics-logo-bw.pdf>
 Package pdftex.def Info: lipics-logo-bw.pdf  used on input line 109.
@@ -724,44 +720,13 @@ Package pdftex.def Info: lipics-logo-bw.pdf  used on input line 109.
  [1.1
 
 {c:/texlive/2020/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <c:/Users/faenu/Desktop/Lean/class-number/cc-by.pdf> <c:/Users/faenu/Desktop/Lean/class-number/orcid.pdf> <c:/Users/faenu/Desktop/Lean/class-number/lipics-logo-bw.pdf>]
-
-LaTeX Warning: Reference `sec:ring-of-integers' on page 2 undefined on input line 111.
-
-
-LaTeX Warning: Reference `sec:Dedekind-domain' on page 2 undefined on input line 112.
-
-
-LaTeX Warning: Reference `sec:class-number' on page 2 undefined on input line 113.
-
-
-LaTeX Warning: Reference `sec:equivalence' on page 2 undefined on input line 115.
-
-
-LaTeX Warning: Reference `sec:integral-closure' on page 2 undefined on input line 116.
-
-
-LaTeX Warning: Reference `sec:class-number' on page 2 undefined on input line 117.
-
-
-LaTeX Warning: Citation `mathlib' on page 2 undefined on input line 139.
-
-
-LaTeX Warning: Citation `lean-prover' on page 2 undefined on input line 139.
-
-
 Overfull \hbox (13.46262pt too wide) in paragraph at lines 151--152
 \T1/lmr/m/n/10 (-20) the files rel-e-vant to this pa-per, avail-able at []$\T1/lmtt/m/n/10 https : / / github . com / lean-[]forward / class-[]number$[]\T1/lmr/m/n/10 (-20) . 
  []
 
 [2.2] [3.3] [4.4] [5.5] [6.6] [7.7]
-
-LaTeX Warning: Reference `sec math background' on page 8 undefined on input line 433.
-
-
-LaTeX Warning: Reference `subsection:frac_ideals' on page 8 undefined on input line 439.
-
 LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 447.
-(c:/texlive/2020/texmf-dist/tex/latex/lm/ts1lmtt.fd
+ (c:/texlive/2020/texmf-dist/tex/latex/lm/ts1lmtt.fd
 File: ts1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 Package microtype Info: Loading generic protrusion settings for font family
@@ -771,128 +736,12 @@ Package microtype Info: Loading generic protrusion settings for font family
 Package microtype Info: Character `texttrademark ' is missing
 (microtype)             in font `TS1/lmtt/m/n/10'.
 (microtype)             Ignoring protrusion settings for this character.
-
-
-LaTeX Warning: Citation `Neukirch' on page 8 undefined on input line 450.
-
-[8.8]
-
-LaTeX Warning: Reference `subsection : fields of fractions' on page 9 undefined on input line 486.
-
-[9.9]
-
-LaTeX Warning: Reference `eq:mul_div_frac_ideals' on page 10 undefined on input line 514.
-
-
-LaTeX Warning: Reference `eq:mul_div_frac_ideals' on page 10 undefined on input line 518.
-
-
-LaTeX Warning: Reference `eq:mul_div_frac_ideals' on page 10 undefined on input line 531.
-
-
-LaTeX Warning: Citation `frohlich' on page 10 undefined on input line 579.
-
-
-LaTeX Warning: Reference `subsection : fields of fractions' on page 10 undefined on input line 579.
-
-[10.10]
+ [8.8] [9.9] [10.10]
 Overfull \hbox (2.06859pt too wide) in paragraph at lines 603--604
 []\T1/lmr/m/n/10 (-20) The proof of the above re-sult re-lies mainly on the lemma \T1/lmtt/m/n/10 exists_not_mem_one_of_ne_bot\T1/lmr/m/n/10 (-20) ,
  []
 
-[11.11] [12.12]
-
-LaTeX Warning: Citation `Neukirch' on page 13 undefined on input line 670.
-
-
-LaTeX Warning: Citation `Dummit-and-Foote' on page 13 undefined on input line 690.
-
-[13.13]
-
-LaTeX Warning: Citation `Dummit-and-Foote' on page 14 undefined on input line 713.
-
-
-LaTeX Warning: Citation `Neukirch' on page 14 undefined on input line 715.
-
-
-LaTeX Warning: Reference `sec:scalar_tower' on page 14 undefined on input line 738.
-
-
-LaTeX Warning: Reference `sec:simple-field-extension' on page 14 undefined on input line 746.
-
-[14.14]
-
-LaTeX Warning: Citation `Neukirch' on page 15 undefined on input line 776.
-
-
-LaTeX Warning: Citation `CapSetProblem' on page 15 undefined on input line 807.
-
-
-LaTeX Warning: Citation `Eberl19' on page 15 undefined on input line 807.
-
-
-LaTeX Warning: Citation `mathcomp' on page 15 undefined on input line 812.
-
-
-LaTeX Warning: Citation `algebra_isabelle' on page 15 undefined on input line 812.
-
-
-LaTeX Warning: Citation `metamath' on page 15 undefined on input line 812.
-
-
-LaTeX Warning: Citation `algebraic-hierarchy_mizar' on page 15 undefined on input line 812.
-
-
-LaTeX Warning: Citation `real-algebraic-numbers-coq' on page 15 undefined on input line 812.
-
-
-LaTeX Warning: Citation `mathcomp' on page 15 undefined on input line 812.
-
-
-LaTeX Warning: Citation `algebraic-numbers-isabelle' on page 15 undefined on input line 812.
-
-
-LaTeX Warning: Citation `algebraic-numbers-metamath' on page 15 undefined on input line 812.
-
-
-LaTeX Warning: Citation `algebraic-numbers-mizar' on page 15 undefined on input line 812.
-
-
-LaTeX Warning: Citation `mathcomp' on page 15 undefined on input line 812.
-
-
-LaTeX Warning: Citation `gaussian_integers-isabelle' on page 15 undefined on input line 814.
-
-
-LaTeX Warning: Citation `gaussian_integers-metamath' on page 15 undefined on input line 814.
-
-
-LaTeX Warning: Citation `gaussian_integers-mizar' on page 15 undefined on input line 814.
-
-[15.15]
-
-LaTeX Warning: Reference `sec:integral-closure' on page 16 undefined on input line 822.
-
-
-LaTeX Warning: Citation `Neukirch' on page 16 undefined on input line 824.
-
-
-LaTeX Warning: Citation `Neukirch' on page 16 undefined on input line 825.
-
-
-LaTeX Warning: Reference `sec:trace-form' on page 16 undefined on input line 827.
-
-
-LaTeX Warning: Citation `kash' on page 16 undefined on input line 829.
-
-
-LaTeX Warning: Citation `PARI2' on page 16 undefined on input line 829.
-
-[16.16]
-
-LaTeX Warning: Reference `sec:subobjects' on page 17 undefined on input line 848.
-
-(c:/Users/faenu/Desktop/Lean/class-number/class-number.bbl
+[11.11] [12.12] [13.13] [14.14] [15.15] [16.16] (c:/Users/faenu/Desktop/Lean/class-number/class-number.bbl
 Underfull \hbox (badness 10000) in paragraph at lines 74--77
 []\T1/lmr/m/n/9 (+20) M. E. Pohst et al.  The com-puter al-ge-bra sys-tem KASH/KANT.
  []
@@ -908,34 +757,22 @@ Underfull \hbox (badness 3029) in paragraph at lines 104--108
  []
 
 ) [18.18] (c:/Users/faenu/Desktop/Lean/class-number/class-number.aux)
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-
-Package rerunfilecheck Warning: File `class-number.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `class-number.out':
-(rerunfilecheck)             Before: D41D8CD98F00B204E9800998ECF8427E;0
-(rerunfilecheck)             After:  E87FEAD41C1ADFDBB61E724E48BDE5EC;3698.
+Package rerunfilecheck Info: File `class-number.out' has not changed.
+(rerunfilecheck)             Checksum: E87FEAD41C1ADFDBB61E724E48BDE5EC;3698.
  ) 
 Here is how much of TeX's memory you used:
- 23113 strings out of 479304
- 382230 string characters out of 5871219
- 873957 words of memory out of 5000000
- 39398 multiletter control sequences out of 15000+600000
- 550670 words of font info for 292 fonts, out of 8000000 for 9000
+ 23127 strings out of 479304
+ 382426 string characters out of 5871219
+ 875989 words of memory out of 5000000
+ 39417 multiletter control sequences out of 15000+600000
+ 547487 words of font info for 289 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  98i,12n,102p,1528b,1293s stack positions out of 5000i,500n,10000p,200000b,80000s
-{c:/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{c:/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{c:/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{c:/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{c:/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}{c:/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{c:/texlive/2020/texmf-dist/fonts/enc/dvips/fontawesome5/fa5free1.enc}<c:/texlive/2020/texmf-dist/fonts/type1/public/fontawesome5/FontAwesome5Free-Regular.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/fontawesome5/FontAwesome5Free-Solid.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmbx10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmbx9.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmex10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi5.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi7.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi9.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr5.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr6.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr7.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr9.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmri10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmri9.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmss10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmss8.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmss9.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmsy10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmsy7.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmsy9.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmtt10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmtt9.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmtti10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb>
-Output written on c:/Users/faenu/Desktop/Lean/class-number/class-number.pdf (18 pages, 728315 bytes).
+{c:/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{c:/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{c:/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{c:/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{c:/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}{c:/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{c:/texlive/2020/texmf-dist/fonts/enc/dvips/fontawesome5/fa5free1.enc}<c:/texlive/2020/texmf-dist/fonts/type1/public/fontawesome5/FontAwesome5Free-Regular.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/fontawesome5/FontAwesome5Free-Solid.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmbx9.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmex10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi5.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi7.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmmi9.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr5.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr6.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr7.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmr9.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmri10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmri9.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmss10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmss8.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmss9.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmsy10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmsy7.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmsy9.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmtt10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmtt9.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/lm/lmtti10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb><c:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb>
+Output written on c:/Users/faenu/Desktop/Lean/class-number/class-number.pdf (18 pages, 711427 bytes).
 PDF statistics:
- 496 PDF objects out of 1000 (max. 8388607)
- 398 compressed objects within 4 object streams
+ 604 PDF objects out of 1000 (max. 8388607)
+ 506 compressed objects within 6 object streams
  152 named destinations out of 1000 (max. 500000)
- 85014 words of extra memory for PDF output out of 89155 (max. 10000000)
+ 83134 words of extra memory for PDF output out of 89155 (max. 10000000)
 
