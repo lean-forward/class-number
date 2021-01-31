@@ -887,24 +887,22 @@ The absolute value extends to a norm \lean{abs\_norm f abs : integral\_closure D
 We use the admissibility of \lean{abs} to find a finite set \lean{finset\_approx L f abs} of elements of $D$,
 such that the following generalization of~\cite[Theorem~12.2.1]{Ireland-Rosen} holds.
 \begin{lstlisting}
-theorem exists_mem_finset_approx' (a b : integral_closure R L) :=
-  ∃ (q : integral_closure R L) (r ∈ finset_approx L f abs),
+theorem exists_mem_finset_approx' (a b : integral_closure D L) :=
+  ∃ (q : integral_closure D L) (r ∈ finset_approx L f abs),
   abs_norm f abs (r • a - q * b) < abs_norm f abs b
 \end{lstlisting}
 After this, the classical approach mentioned above formalizes smoothly.
 
-It remains to define an admissible absolute value for $\Z$ and $K[t]$ (where $K$ is a finite field).
-On $\Z$, the usual Archimedean absolute value does the job (which is straightforward to formalize).
-For $K[t]$, let $q$ be the cardinality of $K$, then we show $|f|_{\deg}:=q^{\deg f}$ for $f \in \mathbb{F}_q[t]$ works in the function field setting (which is somewhat more involved).
-(Note that these absolute values coincide with cardinalities in corresponding residue rings, but we do not need this result.)
-We conclude that the class group is finite:
+It remains to define an admissible absolute value for $\Z$ and $\Fq[t]$. On $\Z$, it is straightforward to formalize that the usual Archimedean absolute fulfils the requirements. For $\Fq[t]$, we show that $\lvert f\rvert_{\deg}:=q^{\deg f}$ for $f \in \Fq[t]$ is the required abmissible absolute value; observe that this is somewhat more involved to formalize.
+%(Note that these absolute values coincide with cardinalities in corresponding residue rings, but we do not need this result.)
+We conclude that when $K$ is a global field, the class group is finite:
 \begin{lstlisting}
 noncomputable instance : fintype
   (class_group (number_field.ring_of_integers.fraction_map K)) :=
 class_group.finite_of_admissible K int.fraction_map int.admissible_abs
 
 noncomputable instance : fintype
-  (class_group (function_field.ring_of_integers.fraction_map f F)) :=
+  (class_group (function_field.ring_of_integers.fraction_map f K)) :=
 class_group.finite_of_admissible F f polynomial.admissible_char_pow_degree
 \end{lstlisting}
 
