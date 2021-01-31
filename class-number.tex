@@ -79,6 +79,7 @@
 \DeclareUnicodeCharacter{2090}{\ensuremath{_a}}
 \DeclareUnicodeCharacter{2097}{\ensuremath{_l}}
 \DeclareUnicodeCharacter{211A}{\ensuremath{\Q}}
+\DeclareUnicodeCharacter{2124}{\ensuremath{\Z}}
 \DeclareUnicodeCharacter{2211}{\ensuremath{\sum}}
 \DeclareUnicodeCharacter{2264}{\ensuremath{\l}}
 \DeclareUnicodeCharacter{2286}{\ensuremath{\subseteq}}
@@ -241,8 +242,14 @@ class is_function_field_over {$\Fq$ F : Type*} [field $\Fq$] [fintype $\Fq$] [fi
   [algebra f.codomain L] : Prop :=
 [fd : finite_dimensional f.codomain L]
 \end{lstlisting}
+<<<<<<< HEAD
 The map \lean{f} witnesses that $F$ is a fraction field of the polynomial ring $\Fq[q][t]$,
 the notation \lean{f.codomain} endows $K$ with the algebra structure of $F=\Fq(t)$. We present a more detailed examination of \lean{fraction\_map} in Section \ref{subsection : fields of fractions}.
+=======
+The map \lean{f} witnesses that $L$ is the field of fractions of the polynomial ring $K[X]$,
+the notation \lean{f.codomain} endows $L$ with the algebra structure of $K(X)$.
+We present a more detailed examination of \lean{fraction\_map} in Section~\ref{subsection : fields of fractions}.
+>>>>>>> d9fa398bca1dda9f9cda1ba2881dd2430c76c305
 
 \subsection{Field extensions}
 
@@ -256,8 +263,13 @@ Thus, some coercion is always needed to go from the original definition of $\Q$ 
 Moreover, such an approach loses flexibility since we need to fix the top field, of which all others are subfields, at the start of our development and cannot adjoin more elements when needed.
 
 Instead, we formalize results about field extensions by parametrization.
+<<<<<<< HEAD
 The lemma statement is parametrized over arbitrary types $K$ and $L$ with a field structure,%TODO : There is something strange going on here....
 along with the hypothesis ``$L$ is a field extension of $K$'', represented by an instance parameter \lean{[algebra K L]}.
+=======
+The fields $K$ and $L$ are represented by arbitrary types
+and the hypothesis ``$L$ is a field extension of $K$'' is represented by an instance parameter \lean{[algebra K L]}.
+>>>>>>> d9fa398bca1dda9f9cda1ba2881dd2430c76c305
 This provides us with a canonical ring homomorphism $\lean{algebra\_map K L} : K \to L$; this map is injective because $K$ and $L$ are fields.
 In other words, field extensions are given by their canonical embeddings.
 
@@ -828,67 +840,84 @@ $\Tr_{L / K}(x) = \sum_{σ : L \to_a[K] F} \sigma x$.
 Since $\sigma$ is a ring homomorphism, $\sigma\ x^{i + j} = (\sigma\ x)^{i + j}$,
 so the conjugates of $x^{i + j}$ are the $(i + j)$-th powers of conjugates of $x$, concluding the proof.
 
-\section{Class number} \label{sec:class-number}
+\section{Class group and class number} \label{sec:class-number}
 
-The class group of an integral domain is the quotient of \lean{units (fractional\_ideal f)} modulo the principal fractional ideals.
-%\lean{def class\_group := quotient\_group.quotient (to\_principal\_ideal f).range}.
-%%TODO remove lean def?
+Recall that the ideal class group of an integral domain $R$ is defined as the quotient of the invertible fractional ideals modulo the principal fractional ideals.
+We formalize this notion in Lean by defining a map \lean{to\_principal\_ideal f : units f.codomain → units (fractional\_ideal f)}, %sending $x : K^\times$ to the principal ideal $\langle x \rangle$,
+and define the class group to be the quotient group modulo \lean{to\_principal\_ideal.range}.
 %Or equivalently, if the domain $R$ is Dedekind, the nonzero ideals of $R$ modulo the nonzero elements of $R$.
 %For a Dedekind domain, the class group captures a lot of its factorization properties, e.g. the invertible fractional ideals consist of all nonzero ideals (which is one of the characterizing properties), and the class group is trivial if and only if the Dedekind domain is a UFD (iff it is a PID).
-%In general, Dedekind domains can have infinite class groups. However, the ring of integers in a number fields, or more general, in a global fields, is a Dedekind domain with finite class group. This result is seen a fundamental finiteness result in (algebraic) number theory.
+In general, Dedekind domains can have infinite class groups. However, the ring of integers in a global field is a Dedekind domain with finite class group.
+% This result is a fundamental finiteness result in algebraic number theory.
 
-Let $R$ denote the ring of integers inside some number field, and let $S$ denote a ring of integers inside some function field.
-Most proofs of the finiteness of $\Cl_R$ one finds in modern textbook (see e.g.~\cite[Theorems 4.4, 5.3, 6.3]{Neukirch}) use as one of the ingredients Minkowski's lattice point theorem, a result from the geometry of numbers (which has been formalized in Isabelle/HOL~\cite{Minkowskis_Theorem-AFP}). 
-The formalization setup we are after is not only the finiteness of $\Cl_R$, but also the finiteness of $\Cl_S$ (at least in the setting of separable field extensions).
-While there exist analogues of Minkowski's theorem in the function field setting, which can be used for proving finiteness of $\Cl_S$, formalizing this approach would be quite involved and would also not give a very uniform proof of the finiteness of $\Cl_R$ and  $\Cl_S$.
-Instead we were inspired by a more classical approach to the finiteness of $\Cl_R$, where the use of Minkowski's theorem is replaced by the box principle. This approach seems to go back to Kronecker
+Let $R$ denote the ring of integers inside some number field, and let $S$ denote the ring of integers inside some function field.
+Most proofs of the finiteness of $\Cl_R$ one finds in a modern textbook (see e.g.~\cite[Theorems 4.4, 5.3, 6.3]{Neukirch}) depend on Minkowski's lattice point theorem, a result from the geometry of numbers (which has e.g. been formalized in Isabelle/HOL~\cite{Minkowskis_Theorem-AFP}).
+Extending this proof to show the finiteness of $\Cl_S$ is quite involved and does not result in a uniform proof for $\Cl_R$ and $\Cl_S$.
+%The formalization setup we are after is not only the finiteness of $\Cl_R$, but also the finiteness of $\Cl_S$ (at least in the setting of separable field extensions).
+%While there exist analogues of Minkowski's theorem in the function field setting, which can be used for proving finiteness of $\Cl_S$, formalizing this approach would be quite involved and would also not give a very uniform proof of the finiteness of $\Cl_R$ and  $\Cl_S$.
+Instead we were inspired by a more classical approach to the finiteness of $\Cl_R$, where the use of Minkowski's theorem is replaced by the pigeonhole principle. This approach seems to go back to Kronecker
 %\footnote{\url{https://mathoverflow.net/questions/19021/avoiding-minkowskis-theorem-in-algebraic-number-theory/19035#19035}}
-and can be found, for instance, in~\cite{Ireland-Rosen}. For the formalization in Lean, we adapted and generalized this approach, so that on the one hand most ingredients became more \mathlib ``friendly'' (by avoiding unnecessary field extensions, as used for example in norm estimates), and on the other hand it works in the function field setting as well.
-%TODO?: IF(....) there is space, we could elaborate on such an example
-We note that some other ``uniforms'' approaches can be found in~\cite{Artin-Whaples} and~\cite{Stasinski}. 
+and can e.g. be found in~\cite{Ireland-Rosen}.
+Our formalization adapts and generalizes this approach.
+%so that on the one hand most ingredients became more \mathlib ``friendly'' (by e.g. avoiding unnecessary field extensions, as used for example in norm estimates), and on the other hand it works in the function field setting as well.
+We note that some other ``uniform'' approaches can be found in~\cite{Artin-Whaples} and~\cite{Stasinski}.
 
-In our approach, we axiomatized some ``admissibility'' condition on the base Dedekind domain.
-For a Euclidean domain $R$, introduced as \lean{variables {R : Type*} [euclidean\_domain R]},
-we introduced an \lean{admissible\_absolute\_value R},
-roughly speaking as a Euclidean absolute value  \lean{$\R \to \Z$}
-%TODO!! How to get the Z right? in \lean{R → ℤ}
-such that for any natural number \lean{n} a large enough set of elements in $\R^n$ will contain a pair of elements such that remainders of the components are close: 
-%TODO: ugly?, mixing math and lean notation
+Let $R$ be a Dedekind domain and $L$ be a finite separable field extension of the fraction field $K$ of $R$ (with fraction map $f : R \to K$).
+We prove in the theorem \lean{class\_group.finite\_of\_admissible} that the integral closure of $R$ in $L$ has a finite class group if it has an ``admissible'' absolute value \lean{abs}.
+%In other words, we require that $R$ is a Dedekind domain with ``division with remainder'' operators \lean{/, \%} and an absolute value operator such that:
+%\begin{align*}
+%	|a \% b| &< |b| & (\lean{mod\_lt}) \\
+%	|a| & \le |a * b| & (\lean{mul_left_mono}) \\
+%\end{align*}
+%\begin{lstlisting}
+%(card : ℝ → ℕ)
+%(exists_partition' : ∀ (n : ℕ) {ε : ℝ} (hε : 0 < ε) (b : R) (hb : b ≠ 0) (A : fin n → R),
+%                     ∃ (t : fin n → fin (card ε)),
+%                     ∀ i₀ i₁, t i₀ = t i₁ → (to_fun (A i₁ % b - A i₀ % b) : ℝ) < to_fun b • ε)
+%\end{lstlisting}
+Informally, the admissibility conditions require that the remainder operator produces values that are not too far apart.
+Formally, we define the type of admissible absolute values on $R$ as:
 \begin{lstlisting}
 structure admissible_absolute_value (R : Type*) [euclidean_domain R]
   extends euclidean_absolute_value R ℤ :=
-(card : ℝ → ℕ)
-(exists_partition' : ∀ (n : ℕ) {ε : ℝ} (hε : 0 < ε) (b : R) (hb : b ≠ 0) (A : fin n → R),
-                     ∃ (t : fin n → fin (card ε)),
-                     ∀ i₀ i₁, t i₀ = t i₁ → (to_fun (A i₁ % b - A i₀ % b) : ℝ) < to_fun b • ε)
+(card : ℝ → ℕ) (exists_partition :
+  ∀ (n : ℕ) (ε > (0 : ℝ) (b ≠ (0 : R)) (A : fin n → R),
+  ∃ (t : fin n → fin (card ε)), ∀ i₀ i₁, t i₀ = t i₁ →
+  (to_fun (A i₁ % b - A i₀ % b) : ℝ) < to_fun b • ε)
 \end{lstlisting}
+Here, \lean{to\_fun} stands for an application of the absolute value operator.
 
-From a purely mathematical point of view, an equivalent formulation of the admissibility condition not involving the devision with remainder would have probably been ``cleaner''. But for our formalization work we chose to use the formualtion above, since this applies more directly to proving finiteness of the class number. Indeed, we formalized a proof that if \lean{R} is a Dedekind domain with an admissible absolute value, then the integral closure of \lean{R} in a finite separable field extension of its field of fractions (which is a Dedekind domain) has finite class group. An important intermediate step is to obtain the following result of the existence of a generalized division with remainder
+The above condition formalizes an intermediate result in the typical finiteness proofs;
+the different proofs for number fields and function fields are the same after this point.
+We use division with remainder to replace the \emph{fractional part} operator on $K$ in the classical proof,
+allowing our proof to stay entirely within $R$ to avoid casts.
 
-%\begin{lstlisting}
-%theorem exists_mem_finset_approx [decidable_eq R]
-%  (a : integral_closure R L) {b} (hb : b ≠ (0 : R)) :
-%  ∃ (q : integral_closure R L) (r ∈ finset_approx L f abs),
-%    abs_norm f abs (r • a - b • q) < abs_norm f abs (algebra_map R (integral_closure R L) b) :=
-%\end{lstlisting}
-
+The absolute value extends to a norm \lean{abs\_norm f abs : integral\_closure R L → ℤ}.
+We use the admissibility of \lean{abs} to find a finite set \lean{finset\_approx L f abs} of elements of $R$,
+such that the following generalization of~\cite[Theorem 12.2.1]{Ireland-Rosen} holds.
 \begin{lstlisting}
-theorem exists_mem_finset_approx' [decidable_eq R]
-  (a : integral_closure R L) {b} (hb : b ≠ (0 : integral_closure R L)) :
+theorem exists_mem_finset_approx' (a b : integral_closure R L) :=
   ∃ (q : integral_closure R L) (r ∈ finset_approx L f abs),
   abs_norm f abs (r • a - q * b) < abs_norm f abs b
 \end{lstlisting}
-where \lean{variables (abs : admissible\_absolute\_value R)}.
-With this result at our disposal, finishing the proof of the finiteness of the class group  was relatively smooth.
-%After this, the proof to getting to finiteness of the class group is basically the classical approach mentioned above; and with enough ingredients already formalized, the formalization went smoothly.
-%TODO: Is this the place to say something like that?
+After this, the classical approach mentioned above formalizes smoothly.
 
-What is then left to do is to formalize that both $R=\Z$ and $R=\mathbb{F}_q[t]$ (where $\mathbb{F}_q$ denotes a finite field with $q$ elements) admit an admissible absolute values. The Archimedean absolute value on $\Z$ satisfies the required properties, and this is straightforward to formalize. Concerning $\mathbb{F}_q[t]$, we use the ``degree'' absolute value $|f|_{\deg}:=q^{\deg f}$ for $f \in \mathbb{F}_q[t]$. % works in the function field setting (which is somewhat more involved). (Note that these absolute values coincide with cardinalities in corresponding residue rings, but we do not need this result.)
-As a consequence of the previous results, we get to the finiteness results for class groups of global fields.
+It remains to define an admissible absolute value for $\Z$ and $K[t]$ (where $K$ is a finite field).
+On $\Z$, the usual Archimedean absolute value does the job (which is straightforward to formalize).
+For $K[t]$, let $q$ be the cardinality of $K$, then we show $|f|_{\deg}:=q^{\deg f}$ for $f \in \mathbb{F}_q[t]$ works in the function field setting (which is somewhat more involved).
+(Note that these absolute values coincide with cardinalities in corresponding residue rings, but we do not need this result.)
+We conclude that the class group is finite:
+\begin{lstlisting}
+noncomputable instance : fintype
+  (class_group (number_field.ring_of_integers.fraction_map K)) :=
+class_group.finite_of_admissible K int.fraction_map int.admissible_abs
 
-%TODO:
-Class numbers?
+noncomputable instance : fintype
+  (class_group (function_field.ring_of_integers.fraction_map f F)) :=
+class_group.finite_of_admissible F f polynomial.admissible_char_pow_degree
+\end{lstlisting}
 
+Finally, we define \lean{number\_field.class\_number} and \lean{function\_field.class\_number} as the cardinality of the respective class groups.
 
 \section{Discussion}
 
