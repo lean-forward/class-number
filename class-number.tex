@@ -832,7 +832,7 @@ so the conjugates of $x^{i + j}$ are the $(i + j)$-th powers of conjugates of $x
 
 Recall that the ideal class group of an integral domain $R$ is defined as the quotient of the invertible fractional ideals modulo the principal fractional ideals.
 We formalize this notion in Lean by defining a map \lean{to\_principal\_ideal f : units f.codomain → units (fractional\_ideal f)}, %sending $x : K^\times$ to the principal ideal $\langle x \rangle$,
-and define the class group to be the group quotient modulo the range of \lean{to\_principal\_ideal}.
+and define the class group to be the quotient group modulo \lean{to\_principal\_ideal.range}.
 %Or equivalently, if the domain $R$ is Dedekind, the nonzero ideals of $R$ modulo the nonzero elements of $R$.
 %For a Dedekind domain, the class group captures a lot of its factorization properties, e.g. the invertible fractional ideals consist of all nonzero ideals (which is one of the characterizing properties), and the class group is trivial if and only if the Dedekind domain is a UFD (iff it is a PID).
 In general, Dedekind domains can have infinite class groups. However, the ring of integers in a global field is a Dedekind domain with finite class group.
