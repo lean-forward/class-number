@@ -249,7 +249,7 @@ the notation \lean{f.codomain} endows $F$ with the $\Fq[q][t]$-algebra structure
 \subsection{Field extensions}
 
 The definition of \lean{is\_number\_field} illustrates our treatment of field extensions.
-In informal mathematics, a field $L$ containing a subfield $K$ is said to be a field extension $L / K$.
+In unformalized mathematics, a field $L$ containing a subfield $K$ is said to be a field extension $L / K$.
 Often we encounter towers of field extensions: we might have that $\Q$ is contained in $K$, $K$ is contained in $L$, $L$ is contained in an algebraic closure $\bar{K}$ of $K$, and $\bar{K}$ is contained in $\C$.
 We might formalize this situation by viewing $\Q$, $K$, $L$ and $\bar{K}$ to be sets of complex numbers $\C$ and defining field extensions as subset relations between these subfields.
 This way, no coercions need to be inserted to map elements of one field into a larger field.
@@ -820,7 +820,7 @@ Directly applying \lean{trace\_gen\_eq\_sum\_roots} is tempting, since we have a
 However, the two expressions will not precisely match: the left hand side is a sum of conjugates of $x$, where each conjugate is raised to the power $i + j$,
 while the conclusion of \lean{trace\_gen\_eq\_sum\_roots} results in a sum over conjugates of $x^{i + j}$.
 
-Instead, the informal proof switches here to an equivalent definition of conjugate:
+Instead, the paper proof switches here to an equivalent definition of conjugate:
 the conjugates of $x$ in $E$ are the images (counted with multiplicity) of $x$ under each embedding $\sigma \colon F(x) \to E$ that fixes $F$. This equivalence between the two notions of conjugate was contributed to \mathlib by the Berkeley group in the week before we realized we needed it. Mapping \lean{trace\_gen\_eq\_sum\_roots} through the equivalence gives
 $\Tr_{L / F}(x) = \sum_{σ : L \to_a[F] E} \sigma x$.
 % \lean{algebra\_map F E (trace F L pb.gen) = ∑ (σ : L →ₐ[F] E), σ pb.gen}.
@@ -925,7 +925,7 @@ defining the integer-valued norm on $\Z[i]$ and classifying the prime elements o
 
 Having formalized the basics of algebraic number theory, there are several natural directions for future formalization work. These include the following.
 \begin{itemize}
-\item Finiteness of the class group for the ring of integers in all global fields. This would entail dropping the separability condition in the result mentioned in the third line of Section~\ref{sec:integral-closure}, and consequently adapt some of the details in the final steps for the finiteness of the class group in the admissible case. Some basic prerequisites would be setting up some field theory dealing with (finite) inseparable field extensions, especially the purely inseparable ones. 
+\item Finiteness of the class group for the ring of integers in all global fields. This would entail dropping the separability condition in the result mentioned in the first paragraph of Section~\ref{sec:integral-closure}, and consequently adapt some of the details in the final steps for the finiteness of the class group in the admissible case. Some basic prerequisites would be setting up some field theory dealing with (finite) inseparable field extensions, especially the purely inseparable ones. 
 All in all this seems a tedious though reasonable project.
 \item Finite generation of the group of units of the ring of integers in a number field, or slightly stronger, Dirichlet's unit theorem~\cite[Theorem 7.4]{Neukirch}. This seems a somewhat more involved, but still reasonable, project. The finite generation result also holds for function fields, so actually it would be nice (and doable) to consider all global fields (which would  involve finite inseparable field extensions, as in the previous item).
 \item Other finiteness results in algebraic number theory, most notably Hermite's theorem about the existence of only finitely many number fields, up to isomorphism,% or embedded in a fixed algebraically closed field containing $\Q$, e.g. $\C$) 
@@ -941,7 +941,7 @@ As usual, there are analogue results in the function field setting, though they 
 \subsection{Conclusion}
 
 In this project, we confirmed the rule that the hardest part of formalization is to get the definitions right.
-Once this is accomplished, the informal proof almost always translated to a formal proof without too much effort.
+Once this is accomplished, the ``pen and paper'' proof almost always translated to a formal proof without too much effort.
 % Informal mathematics effortlessly switches between different viewpoints, choosing whichever suits the situation best.
 In particular, we regularly had to invent abstractions in order to treat instances of the ``same'' situation uniformly.
 Instead of fixing a canonical representation, be it $K \subseteq L \subseteq F$ as subfields, or the field of fractions $\Frac R$, or the monogenic $K(\alpha)$, we found that making the essence of the situation an explicit parameter, as in \lean{is\_scalar\_tower}, \lean{fraction\_map} or \lean{power\_basis},
