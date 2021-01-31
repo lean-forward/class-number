@@ -890,14 +890,15 @@ theorem exists_mem_finset_approx' (a b : integral_closure D L) :=
 \end{lstlisting}
 After this, the classical approach mentioned above formalizes smoothly.
 
-It remains to define an admissible absolute value for $\Z$ and $\Fq[q][t]$. On $\Z$, it is straightforward to formalize that the usual Archimedean absolute fulfils the requirements. For $\Fq[q][t]$, we show that $\lvert f\rvert_{\deg}:=q^{\deg f}$ for $f \in \Fq[q][t]$ is the required abmissible absolute value; observe that this is somewhat more involved to formalize.
+It remains to define an admissible absolute value for $\Z$ and $\Fq[q][t]$. On $\Z$, it is straightforward to formalize that the usual Archimedean absolute fulfils the requirements. For $\Fq[q][t]$, we show that $\lvert f\rvert_{\deg}:=q^{\deg f}$ for $f \in \Fq[q][t]$ is the required admissible absolute value; observe that this is somewhat more involved to formalize.
 %(Note that these absolute values coincide with cardinalities in corresponding residue rings, but we do not need this result.)
-We conclude that when $K$ is a global field, the class group is finite:
+We conclude that when $K$ is a global field (restricting to \emph{separable} extensions of $\Fq[q][t]$ in the function field case), the class group is finite:
 \begin{lstlisting}
 noncomputable instance : fintype
   (class_group (number_field.ring_of_integers.fraction_map K)) :=
 class_group.finite_of_admissible K int.fraction_map int.admissible_abs
 
+variables [is_separable f.codomain K]
 noncomputable instance : fintype
   (class_group (function_field.ring_of_integers.fraction_map f K)) :=
 class_group.finite_of_admissible F f polynomial.admissible_char_pow_degree
