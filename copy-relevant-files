@@ -1,3 +1,7 @@
 #!/bin/bash
 # Update src/ by copying relevant files from the `mathlib` in the `_target` folder.
-cp _target/deps/mathlib/src/algebraic_number_theory/{class_number,function_field,number_field}.lean _target/deps/mathlib/src/group_theory/group_action/defs.lean _target/deps/mathlib/src/field_theory/{adjoin,intermediate_field,primitive_element,subfield}.lean _target/deps/mathlib/src/ring_theory/{class_group.lean,dedekind_domain.lean,fractional_ideal.lean,localization.lean,power_basis.lean,trace.lean} src/
+cp _target/deps/mathlib/src/algebraic_number_theory/{class_number,function_field,number_field,class_number/admissible_absolute_value}.lean\
+  _target/deps/mathlib/src/group_theory/group_action/defs.lean\
+  _target/deps/mathlib/src/field_theory/{adjoin,intermediate_field,primitive_element,subfield}.lean\
+  _target/deps/mathlib/src/ring_theory/{class_group,dedekind_domain,fractional_ideal,integral_closure,localization,noetherian,principal_ideal_domain,power_basis,unique_factorization_domain}.lean\
+  src/

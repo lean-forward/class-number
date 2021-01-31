@@ -56,19 +56,22 @@ We will now provide an overview of the source code files containing results ment
 
 ### Section 4
 
- * Dedekind domain: [`src\ring_theory\dedekind_domain.lean`](src/dedekind_domain.lean)
- * Krull dimension: [`src\ring_theory\dedekind_domain.lean`](src/dedekind_domain.lean)
- * integral closure: [`src\ring_theory\integral_closure.lean`](src/integral_closure.lean)<!-- this file is missing-->
- * Noetherian ring: [`src\ring_theory\noetherian.lean`](src/noetherian.lean) <!-- this file is missing-->
+ * Dedekind domain: [`src/ring_theory/dedekind_domain.lean`](src/dedekind_domain.lean)
+ * Krull dimension: [`src/ring_theory/dedekind_domain.lean`](src/dedekind_domain.lean)
+ * integral closure: [`src/ring_theory/integral_closure.lean`](src/integral_closure.lean)
+ * Noetherian ring: [`src/ring_theory/noetherian.lean`](src/noetherian.lean)
  * fractional ideal: [`src/ring_theory/fractional_ideal.lean`](src/fractional_ideal.lean)
 
  ### Section 5
- * principal ideal domain: [`src\ring_theory\principal_ideal_domain.lean`](src/principal_ideal_domain.lean) <!-- this file is missing-->
- * unique factorization monoid (UFM): [`src\ring_theory\unique_factorization_domain.lean`](src.unique_factorization_domain.lean) <!-- this file is missing-->
+ * principal ideal domain: [`src/ring_theory/principal_ideal_domain.lean`](src/principal_ideal_domain.lean)
+ * unique factorization monoid (UFM): [`src/ring_theory/unique_factorization_domain.lean`](src.unique_factorization_domain.lean)
 
 ### Section 6
- * trace form: [`src\ring_theory\trace.lean`](src/trace.lean)
+ * trace form: [`src/ring_theory/trace.lean`](src/trace.lean)
  * minimal polynomial: [`src/ring_theory/power_basis.lean`](src/power_basis.lean)
- * conjugate element: [`src\ring_theory\trace.lean`](src/trace.lean)
+ * conjugate element: [`src/ring_theory/trace.lean`](src/trace.lean)
 
 ### Section 7
+ * class group: [`src/ring_theory/class_group.lean`](src/class_group.lean)
+ * admissible absolute value: [`src/algebraic_number_theory/class_number/admissible_absolute_value.lean`](src/admissible_absolute_value.lean)
+ * class number: [`src/algebraic_number_theory/class_number.lean`](src/class_number.lean)
