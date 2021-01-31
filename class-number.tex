@@ -234,7 +234,6 @@ The condition \lean{[cz : char\_zero K]} states that $K$ has characteristic zero
 This implies that there is a $\Q$-algebra structure on $K$ (found by typeclass search),
 and from this follows the vector space structure used in the \lean{[fd : finite\_dimensional ℚ K]} hypothesis.
 
-
 We define the function fields $K$ over a finite field $\Fq$ using the following typeclass:
 \begin{lstlisting}
 class is_function_field_over {$\Fq$ F : Type*} [field $\Fq$] [fintype $\Fq$] [field F]
@@ -242,14 +241,8 @@ class is_function_field_over {$\Fq$ F : Type*} [field $\Fq$] [fintype $\Fq$] [fi
   [algebra f.codomain L] : Prop :=
 [fd : finite_dimensional f.codomain L]
 \end{lstlisting}
-<<<<<<< HEAD
 The map \lean{f} witnesses that $F$ is a fraction field of the polynomial ring $\Fq[q][t]$,
 the notation \lean{f.codomain} endows $K$ with the algebra structure of $F=\Fq(t)$. We present a more detailed examination of \lean{fraction\_map} in Section \ref{subsection : fields of fractions}.
-=======
-The map \lean{f} witnesses that $L$ is the field of fractions of the polynomial ring $K[X]$,
-the notation \lean{f.codomain} endows $L$ with the algebra structure of $K(X)$.
-We present a more detailed examination of \lean{fraction\_map} in Section~\ref{subsection : fields of fractions}.
->>>>>>> d9fa398bca1dda9f9cda1ba2881dd2430c76c305
 
 \subsection{Field extensions}
 
