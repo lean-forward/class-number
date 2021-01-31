@@ -57,6 +57,7 @@
 \newcommand*{\OK}[1][K]{\mathcal{O}_{#1}}
 \newcommand*{\Cl}{\mathcal{C}\kern-.075em l}
 % \DeclareMathOperator{\Cl}{Cl}
+\newcommand{\Fq}{\mathbb{F}_q}
 \DeclareMathOperator{\Tr}{Tr}
 \newcommand{\mathlib}{\textsf{mathlib}\xspace}
 \newcommand{\N}{\mathbb{N}}
@@ -227,7 +228,19 @@ class is_number_field (K : Type*) [field K] :=
 [cz : char_zero K] [fd : finite_dimensional ℚ K]
 \end{lstlisting}
 The condition \lean{[cz : char\_zero K]} states that $K$ has characteristic zero, so the canonical ring homomorphism $\Z \to K$ is an embedding.
-This implies that there is a $\Q$-algebra structure on $K$ (found by typeclass search), and this provides the vector space structure used in the \lean{[fd : finite\_dimensional ℚ K]} hypothesis.
+This implies that there is a $\Q$-algebra structure on $K$ (found by typeclass search),
+and from this follows the vector space structure used in the \lean{[fd : finite\_dimensional ℚ K]} hypothesis.
+
+We define the function fields $F$ over a finite field $K$ using the following typeclass:
+\begin{lstlisting}
+class is_function_field_over {K L : Type*} [field K] [fintype K] [field L]
+  (f : fraction_map (polynomial K) L) (F : Type*) [field F]
+  [algebra f.codomain F] : Prop :=
+[fd : finite_dimensional f.codomain F]
+\end{lstlisting}
+The map \lean{f} witnesses that $L$ is the field of fractions of the polynomial ring $K[X]$,
+the notation \lean{f.codomain} endows $L$ with the algebra structure of $K(X)$.
+We present a more detailed examination of \lean{fraction\_map} in Section \label{subsection : fields of fractions}.
 
 \subsection{Field extensions}
 
@@ -278,21 +291,23 @@ A number ring is defined as a ring whose fraction field is a number field, the r
 The ring of integers in $K$ is defined as the integral closure of $\Z$ in $K$.
 This is the subring containing those $x : K$ that are the root of a monic polynomials with coefficients in $\Z$:
 \begin{lstlisting}
-def ring_of_integers (K : Type*) [field K] [is_number_field K] :
-  subalgebra ℤ K :=
+def number_field.ring_of_integers (K : Type*) [field K]
+  [is_number_field K] : subalgebra ℤ K :=
 integral_closure ℤ K
 \end{lstlisting}
 where \lean{integral\_closure} was previously defined in \mathlib as follows:
 \begin{lstlisting}
 def integral_closure (R A : Type*) [comm_ring R] [comm_ring A]
   [algebra R A] : subalgebra R A :=
-{ carrier := { r | is_integral R r },
-  .. /- proofs omitted -/ }
+{ carrier := { r | is_integral R r }, .. /- proofs omitted -/ }
 \end{lstlisting}
 
 Some examples of rings of integers include $\Z$ and $\Z[\iota]$. We prove ahead that the ring of integers of a number field is, in fact, a Dedekind domain. Moreover, it is a finitely-generated free $\Z$-module, with rank equal to the degree of the number field over $\Q$.
 
-%Will add more after completing proof
+We define the ring of integers of a function field $F$ over the finite field $K$ analogously as \lean{integral\_closure (polynomial K) F}.
+% TODO: or should the following remarks be in another section?
+In order to reason uniformly for both concepts of the ring of integers,
+we will work with the integral closure of any principal ideal domain when possible.
 
 \subsection{Subobjects} \label{sec:subobjects}
 
