@@ -308,7 +308,8 @@ def integral_closure (R A : Type*) [comm_ring R] [comm_ring A]
   [algebra R A] : subalgebra R A :=
 { carrier := { r | is_integral R r }, .. /- proofs omitted -/ }
 \end{lstlisting}
-Some examples of rings of integers include $\Z$ and $\Z[i]$. %We prove ahead that the ring of integers of a number field is, in fact, a Dedekind domain. Moreover, it is a finitely-generated free $\Z$-module, with rank equal to the degree of the number field over $\Q$.%TODO : USEFUL?
+%Some examples of rings of integers include $\Z$ and $\Z[i]$.
+%We prove ahead that the ring of integers of a number field is, in fact, a Dedekind domain. Moreover, it is a finitely-generated free $\Z$-module, with rank equal to the degree of the number field over $\Q$.%TODO : USEFUL?
 
 When $K$ is a function field over the finite field $\Fq$, we define $\OK$ analogously as \lean{integral\_closure (polynomial K) F}.
 % TODO: or should the following remarks be in another section?
@@ -338,7 +339,7 @@ By providing a coercion from subobjects to types, sending a subobject $S$ to the
 and putting typeclass instances on this subtype,
 we can reason about inductively defined rings such as $\Z$ and subrings such as \lean{integral\_closure $\Z$ K} uniformly.
 If $S : \lean{subfield}\ K$, the map that sends $x : S$ to $K$ by ``forgetting'' that $x \in S$ is a ring embedding,
-and we register this map as a \lean{algebra S K} instance, also allowing us to treat field extensions of the form $\Q \to \C$ and subfields uniformly.
+and we register this map as an \lean{algebra S K} instance, also allowing us to treat field extensions of the form $\Q \to \C$ and subfields uniformly.
 Similarly, for $F : \lean{intermediate\_field K L}$, we defined the corresponding \lean{algebra K F}, \lean{algebra F L} and \lean{is\_scalar\_tower K F L} instances.
 
 \subsection{Fields of fractions}\label{subsection : fields of fractions}
@@ -425,13 +426,13 @@ We have seen in Section~\ref{sec math background} that every number field $K$ ca
 % The choice of $\alpha$ and is normally underspecified in informal mathematical usage. We can find 
 $K=\Q(\alpha)$ by adjoining to $\Q$ the root of a polynomial: there is an irreducible polynomial $p \in \Q[X]$ such that $\Q[X] / p \simeq K$; we set $\alpha$ to be the image of $X$ in $\Q[X] / p$.
 %We can also take $\alpha : \bar{K}$, the algebraic closure of $K$, set $K(\alpha)$ to be the smallest subfield of $\bar{K}$ that contains $\alpha$ and the image of $K$, and have an equality $L = K(\alpha)$ as subsets of $\bar{K}$.
-We can also take $\alpha : K$ and let $\Q(\alpha)$ to be the smallest subfield of $K$ containing $\alpha$; %and the image of $K$
+We can also take $\alpha : K$ and let $\Q(\alpha)$ be the smallest subfield of $K$ containing $\alpha$; %and the image of $K$
 then $K = \Q(\alpha)$ means that $\Q(\alpha)$, as a subfield of $K$, is equal to the subfield $\top$ containing all elements of $K$.
 We could also view $K$ and $\Q(\alpha)$ as subfields of an arbitrary larger field $F$.
 Because $\alpha$ is algebraic, the smallest subring containing $\alpha$ and $\Q$ will be a field, thus we can add two more representations, replacing ``smallest subfield'' with ``smallest subring''.
 Moreover, all subfields/subrings containing $\Q$ are also $\Q$-algebras, so we can additionally replace ``subfield'' with ``intermediate field'' and ``subring'' with ``$\Q$-subalgebra''. The same continues to hold if we replace the base field $\Q$ with $F$, thus considering extensions of the form $F(\alpha)$, now requiring that $\alpha$ be a root of some $p\in F[X]$.
 
-The ability to switch between these representations is important: sometimes $K$ and $F$ are fixed and we want an arbitrary $\alpha$; sometimes $\alpha$ is fixed and we want an arbitrary type representing $F(\alpha)$. The different constructions of $F(\alpha)$ have already been formalized in \mathlib,
+The ability to switch between these representations is important: sometimes $K$ and $F$ are fixed and we want an arbitrary $\alpha$; sometimes $\alpha$ is fixed and we want an arbitrary type representing $F(\alpha)$. The different constructions of $F(\alpha)$ have already been formalized in \mathlib.
 %$K[X] / p$ is a type called \lean{adjoin\_root p};
 %$K(\alpha)$ as smallest $K$-subalgebra containing $\alpha$ is called \lean{subalgebra.adjoin $K$ \{$\alpha$\}},
 %which itself is defined as the smallest subring containing the image of $K$ and $\alpha$.
