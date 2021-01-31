@@ -289,7 +289,7 @@ In our formalization, we found that the \lean{is\_scalar\_tower} typeclass trans
 
 A number ring is defined as a ring whose fraction field is a number field, the ring of integers $\OK$ is an important example.
 The ring of integers in $K$ is defined as the integral closure of $\Z$ in $K$.
-This is the subring containing those $x : K$ that are the root of a monic polynomials with coefficients in $\Z$:
+This is the subring containing those $x : K$ that are the root of a monic polynomial with coefficients in $\Z$:
 \begin{lstlisting}
 def number_field.ring_of_integers (K : Type*) [field K]
   [is_number_field K] : subalgebra ℤ K :=
