@@ -93,7 +93,7 @@
 \begin{abstract}
 Dedekind domains and their class groups are notions in commutative algebra that are essential in algebraic number theory.
 We formalized these structures and several fundamental properties, including number theoretic finiteness results for class groups, in the Lean prover as part of the \mathlib mathematical library.
-This paper describes the formalization process, noting the idioms we found useful in our development and `mathlib's decentralized collaboration processes involved in this project.
+This paper describes the formalization process, noting the idioms we found useful in our development and \mathlib's decentralized collaboration processes involved in this project.
 \end{abstract}
 
 \section{Introduction}
@@ -105,8 +105,7 @@ Both for the sake of generalization, as well as for providing powerful technique
 it is worthwhile to study finite extensions of $\Q$, called \emph{number fields}, as well as their \emph{rings of integers} (defined in Section~\ref{sec math background} below),
 whose relations mirror the way $\Q$ contains $\Z$ as a subring. 
 % These number fields and their rings of integers form the basic objects of study of algebraic number theory, an important brach of modern number theory.--[F] seems redundant, as it is more or less the same as the previous sentence
-In this paper, we describe our project aiming to formalize these notions and some of their important properties.
-Our goal, however, is not to get to the definitions and properties as quickly as possible,
+In this paper, we describe our project aiming at formalizing these notions and some of their important properties. Our goal, however, is not to get to the definitions and properties as quickly as possible,
 but rather %instead we aim at our formalization as a
 to lay the foundations for future work,
 as part of a natural and more general theory as we shall explain below.
@@ -120,7 +119,7 @@ that two definitions of Dedekind domains are equivalent (Section \ref{sec:equiva
 that the ring of integers (or more generally: the integral closure of a Dedekind domain in a finite separable field extension) is a Dedekind domain (Section \ref{sec:integral-closure})
 and that the class group of a number field is finite (Section \ref{sec:class-number}).
 In fact, most of our results for number fields are actually obtained in the more general setting of so-called \emph{global fields},
-i.e. number fields together with finite field extensions of $\mathbb{F}(t)$ with $\mathbb{F}$ a finite field (restricting to $\mathbb{F} \simeq \Z/p\Z$ with $p$ prime yields no loss of generality here).
+namely number fields together with finite field extensions of $\Fq[\empty](t)$ with $\Fq[\empty]$ a finite field (restricting to $\Fq[\empty]\simeq \Z/p\Z$ with $p$ prime yields no loss of generality here).
 
 %
 %As a preview, the latter two results correspond to the following declarations in Lean:
@@ -714,7 +713,7 @@ This gives us the required lemma \lean{unique\_factorization\_monoid.integrally\
 Recall that we defined the ring of integers of a number field $K$ as the integral closure of $\Z$ in $K$.
 We proved a stronger result: give a Dedekind domain $D$ and a field of fractions $F$, if $L$ is a finite separable extension of $F$, then the integral closure of $D$ in $L$ is a Dedekind domain with fraction field $L$.
 Our approach adapts \cite[Theorem~3.1]{Neukirch}.
-Throughout this section, let $D$ be a Dedekind domain with a field of fractions $F$ (given by the map $f \colon D \to F$), $L$ a field extension of $F$ and let $S$ denote the integral closure of $D$ in $L$.
+Throughout this section, let $D$ be a Dedekind domain with a field of fractions $F$ (given by the map $f \colon D \to F$), $L$ a finite, separable field extension of $F$ and let $S$ denote the integral closure of $D$ in $L$.
 % corresponding to the following Lean declarations:
 %% either the above or below, both might be unnecessary
 %% \begin{lstlisting}
@@ -805,7 +804,7 @@ lemma power_basis.trace_gen_eq_sum_roots (pb : power_basis F L)
 %  (findim K(x) L) • ((minimal_polynomial hx).map (algebra_map K F)).roots.sum
 %\end{lstlisting}
 We formulate the lemma in terms of the power basis, since we will need to use it for $F(x)$ here
-and for an arbitary finite separable extension $L / F$ later in the proof.
+and for an arbitrary finite separable extension $L / F$ later in the proof.
 
 The elements of \lean{(pb.minpoly\_gen.map (algebra\_map F E)).roots} are called \emph{conjugates} of $x$ in $E$.
 Each conjugate of $x$ is integral since it is a root of (the same) monic polynomial,
@@ -912,12 +911,12 @@ Finally, we define \lean{number\_field.class\_number} and \lean{function\_field.
 
 \subsection{Related work}
 
-Broadly speaking, one could see the formalization work as part of number theory. There are several formalization result in this direction; see e.g.~\cite[Section 6]{CapSetProblem}, most notably the formalization in Isabelle/HOL of a substantial part of analytic number theory~\cite{Eberl19}.
-Narrowing somewhat in on our more algebraic setting, we are not aware of any other formal developments of fractional ideals, Dedekind domains or class groups of global fields.
+Broadly speaking, one could see the formalization work as part of number theory. There are several formalization result in this direction; see, for intance, ~\cite[Section 6]{CapSetProblem}, most notably the formalization in Isabelle/HOL of a substantial part of analytic number theory~\cite{Eberl19}.
+Narrowing somewhat to our more algebraic setting, we are not aware of any other formal developments of fractional ideals, Dedekind domains or class groups of global fields.
 Since our project touches upon the theories of field extensions, ideals, number fields and number rings,
 we provide here a partial overview of formalizations in these areas.
 
-There are many libraries formalizing basic notions of commutative algebra such as field extensions and ideals, including the Mathematical Components library in Coq~\cite{mathcomp}, the algebraic library for Isabelle/HOL~\cite{algebra_isabelle}, the \texttt{set.mm} database for MetaMath~\cite{metamath} and the Mizar Mathematical Library~\cite{algebraic-hierarchy_mizar}. The field of algebraic numbers, or more generally algebraic closures of arbitrary fields, are also available in many provers, for example Coq~\cite{real-algebraic-numbers-coq, mathcomp}, Isabelle/HOL~\cite{algebraic-numbers-isabelle}, MetaMath~\cite{algebraic-numbers-metamath}, and Mizar~\cite{algebraic-numbers-mizar}. To our knowledge, the Coq Mathematical Components library is the only formal development except ours specifically dealing with number fields~\cite[\texttt{field/algnum.v}]{mathcomp}.
+There are many libraries formalizing basic notions of commutative algebra such as field extensions and ideals, including the Mathematical Components library in Coq~\cite{mathcomp}, the algebraic library for Isabelle/HOL~\cite{algebra_isabelle}, the \texttt{set.mm} database for MetaMath~\cite{metamath} and the Mizar Mathematical Library~\cite{algebraic-hierarchy_mizar}. The field of algebraic numbers, or more generally algebraic closures of arbitrary fields, are also available in many provers, for example Coq~\cite{real-algebraic-numbers-coq, mathcomp}, Isabelle/HOL~\cite{algebraic-numbers-isabelle}, MetaMath~\cite{algebraic-numbers-metamath}, and Mizar~\cite{algebraic-numbers-mizar}. To our knowledge, the Coq Mathematical Components library is the only formal development beside ours specifically dealing with number fields~\cite[\texttt{field/algnum.v}]{mathcomp}.
 
 Apart from the general theory of algebraic numbers, there are formalizations of specific number rings: the Gaussian integers $\Z[i]$ are available in Isabelle/HOL~\cite{gaussian_integers-isabelle}, MetaMath~\cite{gaussian_integers-metamath} and Mizar~\cite{gaussian_integers-mizar}.
 The Isabelle/HOL formalization deserves special mention since it introduces techniques from algebraic number theory,
@@ -928,9 +927,10 @@ defining the integer-valued norm on $\Z[i]$ and classifying the prime elements o
 Having formalized the basics of algebraic number theory, there are several natural directions for future formalization work. These include the following.
 \begin{itemize}
 \item Finiteness of the class group for the ring of integers in all global fields. This would entail dropping the separability condition in the result mentioned in the third line of Section~\ref{sec:integral-closure}, and consequently adapt some of the details in the final steps for the finiteness of the class group in the admissible case. Some basic prerequisites would be setting up some field theory dealing with (finite) inseparable field extensions, especially the purely inseparable ones. 
-Al in all this seems a tedious though reasonable project.
+All in all this seems a tedious though reasonable project.
 \item Finite generation of the group of units of the ring of integers in a number field, or slightly stronger, Dirichlet's unit theorem~\cite[Theorem 7.4]{Neukirch}. This seems a somewhat more involved, but still reasonable, project. The finite generation result also holds for function fields, so actually it would be nice (and doable) to consider all global fields (which would  involve finite inseparable field extensions, as in the previous item).
-\item Other finiteness results in algebraic number theory, most notably Hermitte's theorem about the existence of only finitely many number fields (up to isomorphism, or embedded in a fixed algebraically closed field containing $\Q$, e.g. $\C$) with discriminant below a given bound~\cite[Theorem 2.16]{Neukirch}. This would be significantly more involved than the previous items and would require, amongst other things, setting up a lot of ramification theory (which is very important for algebraic number theory).
+\item Other finiteness results in algebraic number theory, most notably Hermite's theorem about the existence of only finitely many number fields, up to isomorphism,% or embedded in a fixed algebraically closed field containing $\Q$, e.g. $\C$) 
+with bounded discriminant~\cite[Theorem 2.16]{Neukirch}. This would be significantly more involved than the previous items and would require, amongst other things, setting up a lot of ramification theory (which is very important for algebraic number theory).
 %Also, Minkowski's lattice point theorem now becomes more essential (as far as we are aware).
 As usual, there are analogue results in the function field setting, though they are less straightforward. One reason being that the nondegenerateness of the trace form from Section~\ref{sec:trace-form} does not hold any more when the separability condition is dropped.
 \item Computational aspect. Our formalization lays some foundations to the verification of number theoretic software,
