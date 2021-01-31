@@ -227,22 +227,27 @@ We refer the reader to Section~\ref{sec math background} for the mathematical ba
 
 We formalized number fields as the following typeclass:
 \begin{lstlisting}
-class is_number_field (K : Type*) [field K] :=
+class is_number_field (K : Type*) [field K] : Prop :=
 [cz : char_zero K] [fd : finite_dimensional ℚ K]
 \end{lstlisting}
+The \emph{class} keyword declares a structure type (i.e. a type of records) and enables typeclass inference for terms of this type.
+Round brackets mark parameters explicitly supplied by the user, such as \lean{(K : Type*)},
+square brackets mark instance parameters inferred by the typeclass system, such as \lean{[field K]}.
+
 The condition \lean{[cz : char\_zero K]} states that $K$ has characteristic zero, so the canonical ring homomorphism $\Z \to K$ is an embedding.
 This implies that there is a $\Q$-algebra structure on $K$ (found by typeclass search),
 and from this follows the vector space structure used in the \lean{[fd : finite\_dimensional ℚ K]} hypothesis.
 
 We define the function fields $K$ over a finite field $\Fq$ using the following typeclass:
 \begin{lstlisting}
-class is_function_field_over {$\Fq$ F : Type*} [field $\Fq$] [fintype $\Fq$] [field F]
-  (f : fraction_map (polynomial $\Fq$) F) (L : Type*) [field L]
+class is_function_field_over {$\Fq$ F : Type*} [field $\Fq$] [fintype $\Fq$]
+  [field F] (f : fraction_map (polynomial $\Fq$) F) (L : Type*) [field L]
   [algebra f.codomain L] : Prop :=
 [fd : finite_dimensional f.codomain L]
 \end{lstlisting}
+Curly brackets mark implicit parameters inferred through unification, such as \lean{\{$\Fq$ F : Type*\}}.
 The map \lean{f} witnesses that $F$ is a fraction field of the polynomial ring $\Fq[q][t]$,
-the notation \lean{f.codomain} endows $K$ with the algebra structure of $F=\Fq(t)$. We present a more detailed examination of \lean{fraction\_map} in Section \ref{subsection : fields of fractions}.
+the notation \lean{f.codomain} endows $F$ with the $\Fq[q][t]$-algebra structure of $\Fq(t)$. We present a more detailed examination of \lean{fraction\_map} in Section \ref{subsection : fields of fractions}.
 
 \subsection{Field extensions}
 
@@ -256,7 +261,9 @@ Thus, some coercion is always needed to go from the original definition of $\Q$ 
 Moreover, such an approach loses flexibility since we need to fix the top field, of which all others are subfields, at the start of our development and cannot adjoin more elements when needed.
 
 Instead, we formalize results about field extensions by parametrization. The fields $K$ and $L$ are represented by arbitrary types
-and the hypothesis ``$L$ is a field extension of $K$'' is represented by an instance parameter \lean{[algebra K L]}. This provides us with a canonical ring homomorphism $\lean{algebra\_map K L} : K \to L$; this map is injective because $K$ and $L$ are fields.
+and the hypothesis ``$L$ is a field extension of $K$'' is represented by an instance parameter \lean{[algebra K L]} denoting a $K$-algebra structure on $L$.%
+\footnote{Lean does not enforce uniqueness of typeclass instances, but the \mathlib maintainers try to ensure all instances that can be inferred are definitionally equal.}
+This provides us with a canonical ring homomorphism $\lean{algebra\_map K L} : K \to L$; this map is injective because $K$ and $L$ are fields.
 In other words, field extensions are given by their canonical embeddings.
 
 \subsection{Scalar towers} \label{sec:scalar_tower}
@@ -273,17 +280,17 @@ along with an additional parameter \lean{[is\_scalar\_tower F K L]} expressing t
 
 The \lean{is\_scalar\_tower} typeclass derives its name from its applicability to any three types between which exist scalar multiplication operations:
 \begin{lstlisting}
-class is_scalar_tower (M N α : Type*) [has_scalar M N] [has_scalar N α]
-  [has_scalar M α] : Prop :=
+class is_scalar_tower (M N α : Type*)
+  [has_scalar M N] [has_scalar N α] [has_scalar M α] : Prop :=
 (smul_assoc : ∀ (x : M) (y : N) (z : α), (x • y) • z = x • (y • z))
 \end{lstlisting}
 For example, if $R$ is a ring, $A$ is an $R$-algebra and $M$ an $A$-module, we can express the fact that $M$ is also an $R$-module by adding a \lean{[is\_scalar\_tower R A M]} parameter.
-Since \lean{x $\cdot$ y} for an $R$-algebra $A$ is defined as \lean{algebra\_map R A x * y}, applying \lean{smul\_assoc} for each $x$ with $y = z = 1$ shows that the \lean{algebra\_map}s indeed commute.
+Since \lean{x $\cdot$ y} for an $R$-algebra $A$ is defined as \lean{algebra\_map R A x * y}, applying \lean{smul\_assoc} for each $x : K$ with $y = (1 : L)$ and $z = (1 : F)$ shows that the \lean{algebra\_map}s indeed commute.
 
-The typeclass system is set up to automatically provide common \lean{is\_scalar\_tower} instances,
+Common \lean{is\_scalar\_tower} instances are declared in \mathlib,
 such as for the maps $R \to S \to A$ when $S$ is a $R$-subalgebra of $S$.
 The effect is that almost all coherence proof obligations are automatically solved from known results or filled in from parameters.
-In our formalization, we found that the \lean{is\_scalar\_tower} typeclass translates towers of field extension well.
+%In our formalization, we found that the \lean{is\_scalar\_tower} typeclass translates towers of field extension well.
 
 \subsection{Ring of integers} \label{sec:ring-of-integers}
 
@@ -312,7 +319,7 @@ we will work with the integral closure of any principal ideal domain when possib
 \subsection{Subobjects} \label{sec:subobjects}
 
 The ring of integers are one example of a subobject, such as a subfield, subring or subalgebra, defined through a characteristic predicate.
-In \mathlib, a subobject is defined as a bundled structure comprising the carrier set,
+In \mathlib, subobjects are ``bundled'', in the form of a \lean{structure} with a field for the carrier set,
 along with proofs showing the carrier set is closed under the relevant operations.
 
 Two new subobjects we needed in our development were \lean{subfield} and \lean{intermediate\-\_field}.
@@ -331,7 +338,7 @@ with different groups and people building on each other's results in a collabora
 By providing a coercion from subobjects to types, sending a subobject $S$ to the subtype of all elements of $S$,
 and putting typeclass instances on this subtype,
 we can reason about inductively defined rings such as $\Z$ and subrings such as \lean{integral\_closure $\Z$ K} uniformly.
-If $S : \lean{subfield}\ K$, the map that sends $x : S$ to $K$ by ``forgetting'' that $x \in S$ is a ring embedding,
+If $S : \lean{subfield}\ K$, there is a canonical ring embedding, the map that sends $x : S$ to $K$ by ``forgetting'' that $x \in S$,
 and we register this map as an \lean{algebra S K} instance, also allowing us to treat field extensions of the form $\Q \to \C$ and subfields uniformly.
 Similarly, for $F : \lean{intermediate\_field K L}$, we defined the corresponding \lean{algebra K F}, \lean{algebra F L} and \lean{is\_scalar\_tower K F L} instances.
 
@@ -356,14 +363,14 @@ In fact, even the rational numbers in Lean are a counterexample:
 for computational efficiency, $\Q$ is defined as a subtype where the numerator and denominator are coprime,
 instead of a quotient by ``scalar multiplication''. A definition like
 \begin{lstlisting}
-def fraction_field (R : Type*) : Type* :=
+def fraction_field (R : Type*) [integral_domain R] : Type* :=
 {ab : R × R // ab.2 ≠ 0}
 \end{lstlisting}
 would require transferring results across isomorphisms as soon as one needs to handle a different construction of a field isomorphic to $\Frac R$.
 
 The strategy used in \mathlib is to rather allow for many different \emph{fraction fields} of our given integral domain $R$,
-as fields $F$ along with an injective \emph{fraction map} $f : R \to F$ which witnesses that all elements of $F$ are ``fractions'' of elements of $R$%
-\footnote{In the definition used by \mathlib, a fraction map is a special case of a \emph{localization map}. Different localizations restrict the denominators to different subsets of $R \setminus \{0\}$.},
+as fields $F$ along with an injective \emph{fraction map} $f : R \to F$ which witnesses that all elements of $F$ are ``fractions'' of elements of $R$,%
+\footnote{In the definition used by \mathlib, a fraction map is a special case of a \emph{localization map}. Different localizations restrict the denominators to different submonoids of $R^\times$.}
 and to parametrize every result over the choice of $f$.
 The conditions on $f$ imply that $F$ is the smallest field containing $R$,
 by showing each injective map $g \colon R \to A$ to a ring $A$ such that $g(x)$ has a multiplicative inverse for all $x \ne 0 : R$,
@@ -623,10 +630,9 @@ satisfying $ \sum_i a_i b_i = 1 $.
 However, it is quite challenging to prove that an element of the product of two $D$-submodules $M$ and $N$ must be of the form $\sum_{i = 1}^m a_i*b_i$, for $a_i \in A$ and $b_i \in B$ for all $1 \leq i \leq m$.
 Instead, we show that, for every element of an ideal, there exists an \lean{s : finset D} whose span is contained in the ideal, and which contains the element.
 This is accomplished by the lemma \lean{submodule.mem\_span\_mul\_finite\_of\_mem\_span\_mul}.
-Now considering an ideal $I$ of the ring $D$, due to its invertibility (as a fractional ideal), by \lean{submodule.mem\_span\_mul\_finite\_of\_mem\_span\_mul}, we obtain finite sets $T \subset I$ and $T' \subset 1/I$ of type \lean{finset D}, such that 1 is contained in the $D$-span of $T*T'$. With coercions, the actual statement of the latter expression in Lean is \lean{↑T' ⊆ ↑↑(1 / ↑s)}, which reads :
-
+Now considering an ideal $I$ of the ring $D$, due to its invertibility (as a fractional ideal), by \lean{submodule.mem\_span\_mul\_finite\_of\_mem\_span\_mul}, we obtain finite sets $T \subset I$ and $T' \subset 1/I$ of type \lean{finset D}, such that 1 is contained in the $D$-span of $T*T'$. With coercions, the actual statement of the latter expression in Lean is \lean{↑T' ⊆ ↑↑(1 / ↑I)}, which reads:
 \begin{lstlisting}
-(T' : set (localization_map.codomain (fraction_ring.of D)) ) ⊆ (((1 / (s : fractional_ideal (fraction_ring.of D))) : submodule D (localization_map.codomain (fraction_ring.of D))) set (localization_map.codomain (fraction_ring.of D)) )
+(T' : set (fraction_ring.of D).codomain) ⊆ (((1 / (I : fractional_ideal (fraction_ring.of D))) : submodule D (fraction_ring.of D).codomain) : set (fraction_ring.of D).codomain
 \end{lstlisting}
 
 This is then sufficient to show that $I$ is finitely generated, as shown in the lemma \lean{fg\_of\_one\_mem\_span\_mul}.
@@ -673,8 +679,8 @@ instance principal_ideal_ring.to_dedekind_domain (R : Type*)
  dimension_le_one.principal_ideal_ring _,
  unique_factorization_monoid.integrally_closed (fraction_ring.of R)⟩
 \end{lstlisting}
-
-Making this an \lean{instance} instead of a \lean{lemma} ensures that the typeclass system can now automatically infer a Dedekind domain structure whenever a principal ideal structure is already available.
+The \lean{instance} keyword marks the declaration for inference by the typeclass system.
+%Making this an \lean{instance} instead of a \lean{lemma} ensures that the typeclass system can now automatically infer a Dedekind domain structure whenever a principal ideal structure is already available.
 
 The Noetherian property of a Dedekind domain follows easily by the previously defined lemma \lean{principal\_ideal\_ring.is\_noetherian\_ring}, since, by definition, each ideal in a principal ideal ring is finitely generated (by a single element).
 
