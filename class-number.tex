@@ -22,7 +22,7 @@
 
 \keywords{formal math, algebraic number theory, commutative algebra, Lean, mathlib} %TODO mandatory; please add comma-separated list of keywords
 
-\supplement{Full source code of the formalization is part of mathlib. Copies of the source files relevant to this paper are available in a separate repository.}
+\supplement{Full source code of the formalization is part of \mathlib. Copies of the source files relevant to this paper are available in a separate repository.}
 \supplementdetails[swhid={Software Heritage Identifier}]{Software}{https://github.com/lean-forward/class-number}
 
 \acknowledgements{I want to thank \dots}%optional
@@ -34,15 +34,15 @@
 %Editor-only macros:: begin (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \EventEditors{John Q. Open and Joan R. Access}
 \EventNoEds{2}
-\EventLongTitle{42nd Conference on Very Important Topics (CVIT 2016)}
-\EventShortTitle{CVIT 2016}
-\EventAcronym{CVIT}
-\EventYear{2016}
-\EventDate{December 24--27, 2016}
-\EventLocation{Little Whinging, United Kingdom}
+\EventLongTitle{Interactive~Theorem~Proving~2021 (ITP~2021)}
+\EventShortTitle{ITP~2021}
+\EventAcronym{ITP}
+\EventYear{2021}
+\EventDate{June~29--July~1, 2021}
+\EventLocation{Rome, Italy}
 \EventLogo{}
-\SeriesVolume{42}
-\ArticleNo{23}
+\SeriesVolume{}
+\ArticleNo{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \usepackage{xcolor}
@@ -89,10 +89,8 @@
 
 \begin{abstract}
 Dedekind domains and their class groups are notions in commutative algebra that are essential in algebraic number theory.
-We formalized these structures and several fundamental properties, including number theoretic finiteness results for class groups, in the Lean prover as part of the mathlib mathematical library.
-This paper describes the formalization process,
-noting the idioms we found useful in our development
-and mathlib's decentralized collaboration processes involved in this project.
+We formalized these structures and several fundamental properties, including number theoretic finiteness results for class groups, in the Lean prover as part of the \mathlib mathematical library.
+This paper describes the formalization process, noting the idioms we found useful in our development and `mathlib's decentralized collaboration processes involved in this project.
 \end{abstract}
 
 \section{Introduction}
@@ -101,18 +99,19 @@ In its basic form, number theory studies properties of the integers $\Z$
 %(say as a set together with the ``standard'' addition and multiplication operations)
 and its fraction field, the rational numbers $\Q$.\footnote{From a classical point of view, one could even argue that the positive, or perhaps nonnegative, integers and rational numbers are the most basic objects of study of number theory. From an algebraic point of view, this would still quickly lead into studying $\Z$ and $\Q$.}
 Both for the sake of generalization, as well as for providing powerful techniques to answer questions about the original objects $\Z$ and $\Q$,
-it is worthwhile to study finite extensions of $\Q$, called \emph{number fields}, as well as their so called \emph{rings of integers} (defined in Section~\ref{sec math background} below),
-whose relations mirror the way $\Q$ contains $\Z$ as a subring.
-These number fields and their rings of integers form the basic objects of study of algebraic number theory, an important brach of modern number theory.
+it is worthwhile to study finite extensions of $\Q$, called \emph{number fields}, as well as their \emph{rings of integers} (defined in Section~\ref{sec math background} below),
+whose relations mirror the way $\Q$ contains $\Z$ as a subring. 
+% These number fields and their rings of integers form the basic objects of study of algebraic number theory, an important brach of modern number theory.--[F] seems redundant, as it is more or less the same as the previous sentence
 In this paper, we describe our project aiming to formalize these notions and some of their important properties.
 Our goal, however, is not to get to the definitions and properties as quickly as possible,
-but instead we aim at our formalization as a foundation for future work,
+but rather %instead we aim at our formalization as a
+to lay the foundations for future work,
 as part of a natural and more general theory as we shall explain below.
 
 In particular, our project resulted in formalized definitions and elementary properties of
-number fields and their rings of integers (described in Section \ref{sec:ring-of-integers}),
-Dedekind domains (Section \ref{sec:Dedekind-domain}),
-and the ideal class group and class number (Section \ref{sec:class-number}).
+number fields and their rings of integers (described in Section~\ref{sec:ring-of-integers}),
+Dedekind domains (Section~\ref{sec:Dedekind-domain}),
+and the ideal class group and class number (Section~\ref{sec:class-number}).
 The main proofs that we formalized show
 that two definitions of Dedekind domains are equivalent (Section \ref{sec:equivalence}),
 that the ring of integers (or more generally: the integral closure of a Dedekind domain in a finite separable field extension) is a Dedekind domain (Section \ref{sec:integral-closure})
@@ -151,32 +150,33 @@ Our own project, being part of the development of \mathlib, follows this philoso
 in turn taking advantage of results contributed by others after the start of the project.
 At several points, we had just merged a formalization into \mathlib that another contributor needed,
 immediately before they contributed a result that we needed.
-Due to the decentralized organization and fluid nature of contributions to \mathlib, its contents are built up of many different contributions from many different authors. Attributing each formalization to a single set of main authors would not do justice to all others whose additions and tweaks are essential to its current use. Therefore, we will make clear whether a contribution is part of our project or not, but not who we consider to be the main author(s).
+Due to the decentralized organization and fluid nature of contributions to \mathlib, its contents are built up of many different contributions from many different authors. Attributing each formalization to a single set of main authors would not do justice to all others whose additions and tweaks are essential to its current use. Therefore, we will make clear whether a contribution is part of our project or not, but we will not stress whom we consider to be the main author(s).
 
-The source files of the formalization are currently in the process of being merged into \mathlib, an up-to-date branch being available \url{https://github.com/leanprover-community/mathlib/tree/dedekind-domain-dev}. We also maintain a separate repository containing the files relevant to this paper, available at \url{https://github.com/lean-forward/class-number}.
+The source files of the formalization are currently in the process of being merged into \mathlib, an up-to-date branch being available \url{https://github.com/leanprover-community/mathlib/tree/dedekind-domain-dev}. We also maintain a %separate
+repository containing the files relevant to this paper, available at \url{https://github.com/lean-forward/class-number}.
 
 \section{Mathematical background}\label{sec math background}
 
-Let us now introduce some of the main objects we study, described in a ``standard'' mathematical way. In the later sections we will detail their formalization in Lean.
+Let us now introduce some of the main objects we study, described in a ``standard'' mathematical way.% In the later sections we will detail their formalization in Lean.
 
-A \emph{number field} $K$ is a finite extension of $\Q$, and as such has the structure of a finite dimensional vector space over $\Q$; it's dimension is called the \emph{degree} of $K$.
+A \emph{number field} $K$ is a finite extension of $\Q$, and as such has the structure of a finite dimensional vector space over $\Q$; its dimension is called the \emph{degree} of $K$.
 The smallest example is $\Q$ itself, and the two-dimensional cases are given by the quadratic number fields
 $\Q(\sqrt{d})=\{a+b\sqrt{d} : a,b \in \Q\}$
 with $d \in \Z$ not a square (which additionally may be taken squarefree).
 %where $d\not=1$ is a squarefree (i.e. not divisible by $p^2$ for any prime $p$) integer.
 %, and there is no loss in generality in considering $\sqrt{d}$ as a complex number (since every number field can be embedded into the complex numbers).
-For an interesting cubic example, let $\alpha$ be the unique real number satisfying $\alpha^3 + \alpha^2 - 2\alpha + 8=0$, then this gives rise to the number field
+For an interesting cubic example, let $\alpha$ be the unique real number satisfying $\alpha^3 + \alpha^2 - 2\alpha + 8=0$: it gives rise to the number field
 $\Q(\alpha)=\{a+b\alpha+c \alpha^2: a,b,c \in \Q\}$.
 %where $\alpha$ satisfies $\alpha^3 + \alpha^2 - 2\alpha + 8=0$ (it is the unique real number with this property).
 In general, taking any (say) complex root $\alpha$ of an irreducible polynomial of degree $n$ over $\Q$ yields a number field of degree $n$:
 $\Q(\alpha)=\{c_0+c_1\alpha+\ldots+c_{n-1} \alpha^{n-1} : c_0,c_1,\ldots,c_{n-1} \in \Q \}$,
-and up to isomorphism these are all number fields of degree $n$.
+and, up to isomorphism, these are all the number fields of degree $n$.
 
 The \emph{ring of integers} $\OK$ of a number field $K$ is defined as the integral closure of $\Z$ in $K$, which boils down to
 \[
   \OK := \{x \in K : f(x)=0 \text{ for some \emph{monic} polynomial } f \text{ with integer coefficients}\},\]
 where we recall that a polynomial is called \emph{monic} if its leading coefficient equals $1$.
-While it might not be immediately obvious that $\OK$ forms a ring, this follows form general algebraic properties of integral closures.
+While it might not be immediately obvious that $\OK$ is a ring, this follows form general algebraic properties of integral closures.
 Some examples of $\OK$ are as follows. Taking $K=\Q$, we get $\OK=\Z$ back. For $K=\Q(\sqrt{2})$ we get $\OK=\Z[\sqrt{2}]=\{a+b\sqrt{2} : a,b \in \Z\}$. But for $K=\Q(\sqrt{5})$ we do \emph{not} simply get $\Z[\sqrt{5}]=\{a+b\sqrt{5} : a,b \in \Z\}$ as $\OK$, since the golden ratio $\varphi:=(1+\sqrt{5})/2\not\in \Z[\sqrt{5}]$ satisfies the monic polynomial equation $\varphi^2-\varphi-1=0$, hence by definition $\varphi \in \OK$; it turns out that $\OK=\Z[\varphi]=\{a+b\varphi : a,b \in \Z\}$. %For quadratic numbers field $\Q(\sqrt{d})$, with $d$ as above, the previous two examples in fact generalize to
 % \begin{equation*}
 % \OK[\Q(\sqrt{d})]=
@@ -191,7 +191,7 @@ Finally, if $K=\Q(\alpha)$ with $\alpha$ as before, then $\OK=\{a+b \alpha+c (\a
 Thinking of $\OK$ as a generalization of $\Z$, it is natural to ask which of its properties %of $\Z$ if they
 still hold in $\OK$ and, when this fails, if a reasonable weakening does. %still holds.
 
-An important property of $\Z$ is that every ideal is generated by one element , which implies that every nonzero nonunit element can be written as a %(nonempty)
+An important property of $\Z$ is that every ideal is generated by one element, which implies that every nonzero nonunit element can be written as a %(nonempty)
 finite product of prime elements, which is unique up to reordering and multiplying by $\pm 1$: a ring where this holds is called a unique factorization domain, or UFD. % with units (which are $\pm 1$ in $\Z$).
 For example, $6$ can be factorized in exactly 4 ways, namely $6=2\cdot 3=3\cdot2=(-2)\cdot (-3)=(-3) \cdot (-2)$. Some well-known rings of integers are the Gaussian integers $\Z[i]=\{a+b i : a,b, \in \Z\}$ (where $i^2=-1$), the Eisenstein integers $\Z[(1+\sqrt{-3})/2]$, and the %``real'' quadratic 
 ring $\Z[\sqrt{2}]$. In fact, these examples are UFDs, but this is certainly not true for all rings of integers. For example, unique factorization \emph{does not} hold in $\Z[\sqrt{-5}]$% is \emph{not} a UFD
@@ -207,9 +207,10 @@ It turns out that this procedure can be %extended of defining the group of fract
 performed for every ring of integers $\OK$. The fundamental theoretical notion beneath this construction is that of Dedekind domain: these are integral domains $D$ which are Noetherian (every ideal of $D$ is finitely generated), integrally closed (if an element $x$ in the fraction field of $D$ is a root of a monic polynomial with coefficients in $D$, then actually $x \in D$), and of Krull dimension at most $1$ (every nonzero prime ideal of $D$ is maximal).
 %It can be proved that considering the group of invertible ideals of $\OK$, embedding $K^\times$ into the latter group% of invertible ideals
 %, and then taking the quotient makes sense in every Dedekind domain. This quotient group we call the \emph{ideal class group} $\Cl_D$ of the Dedekind domain $D$. %the procedure of 
-It can be proved that the nonzero fractional ideals of $\OK$ again form a group. 
+It can be proved that the nonzero fractional ideals of $D$ %$\OK$
+again form a group, and the quotient of this group by the image of the natural embedding of $\Frac D^\times$ is called the \emph{(ideal) class group} $\Cl_{D}$.
 %REMARK: Of course we could also take the invertible fractional ideals (in any domain), which a priori form a group, but the former probably ties in better with the previous paragraph, and also illustrates a nontrivial theorem.
-The quotient of this group by the natural embedding of $K^\times$ into it is called the \emph{(ideal) class group} $\Cl_{OK}$. This construction generalized to any Dedekind domain $D$, giving rise to its class group $\Cl_D$.
+%The quotient of this group by the natural embedding of $K^\times$ into it is called the \emph{(ideal) class group} $\Cl_{OK}$. This construction generalized to any Dedekind domain $D$, giving rise to its class group $\Cl_D$.
 
 What is arithmetically crucial is the theorem ensuring that the ring of integers $\OK$ of every number field $K$ is a Dedekind domain, and that in this case the class group $\Cl_{\OK}$ is actually \emph{finite}. In particular, $\Cl_{\OK}$ can be seen as ``measuring'' by what extent ideals of $\OK$ are far from being generated by a single element and hence, in turn, as a measure of the failure of unique factorization: somewhat intuitively, the smaller the class group, the fewer factorizations are possible. In particular, as long as we are concerned with ``uniqueness'' of factorization, and with measuring the lack thereof, already the \emph{order} of $\Cl_{\OK}$, called \emph{the class number} of $K$, is a tremendously interesting arithmetic feature.
  

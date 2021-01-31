@@ -1,5 +1,12 @@
 \begin{thebibliography}{10}
 
+\bibitem{Artin-Whaples}
+Emil Artin and George Whaples.
+\newblock Axiomatic characterization of fields by the product formula for
+  valuations.
+\newblock {\em Bull. Amer. Math. Soc.}, 51(7):469--492, 07 1945.
+\newblock URL: \url{https://projecteuclid.org:443/euclid.bams/1183507128}.
+
 \bibitem{algebraic-numbers-metamath}
 Mario Carneiro.
 \newblock Definition \texttt{df-aa}.
@@ -45,6 +52,13 @@ Leonardo de~Moura, Soonho Kong, Jeremy Avigad, Floris van Doorn, and Jakob von
 David~S. Dummit and Richard~M. Foote.
 \newblock {\em Abstract algebra}.
 \newblock John Wiley \& Sons, Inc., Hoboken, NJ, third edition, 2004.
+
+\bibitem{Minkowskis_Theorem-AFP}
+Manuel Eberl.
+\newblock Minkowski's theorem.
+\newblock {\em Archive of Formal Proofs}, July 2017.
+\newblock \url{https://isa-afp.org/entries/Minkowskis_Theorem.html}, Formal
+  proof development.
 
 \bibitem{Eberl19}
 Manuel Eberl.
@@ -95,6 +109,11 @@ Adam Grabowski, Artur Kornilowicz, and Christoph Schwarzweller.
   Proceedings of the 2016 Federated Conference on Computer Science and
   Information Systems}, volume~8 of {\em ACSIS}, pages 363--371, 2016.
 
+\bibitem{Ireland-Rosen}
+K.~Ireland and M.~Roosen.
+\newblock {\em A Classical Introduction to Modern Number Theory}.
+\newblock Springer-Verlag New York, 2 edition, 1990.
+
 \bibitem{mathcomp}
 Assia Mahboubi and Enrico Tassi.
 \newblock {\em The Mathematical Components Libraries}.
@@ -116,6 +135,13 @@ J\"{u}rgen Neukirch.
   Schappacher, With a foreword by G. Harder.
 \newblock \href {https://doi.org/10.1007/978-3-662-03983-0}
   {\path{doi:10.1007/978-3-662-03983-0}}.
+
+\bibitem{Stasinski}
+Alexander Stasinski.
+\newblock A uniform proof of the finiteness of the class group of a global
+  field.
+\newblock {\em to appear in Amer. Math. Monthly}.
+\newblock URL: \url{https://arxiv.org/abs/1909.07121}.
 
 \bibitem{mathlib}
 {The mathlib Community}.

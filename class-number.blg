@@ -8,44 +8,46 @@ Reallocated glb_str_end (elt_size=4) to 20 items from 10.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Database file #1: lean.bib
-You've used 20 entries,
+Warning--empty year in Stasinski
+You've used 24 entries,
             2882 wiz_defined-function locations,
-            765 strings with 9184 characters,
-and the built_in function-call counts, 9643 in all, are:
-= -- 1007
-> -- 328
+            793 strings with 9881 characters,
+and the built_in function-call counts, 11178 in all, are:
+= -- 1169
+> -- 375
 < -- 14
-+ -- 120
-- -- 95
-* -- 503
-:= -- 1323
-add.period$ -- 77
-call.type$ -- 20
-change.case$ -- 97
++ -- 138
+- -- 107
+* -- 575
+:= -- 1540
+add.period$ -- 92
+call.type$ -- 24
+change.case$ -- 115
 chr.to.int$ -- 0
-cite$ -- 20
-duplicate$ -- 315
-empty$ -- 933
-format.name$ -- 95
-if$ -- 2552
+cite$ -- 25
+duplicate$ -- 362
+empty$ -- 1088
+format.name$ -- 107
+if$ -- 2962
 int.to.chr$ -- 0
-int.to.str$ -- 20
-missing$ -- 19
-newline$ -- 114
-num.names$ -- 50
-pop$ -- 237
+int.to.str$ -- 24
+missing$ -- 24
+newline$ -- 137
+num.names$ -- 58
+pop$ -- 277
 preamble$ -- 1
-purify$ -- 81
+purify$ -- 95
 quote$ -- 0
-skip$ -- 698
+skip$ -- 818
 stack$ -- 0
-substring$ -- 370
-swap$ -- 133
+substring$ -- 417
+swap$ -- 137
 text.length$ -- 14
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 72
-warning$ -- 0
-while$ -- 67
-width$ -- 22
-write$ -- 246
+type$ -- 86
+warning$ -- 1
+while$ -- 77
+width$ -- 26
+write$ -- 293
+(There was 1 warning)
