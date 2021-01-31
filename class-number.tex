@@ -257,8 +257,8 @@ Thus, some coercion is always needed to go from the original definition of $\Q$ 
 Moreover, such an approach loses flexibility since we need to fix the top field, of which all others are subfields, at the start of our development and cannot adjoin more elements when needed.
 
 Instead, we formalize results about field extensions by parametrization.
-The lemma statement is parametrized over arbitrary types $K$ and $L$ with a field structure,
-along with the hypothesis ``$L$ is a field extension of $K$'', represented by an instance parameter \lean{[algebra K L]}.
+The fields $K$ and $L$ are represented by arbitrary types
+and the hypothesis ``$L$ is a field extension of $K$'' is represented by an instance parameter \lean{[algebra K L]}.
 This provides us with a canonical ring homomorphism $\lean{algebra\_map K L} : K \to L$; this map is injective because $K$ and $L$ are fields.
 In other words, field extensions are given by their canonical embeddings.
 
