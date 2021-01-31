@@ -349,11 +349,12 @@ one quotients by the equivalence relation stating that $(\alpha a, \alpha b) \si
 It can easily be proved that the ring structure on $R$ extends uniquely to a ring structure turning $\Frac R$ into a field.
 When $R=\Z$, this yields the traditional description of $\Q$ as the set of equivalence classes of fractions, where $\frac{2}{3}=\frac{-4}{-6}$, etc.
 The drawback of this construction is that there are many other fields that can serve as the field of fractions for the same ring.
-For instance, although there is an isomorphism of $\Frac \C[\![t]\!]$ with the field
-\[
-\C(\!(t)\!)=\Big\{\sum_{i=a}^{+\infty} a_it^i\quad\text{ with }a \in \Z\Big\}
-\]
-of Laurent series, there is no (definitional) equality between the types. Another example comes from the field
+%For instance, although there is an isomorphism of $\Frac \C[\![t]\!]$ with the field
+%\[
+%\C(\!(t)\!)=\Big\{\sum_{i=a}^{+\infty} a_it^i\quad\text{ with }a \in \Z\Big\}
+%\]
+%of Laurent series, there is no (definitional) equality between the types. Another example comes from the field
+Consider for instance the field 
 \[
 \Q(i)=\{z \in \C : \Re z \in \Q, \Im z\in\Q\}
 \]
@@ -493,7 +494,7 @@ It is still possible to exclude fields in a theorem by adding an extra hypothesi
 
 The ``main'' definition was chosen to be \lean{is\_dedekind\_domain},
 since this condition is usually the one checked in practice~\cite{Neukirch}.
-The other two equivalent definitions were added \mathlib, before the proof they are indeed equivalent.
+The other two equivalent definitions were added to \mathlib, but before formalizing the proof that they are indeed equivalent.
 Having multiple definitions allowed us to do our work in parallel without depending on unformalized results.
 For example,
 the proof of unique ideal factorization in a Dedekind domain initially assumed \lean{is\_dedekind\_domain\_inv D},
@@ -574,7 +575,7 @@ noncomputable instance [is_dedekind_domain D] (g : fraction_map D F) :
 \end{lstlisting}
 asserting that the inverse of any fractional ideal $I$ (defined as another fractional ideal $J$ such that $I\ast J=1$)---which always exists thanks to the \lean{lemma fractional\_ideal.is\_unit}---is unique and coincides with $1/I$.
 
-Two remarks are in order. The first is that in \lean{lemma fractional\_ideal.is\_unit} the hypothesis \lean{(hne : $I \ne \bot)$} that $I$ be non-zero is added, and apparently dropped in the \lean{has\_inv} instance: this reflects the existence of the typeclass \lean{group\_with\_zero} in \mathlib, consisting of groups endowed with an extra element \lean{0} whose inverse is again \lean{0}. In particular, the zero fractional ideal is invertible (in the \mathlib sense) but is not a unit, leading to the strange phenomenon above. Even more fundamentally, the fact that~\eqref{eq:mul_div_frac_ideals} might fail to hold in certain circumstances shows that, for general domains, $1/I\neq I^{-1}$. Since \lean{a / b} used to have the built-in definition $a / b = a \ast b^{-1}$, the notation $1 / I$, defined for every non-zero $I$, was conflicting with the fact that $I$ might not be invertible. Since, for Dedekind domains, we wanted to \emph{define} $I^{-1}$ as $1 / I$, a major refactor of a core definition was needed. In particular, to break the circularity, we had to weaken the definitional equality to a proposition; this involved many small changes throughout \mathlib.
+Two remarks are in order. The first is that in \lean{lemma fractional\_ideal.is\_unit} the hypothesis \lean{(hne : $I \ne \bot)$} that $I$ is non-zero is added, and apparently dropped in the \lean{has\_inv} instance: this reflects the existence of the typeclass \lean{group\_with\_zero} in \mathlib, consisting of groups endowed with an extra element \lean{0} whose inverse is again \lean{0}. In particular, the zero fractional ideal is invertible (in the \mathlib sense) but is not a unit, leading to the strange phenomenon above. Even more fundamentally, the fact that~\eqref{eq:mul_div_frac_ideals} might fail to hold in certain circumstances shows that, for general domains, $1/I\neq I^{-1}$. Since \lean{a / b} used to have the built-in definition $a / b = a \ast b^{-1}$, the notation $1 / I$, defined for every non-zero $I$, was conflicting with the fact that $I$ might not be invertible. Since, for Dedekind domains, we wanted to \emph{define} $I^{-1}$ as $1 / I$, a major refactor of a core definition was needed. In particular, to break the circularity, we had to weaken the definitional equality to a proposition; this involved many small changes throughout \mathlib.
 %
 %\bigskip
 %END?
@@ -627,7 +628,7 @@ The proofs for being integrally closed and of dimension being less than or equal
 Proving the Noetherian condition was the most challenging. In the original proof by Fr\"ohlich, he considers elements $a_1, \dots, a_n \in I$ and $b_1, \dots, b_n \in I^{-1}$ for any nonempty fractional ideal $I$,
 satisfying $ \sum_i a_i b_i = 1 $.
 However, it is quite challenging to prove that an element of the product of two $D$-submodules $M$ and $N$ must be of the form $\sum_{i = 1}^m a_i*b_i$, for $a_i \in A$ and $b_i \in B$ for all $1 \leq i \leq m$.
-Instead, we show that, for every element of an ideal, there exists a \lean{s : finset D} whose span is contained in the ideal, and which contains the element.
+Instead, we show that, for every element of an ideal, there exists an \lean{s : finset D} whose span is contained in the ideal, and which contains the element.
 This is accomplished by the lemma \lean{submodule.mem\_span\_mul\_finite\_of\_mem\_span\_mul}.
 Now considering an ideal $I$ of the ring $D$, due to its invertibility (as a fractional ideal), by \lean{submodule.mem\_span\_mul\_finite\_of\_mem\_span\_mul}, we obtain finite sets $T \subset I$ and $T' \subset 1/I$ of type \lean{finset D}, such that 1 is contained in the $D$-span of $T*T'$. With coercions, the actual statement of the latter expression in Lean is \lean{↑T' ⊆ ↑↑(1 / ↑s)}, which reads :
 
@@ -647,7 +648,7 @@ from where it becomes apparent that, over and over again, we had to carefully di
 
 The proof of the above result relies on the lemma \lean{exists\_not\_mem\_one\_of\_ne\_bot}, which says that for every non-trivial ideal $0\lneq I\lneq D$, there exists an element in the field $F$ which is not integral (so, not in $\lean{f.range}$) but lies in $1/I$. This depends crucially on $D$ being Noetherian, since the proof begins by invoking that every non-zero ideal in a Noetherian ring contains a product of non-zero prime ideals. This result was not previously available in \mathlib, and we formalized it as \lean{exists\_prime\_spectrum\_prod\_le\_and\_ne\_bot\_of\_domain}. It is when applying this that the dimension condition shows its full force: the constructed prime ideal, being non-zero, will be maximal because the Krull dimension of $D$ is at most $1$; from this, the conclusion follows straightforwardly. Having the above lemma at our disposal, we can prove that every ideal $I\ne 0$ is invertible by arguing by contradiction: if $I\ast 1/I\lneq D$, we can find an element $x\in F\setminus f(R)$ which is in $1/(1\ast 1/I)$ thanks to \lean{exists\_not\_mem\_one\_of\_ne\_bot} and some easy algebraic manipulation will imply that $x$ is actually integral over $D$. Since $D$ is integrally closed, it must lie in $f(D)$, contradicting its construction.
 
-The final step, when we prove that invertibility of ideals implies that of fractional ones as well, was easy: the material developed for the general theory of \lean{fractional\_ideals f} allowed to smoothly deduce that a fractional ideal $J$ must be invertible as soon as a certain multiple $xJ$ of it is, and since there always exists a $\lean{x : D}$ satisfying the latter condition (because $xJ$ can be made into a ``usual'' ideal), this leads to the final \lean{lemma fractional\_ideal.is\_unit} quoted above.
+The final step, when we prove that invertibility of ideals implies that of fractional ones as well, was easy: the material developed for the general theory of \lean{fractional\_ideals f} allowed to smoothly deduce that a fractional ideal $J$ must be invertible as soon as a certain multiple $xJ$ of it is, and since there always exists an $\lean{x : D}$ satisfying the latter condition (because $xJ$ can be made into a ``usual'' ideal), this leads to the final \lean{lemma fractional\_ideal.is\_unit} quoted above.
 %The proof goes along these lines: we differentiate into cases when the Dedekind domain $A$ is and is not a field.
 %This is done because our main argument requires that every non-zero ideal must contain a product of non-zero prime ideals (\lean{exists\_prime\_spectrum\_prod\_le\_and\_ne\_bot\_of\_domain}),
 %and fields don't have non-zero prime ideals.
