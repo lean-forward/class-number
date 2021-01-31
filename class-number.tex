@@ -931,25 +931,23 @@ All in all this seems a tedious though reasonable project.
 with bounded discriminant~\cite[Theorem 2.16]{Neukirch}. This would be significantly more involved than the previous items and would require, amongst other things, setting up a lot of ramification theory (which is very important for algebraic number theory).
 %Also, Minkowski's lattice point theorem now becomes more essential (as far as we are aware).
 As usual, there are analogue results in the function field setting, though they are less straightforward. One reason being that the nondegenerateness of the trace form from Section~\ref{sec:trace-form} does not hold any more when the separability condition is dropped.
-\item Computational aspect. Our formalization lays some foundations to the verification of number theoretic software,
-such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}. Verifying computations for class groups, or just class numbers, in the case of ``small'' (e.g. some quadratic) number fields, looks within reach. Of course, getting really efficient algorithms (or certificates), is a hard research topic. 
+\item From a computational point of view, our formalization lays some foundations to the verification of number theoretic software, such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}. Verifying computations for class groups, or just class numbers, in the case of ``small'' (say, quadratic) number fields, looks within reach. Of course, getting really efficient algorithms (or certificates), is a hard research topic. 
 % Which relates to the ERC consolidator grant of Assia Mahboubi..
-\item Number theoretic applications. All of the above items consider theoretical of computational aspects within algebraic number theory itself. There are many applications of these, e.g. solving Diophantine equations. Solving Mordell equations, i.e. for a given nonzero integer $D$ determining all pairs of integers $(x,y)$ such that $y^2=x^3+D$, could be an interesting first case study (dealing with some values of $D$ where elementary methods fail).
+\item %Number theoretic applications.
+ All the above items consider theoretical or computational aspects within algebraic number theory itself. There are many applications of these, for instance solving Diophantine equations. Solving Mordell equations, which asks for determining all pairs of integers $(x,y)$ such that $y^2=x^3+D$ for a given nonzero $D\in\Z$, could be an interesting first case study. Dealing with some values of $D$ where elementary methods fail would already be interesting.
 \end{itemize}
 
 \subsection{Conclusion}
 
-In this project, we found that the rule holds that the hardest part of formalization is to get the definitions just right.
+In this project, we confirmed the rule that the hardest part of formalization is to get the definitions right.
 Once this is accomplished, the informal proof almost always translated to a formal proof without too much effort.
 % Informal mathematics effortlessly switches between different viewpoints, choosing whichever suits the situation best.
-In particular, we regularly had to invent abstractions to treat instances the ``same'' situation uniformly.
-Instead of fixing a canonical representation such $K \subseteq L \subseteq F$ as subfields, $\Frac F$ as the field of fractions, or $K(\alpha)$ as the simple field extension,
-we find that making the essence of the situation an explicit parameter, as in \lean{is\_scalar\_tower}, \lean{fraction\_map} or \lean{power\_basis},
-treats equivalent viewpoints uniformly without the need for transferring results.
+In particular, we regularly had to invent abstractions in order to treat instances of the ``same'' situation uniformly.
+Instead of fixing a canonical representation, be it $K \subseteq L \subseteq F$ as subfields, or the field of fractions $\Frac R$, or the monogenic $K(\alpha)$, we found that making the essence of the situation an explicit parameter, as in \lean{is\_scalar\_tower}, \lean{fraction\_map} or \lean{power\_basis},
+allows to treat equivalent viewpoints uniformly without the need for transferring results.
 
 The formalization efforts described in this paper cannot be cleanly separated from the development of \mathlib as a whole.
-The decentralized organization and highly integrated design of \mathlib meant we could contribute our formalizations as we completed them,
-resulting in a quick integration into the rest of the library.
+The decentralized organization and highly integrated design of \mathlib meant that we could contribute our formalizations as we completed them, resulting in a quick integration into the rest of the library.
 Other contributors building on these results often extended them to meet our requirements,
 before we could identify that we needed them, as the anecdote in Section \ref{sec:subobjects} illustrates.
 In other words, the low barriers for contributions ensured mutually beneficial collaboration.
