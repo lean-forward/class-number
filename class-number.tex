@@ -98,7 +98,7 @@ and mathlib's decentralized collaboration processes involved in this project.
 \section{Introduction}
 
 In its basic form, number theory studies properties of the integers $\Z$
-%(say as a set together with the \lq standard\rq\ addition and multiplication operations)
+%(say as a set together with the ``standard'' addition and multiplication operations)
 and its fraction field, the rational numbers $\Q$.\footnote{From a classical point of view, one could even argue that the positive, or perhaps nonnegative, integers and rational numbers are the most basic objects of study of number theory. From an algebraic point of view, this would still quickly lead into studying $\Z$ and $\Q$.}
 Both for the sake of generalization, as well as for providing powerful techniques to answer questions about the original objects $\Z$ and $\Q$,
 it is worthwhile to study finite extensions of $\Q$, called \emph{number fields}, as well as their so called \emph{rings of integers} (defined in Section~\ref{sec math background} below),
@@ -824,11 +824,11 @@ The formalization setup we are after is not only the finiteness of $\Cl_R$, but 
 While there exist analogues of Minkowski's theorem in the function field setting, which can be used for proving finiteness of $\Cl_S$, formalizing this approach would be quite involved and would also not give a very uniform proof of the finiteness of $\Cl_R$ and  $\Cl_S$.
 Instead we were inspired by a more classical approach to the finiteness of $\Cl_R$, where the use of Minkowski's theorem is replaced by the box principle. This approach seems to go back to Kronecker
 %\footnote{\url{https://mathoverflow.net/questions/19021/avoiding-minkowskis-theorem-in-algebraic-number-theory/19035#19035}}
-and can e.g. be found in~\cite{Ireland-Rosen}. For the formalization in Lean, we adapted and generalized this approach, so that on the one hand most ingredients became more \mathlib \lq friendly\rq\ (by e.g. avoiding unnecessary field extensions, as used for example in norm estimates), and on the other hand it works in the function field setting as well.
+and can e.g. be found in~\cite{Ireland-Rosen}. For the formalization in Lean, we adapted and generalized this approach, so that on the one hand most ingredients became more \mathlib ``friendly'' (by e.g. avoiding unnecessary field extensions, as used for example in norm estimates), and on the other hand it works in the function field setting as well.
 %TODO?: IF(....) there is space, we could elaborate on such an example
-We note that some other \lq uniforms\rq\ approaches can be found in~\cite{Artin-Whaples} and~\cite{Stasinski}. 
+We note that some other ``uniforms'' approaches can be found in~\cite{Artin-Whaples} and~\cite{Stasinski}. 
 
-In our approach, we axiomatized some \lq admissibility\rq\ condition on the base Dedekind domain.
+In our approach, we axiomatized some ``admissibility'' condition on the base Dedekind domain.
 For a Euclidean domain $R$ (i.e. \lean{variables {R : Type*} [euclidean\_domain R]}),
 we introduced an \lean{admissible\_absolute\_value R},
 roughly speaking as a Euclidean absolute value  \lean{R → Z}
@@ -843,7 +843,7 @@ structure admissible_absolute_value (R : Type*) [euclidean_domain R]
                      ∃ (t : fin n → fin (card ε)),
                      ∀ i₀ i₁, t i₀ = t i₁ → (to_fun (A i₁ % b - A i₀ % b) : ℝ) < to_fun b • ε)
 \end{lstlisting}
-From a purely mathematical point of view, an equivalent formulation of the admissibility condition not involving the devision with remainder would have probably been \lq cleaner\rq. But for our formalization work we chose to use the formualtion above, since this applies more directly to proving finiteness of the class number. Indeed, we formalized a proof that if \lean{R} is a Dedekind domain with an admissible absolute value, then the integral closure of \lean{R} in a finite separable field extension of its field of fractions (which is a Dedekind domain) has finite class group. An important intermediate step is to get some generalized division with remainder result:
+From a purely mathematical point of view, an equivalent formulation of the admissibility condition not involving the devision with remainder would have probably been ``cleaner''. But for our formalization work we chose to use the formualtion above, since this applies more directly to proving finiteness of the class number. Indeed, we formalized a proof that if \lean{R} is a Dedekind domain with an admissible absolute value, then the integral closure of \lean{R} in a finite separable field extension of its field of fractions (which is a Dedekind domain) has finite class group. An important intermediate step is to get some generalized division with remainder result:
 
 %\begin{lstlisting}
 %theorem exists_mem_finset_approx [decidable_eq R]
@@ -862,7 +862,7 @@ where \lean{variables (abs : admissible\_absolute\_value R)}.
 After this, the proof to getting to finiteness of the class group is basically the classical approach mentioned above; and with enough ingredients already formalized, the formalization went smoothly.
 %TODO: Is this the place to say something like that?
 
-What's left to do is formalize that for $R=\Z$ and $R=\mathbb{F}_q[t]$ (where $\mathbb{F}_q$ denotes a finite field with $q$ elements) have admissible absolute values. The Archimedean absolute value on $\Z$ does the job (which is straightforward to formalize), and the analogue \lq degree\rq\ absolute value $|f|_{\deg}:=q^{\deg f}$ for $f \in \mathbb{F}_q[t]$ works in the function field setting (which is somewhat more involved). (Note that these absolute values coincide with cardinalities in corresponding residue rings, but we do not need this result.)
+What's left to do is formalize that for $R=\Z$ and $R=\mathbb{F}_q[t]$ (where $\mathbb{F}_q$ denotes a finite field with $q$ elements) have admissible absolute values. The Archimedean absolute value on $\Z$ does the job (which is straightforward to formalize), and the analogue ``degree'' absolute value $|f|_{\deg}:=q^{\deg f}$ for $f \in \mathbb{F}_q[t]$ works in the function field setting (which is somewhat more involved). (Note that these absolute values coincide with cardinalities in corresponding residue rings, but we do not need this result.)
 Tying together all previous results, we get to the finiteness results for class groups of global fields.
 
 %TODO:
@@ -895,7 +895,7 @@ Al in all this seems a tedious though reasonable project.
 %Also, Minkowski's lattice point theorem now becomes more essential (as far as we are aware).
 As usual, there are analogue results in the function field setting, though they are less straightforward. One reason being that the nondegenerateness of the trace form from Section~\ref{sec:trace-form} does not hold any more when the separability condition is dropped.
 \item Computational aspect. Our formalization lays some foundations to the verification of number theoretic software,
-such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}. Verifying computations for class groups, or just class numbers, in the case of \lq small\rq\ (e.g. some quadratic) number fields, looks within reach. Of course, getting really efficient algorithms (or certificates), is a hard research topic. 
+such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}. Verifying computations for class groups, or just class numbers, in the case of ``small'' (e.g. some quadratic) number fields, looks within reach. Of course, getting really efficient algorithms (or certificates), is a hard research topic. 
 % Which relates to the ERC consolidator grant of Assia Mahboubi..
 \item Number theoretic applications. All of the above items consider theoretical of computational aspects within algebraic number theory itself. There are many applications of these, e.g. solving Diophantine equations. Solving Mordell equations, i.e. for a given nonzero integer $D$ determining all pairs of integers $(x,y)$ such that $y^2=x^3+D$, could be an interesting first case study (dealing with some values of $D$ where elementary methods fail).
 \end{itemize}
