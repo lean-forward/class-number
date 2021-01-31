@@ -262,15 +262,8 @@ In type theory we cannot define $\Q$ as a subset of $\C$ since we need $\Q$ to d
 Thus, some coercion is always needed to go from the original definition of $\Q$ to its image in $\C$; and similar issues arise for other subfields that were not originally defined as such.
 Moreover, such an approach loses flexibility since we need to fix the top field, of which all others are subfields, at the start of our development and cannot adjoin more elements when needed.
 
-Instead, we formalize results about field extensions by parametrization.
-<<<<<<< HEAD
-The lemma statement is parametrized over arbitrary types $K$ and $L$ with a field structure,%TODO : There is something strange going on here....
-along with the hypothesis ``$L$ is a field extension of $K$'', represented by an instance parameter \lean{[algebra K L]}.
-=======
-The fields $K$ and $L$ are represented by arbitrary types
-and the hypothesis ``$L$ is a field extension of $K$'' is represented by an instance parameter \lean{[algebra K L]}.
->>>>>>> d9fa398bca1dda9f9cda1ba2881dd2430c76c305
-This provides us with a canonical ring homomorphism $\lean{algebra\_map K L} : K \to L$; this map is injective because $K$ and $L$ are fields.
+Instead, we formalize results about field extensions by parametrization. The fields $K$ and $L$ are represented by arbitrary types
+and the hypothesis ``$L$ is a field extension of $K$'' is represented by an instance parameter \lean{[algebra K L]}. This provides us with a canonical ring homomorphism $\lean{algebra\_map K L} : K \to L$; this map is injective because $K$ and $L$ are fields.
 In other words, field extensions are given by their canonical embeddings.
 
 \subsection{Scalar towers} \label{sec:scalar_tower}
