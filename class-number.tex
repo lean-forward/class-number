@@ -710,8 +710,8 @@ This gives us the required lemma \lean{unique\_factorization\_monoid.integrally\
 
 %An important class of Dedekind domains consists of the rings of integers of number fields.%TODO Haven't we said this already at the beginning?
 
-Recall that we defined the ring of integers of a number field $K$ as the integral closure of $\Z$ in $K$.
-We proved a stronger result: give a Dedekind domain $D$ and a field of fractions $F$, if $L$ is a finite separable extension of $F$, then the integral closure of $D$ in $L$ is a Dedekind domain with fraction field $L$.
+An important classical result in algebraic number theory, is that the ring of integers of a number field $K$, defined as the integral closure of $\Z$ in $K$, is a Dedekind domain.
+We formalized a stronger result: given a Dedekind domain $D$ and a field of fractions $F$, if $L$ is a finite separable extension of $F$, then the integral closure of $D$ in $L$ is a Dedekind domain with fraction field $L$.
 Our approach adapts \cite[Theorem~3.1]{Neukirch}.
 Throughout this section, let $D$ be a Dedekind domain with a field of fractions $F$ (given by the map $f \colon D \to F$), $L$ a finite, separable field extension of $F$ and let $S$ denote the integral closure of $D$ in $L$.
 % corresponding to the following Lean declarations:
@@ -770,7 +770,7 @@ This definition is marked noncomputable since \lean{linear\_map.trace} makes a c
 choosing an arbitrary basis if one exists and returning $0$ otherwise.
 This latter case does not occur in our development.
 
-The \emph{trace form} is a $F$-bilinear form on $L$, mapping $x, y : L$ to $\Tr(xy)$.
+The \emph{trace form} is an $F$-bilinear form on $L$, mapping $x, y : L$ to $\Tr(xy)$.
 \begin{lstlisting}
 noncomputable def trace_form : bilin_form F L :=
 { bilin := λ x y, trace F L (x * y), .. /- proofs omitted -/ }
