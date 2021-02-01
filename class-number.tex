@@ -585,11 +585,11 @@ Beware that the notation $1/I$ might be misleading here: indeed, for general int
 On the other hand, we formalized that this equality holds for Dedekind domains (see Section~\ref{sec:equivalence}) in the following
 \begin{lstlisting}
   lemma fractional_ideal.is_unit {hD : is_dedekind_domain D}
-    (I : fractional_ideal f) (hne : I ≠ ⊥) : is_unit I :=
-  \end{lstlisting}
+    (I : fractional_ideal f) (hne : I ≠ ⊥) : is_unit I
+\end{lstlisting}
 This justifies the notation $I^{-1}=1/I$. In fact, we define this notation even for the ideal $0$, by declaring that $0^{-1}=0$. This reflects the existence of the typeclass \lean{group\_with\_zero} in \mathlib, consisting of groups endowed with an extra element \lean{0} whose inverse is again \lean{0}. %In particular, the zero fractional ideal is invertible (in the \mathlib sense) but is not a unit, leading to the strange phenomenon above. %Moreover, the fact that~\eqref{eq:mul_div_frac_ideals} might fail to hold in certain circumstances shows that, for general domains, $1/I\neq I^{-1}$. 
 
-Moreover, \mathlib used to define \lean{$a / b := a * b^{-1}$} but our definition of $I^{-1} = 1 / I$ would cause circularity. This led us to a major refactor of this core definition. In particular, we had to weaken the definitional equality to a proposition ; this involved many small changes throughout \mathlib.
+Moreover, \mathlib used to define \lean{$a / b := a * b^{-1}$} but our definition of $I^{-1} = 1 / I$ would cause circularity. This led us to a major refactor of this core definition. In particular, we had to weaken the definitional equality to a proposition; this involved many small changes throughout \mathlib.
 
 
 
@@ -787,8 +787,8 @@ and use a result already available in \mathlib that a prime ideal $I$ in an inte
 lemma is_maximal_of_is_integral_of_is_maximal_comap
   (I : ideal S) [is_prime I]
   (hI : is_maximal (comap f I)) : is_maximal I
-
-theorem is_prime.comap (I : ideal S) [hI : is_prime I] : is_prime (comap f I)
+theorem is_prime.comap (I : ideal S) [hI : is_prime I] :
+  is_prime (comap f I)
 \end{lstlisting}
 
 The final condition, that the integral closure $S$ of $D$ in $L$ is a Noetherian ring, requires the most work.
@@ -797,19 +797,19 @@ so that it suffices to find a nondegenerate bilinear form $B$ such that all inte
 We formalized the results in \cite[\S\S~2.5--2.8]{Neukirch}, to show the \emph{trace form} is a bilinear form satisfying these requirements.
 
 \subsection{The trace form}\label{sec:trace-form}
-Retaining notations from the previous section, we have a bilinear form \lean{lmul = $\lambda$ x y : S, xy}.
-The trace of the linear map \lean{lmul x} is called the \emph{algebra trace} $\Tr_{L / F}(x)$ of $x$
+In the notation from the previous section, consider the bilinear form \lean{lmul := $\lambda$ x y $:$ S, x~*~y}.
+The trace of the linear map \lean{lmul x} is called the \emph{algebra trace} $\Tr_{L / F}(x)$ of $x$.
 We define the algebra trace\footnote{In fact, we define the trace and trace form for any algebra over a commutative ring.
 For simplicity of exposition in this paper we will only consider finite extensions of fields.} as a linear map from $L$ to $F$:
 \begin{lstlisting}
 noncomputable def trace : L →ₗ[F] F :=
-(linear_map.trace F L).comp (lmul F L).to_linear_map
+linear_map.comp (linear_map.trace F L) (to_linear_map (lmul F L))
 \end{lstlisting}
 This definition is marked noncomputable since \lean{linear\_map.trace} makes a case distinction on the existence of a basis,
 choosing an arbitrary basis if one exists and returning $0$ otherwise.
 This latter case does not occur in our development.
 
-The \emph{trace form} is an $F$-bilinear form on $L$, mapping $x, y : L$ to $\Tr(xy)$.
+The \emph{trace form} is an $F$-bilinear form on $L$, mapping $x, y : L$ to $\Tr_{L/F}(xy)$.
 \begin{lstlisting}
 noncomputable def trace_form : bilin_form F L :=
 { bilin := λ x y, trace F L (x * y), .. /- proofs omitted -/ }
@@ -818,7 +818,7 @@ noncomputable def trace_form : bilin_form F L :=
  %% We are only considering trace forms of finite field extensions in this paper.
 In the following, let $E / L / F$ be a tower of finite extensions of fields, namely we assume \lean{[algebra E L] [algebra L F] [algebra E F] [is\_scalar\_tower E L F]}, as described in Section~\ref{sec:scalar_tower}.
 
-The value of the trace depends on the choice of $E$ and $L$; we formalized this as lemmas \lean{trace\_algebra\_map x:trace E L (algebra\_map E L x) = findim E L • x} as well as \lean{trace\_comp L x:trace E F x = trace E L (trace L F x)}.
+The value of the trace depends on the choice of $E$ and $L$; we formalized this as lemmas \lean{trace\_algebra\_map x $:$ trace E L (algebra\_map E L x) = findim E L • x} as well as \lean{trace\_comp L x $:$ trace E F x = trace E L (trace L F x)}.
 %Since a basis $b : \iota \to L$ for $K : L$ and a basis $c : \kappa \to F$ for $L : F$ induce a basis $b \cdot c : \iota \times \kappa \to F$ for $K : F$,
 These results follow by direct computation.
 
@@ -831,7 +831,7 @@ giving the following lemma statement:
 lemma power_basis.trace_gen_eq_sum_roots (pb : power_basis F L)
   (h : polynomial.splits (algebra_map F E) pb.minpoly_gen) :
   algebra_map F E (trace F L pb.gen) =
-    (pb.minpoly_gen.map (algebra_map F E)).roots.sum
+    sum (roots (map (algebra_map F E) pb.minpoly_gen))
 \end{lstlisting}
 %Applying this result to a specific $x$ is then a question of applying it to the power basis for $K(x)$ generated by $x$, to give:
 %\begin{lstlisting}
@@ -847,11 +847,10 @@ and for an arbitrary finite separable extension $L / F$ later in the proof.
 The elements of \lean{(pb.minpoly\_gen.map (algebra\_map F E)).roots} are called \emph{conjugates} of $x$ in $E$.
 Each conjugate of $x$ is integral since it is a root of (the same) monic polynomial,
 and integer multiples and sums of integral elements are integral.
-Combining \lean{trace\_gen\_eq\_sum\_roots} and \lean{trace\_algebra\_map} together shows that the trace of $x$ is an integer multiple (namely \lean{findim F(x) L}) of a sum of conjugate roots, hence we conclude that the trace (and trace form) of an integral element is also integral.
+Combining \lean{trace\_gen\_eq\_sum\_roots} and \lean{trace\_algebra\_map} shows that the trace of $x$ is an integer multiple (namely \lean{findim F(x) L}) of a sum of conjugate roots, hence we conclude that the trace (and trace form) of an integral element is also integral.
 % It would be marginally easier if `is_integral' was just an auxiliary definition for the subalgebra
 % `integral_closure', since subalgebras are closed under sums and smul "for free".
 
-% TODO: the remainder of this section should probably be shortened to one or two paragraphs.
 Finally, we show the trace form is nondegenerate, following~\cite[Proposition~2.8]{Neukirch}.
 Since $L / F$ is a finite, separable field extension, it has a power basis \lean{pb} generated by $x$.
 Letting $x_k$ denote the $k$-th conjugate of $x$ in an algebraically closed field $E / L / F$,
@@ -873,7 +872,7 @@ so the conjugates of $x^{i + j}$ are the $(i + j)$-th powers of conjugates of $x
 Given a Dedekind domain with fraction map $f\colon D\to F$, we formalize the notion of class group in Lean by defining a map \lean{to\_principal\_ideal f:units f.codomain → units (fractional\_ideal f)}, %sending $x : K^\times$ to the principal ideal $\langle x \rangle$,
 and define the class group as
 \begin{lstlisting}
-  def class_group := quotient_group.quotient (to_principal_ideal f.range)
+def class_group := quotient_group.quotient (to_principal_ideal (range f))
 \end{lstlisting}
 % to be the quotient group modulo \lean{to\_principal\_ideal.range}.
 %Or equivalently, if the domain $R$ is Dedekind, the nonzero ideals of $R$ modulo the nonzero elements of $R$.
@@ -893,7 +892,8 @@ and can be found, for instance, in~\cite{Ireland-Rosen}.
 %so that on the one hand most ingredients became more \mathlib ``friendly'' (by e.g. avoiding unnecessary field extensions, as used for example in norm estimates), and on the other hand it works in the function field setting as well.
 We note that some other ``uniform'' approaches can be found in~\cite{Artin-Whaples} and~\cite{Stasinski}.
 
-Let $D$ be an Euclidean domain: in particular, it will be a PID and hence a Dedekind domain. Given a fraction map $f \colon D \to F$, let $L$ be a finite separable field extension of $F$. We formalize in theorem \lean{class\_group.finite\_of\_admissible} that the integral closure of $D$ in $L$ has a finite class group if $D$ has an ``admissible'' absolute value \lean{abs}.
+Let $D$ be an Euclidean domain: in particular, it will be a PID and hence a Dedekind domain. Given a fraction map $f \colon D \to F$, let $L$ be a finite separable field extension of $F$.
+We formalize in the theorem \lean{class\_group.finite\_of\_admissible} that the integral closure of $D$ in $L$ has a finite class group if $D$ has an ``admissible'' absolute value \lean{abs}.
 %In other words, we require that $R$ is a Dedekind domain with ``division with remainder'' operators \lean{/, \%} and an absolute value operator such that:
 %\begin{align*}
 %	|a \% b| &< |b| & (\lean{mod\_lt}) \\
@@ -906,7 +906,7 @@ Let $D$ be an Euclidean domain: in particular, it will be a PID and hence a Dede
 %                     ∀ i₀ i₁, t i₀ = t i₁ → (to_fun (A i₁ % b - A i₀ % b) : ℝ) < to_fun b • ε)
 %\end{lstlisting}
 Informally, the admissibility conditions require that the remainder operator produces values that are not too far apart.
-Formally, we define the type of admissible absolute values on $D$ as follows, were, \lean{to\_fun} stands for an application of the absolute value operator:
+Formally, we define the type of admissible absolute values on $D$ as follows, where \lean{to\_fun} stands for an application of the absolute value operator:
 \begin{lstlisting}
 structure admissible_absolute_value (D : Type*) [euclidean_domain D]
   extends euclidean_absolute_value D ℤ :=
@@ -942,7 +942,7 @@ class_group.finite_of_admissible K int.fraction_map int.admissible_abs
 variables [is_separable f.codomain K]
 noncomputable instance : fintype
   (class_group (function_field.ring_of_integers.fraction_map f K)) :=
-class_group.finite_of_admissible F f polynomial.admissible_char_pow_degree
+class_group.finite_of_admissible F f polynomial.admissible_card_pow_degree
 \end{lstlisting}
 
 Finally, we define \lean{number\_field.class\_number} and \lean{function\_field.class\_number} as the cardinality of the respective class groups.
