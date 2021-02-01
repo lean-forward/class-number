@@ -371,7 +371,8 @@ Similarly, for $F : \lean{intermediate\_field K L}$, we defined the correspondin
 The fraction field $\Frac R$ of an integral domain $R$ can be defined explicitly as a quotient type as follows:
 starting from the set of pairs $(a,b)$ with $a,b \in R$ such that $b\neq 0$,
 one quotients by the equivalence relation stating that $(\alpha a, \alpha b) \sim (a,b)$ for all $\alpha \ne 0 : R$, writing the equivalence class of $(a,b)$ as $\frac{a}{b}$.
-It can easily be proved that the ring structure on $R$ extends uniquely to a field structure on $\Frac R$. 
+It can easily be proved that the ring structure on $R$ extends uniquely to a field structure on $\Frac R$;
+in \mathlib this construction is called \lean{fraction\_ring R}.
 When $R=\Z$, this yields the traditional description of $\Q$ as the set of equivalence classes of fractions, where $\frac{2}{3}=\frac{-4}{-6}$, etc.
 The drawback of this construction is that there are many other fields that can serve as the field of fractions for the same ring.
 %For instance, although there is an isomorphism of $\Frac \C[\![t]\!]$ with the field
@@ -397,7 +398,7 @@ The conditions on $f$ imply that $F$ is the smallest field containing $R$,
 by showing each injective map $g \colon R \to A$ to a ring $A$ such that $g(x)$ has a multiplicative inverse for all $x \ne 0 : R$,
 can be extended uniquely to a map $F \to A$ compatible with $f$ and $g$.
 In particular, if $f_1 \colon R \to F_1$ and $f_2 \colon R \to F_2$ are fraction maps, they induce an isomorphism $F_1 \simeq F_2$.
-The construction of $\Frac R$ then results in \emph{a} field of fractions rather than \emph{the} field of fractions.
+The construction of $\Frac R$ then results in \emph{a} field of fractions (with fraction map \lean{fraction\_ring.of R}) rather than \emph{the} field of fractions.
 
 % As the notion of \emph{fractional ideals}, which is pivotal to the definition of the (ideal) class group, depends on the choice of an ambient field of fraction $K$ and on the map $f\colon R\to K$, we could either fix a field of fractions (say, $\Frac R$) once and for all, or rather let all our construction be relative to this choice.  As Lean already contained the following
 %\begin{lstlisting}
