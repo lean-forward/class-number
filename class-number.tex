@@ -793,7 +793,7 @@ theorem is_prime.comap (I : ideal S) [hI : is_prime I] : is_prime (comap f I)
 The final condition, that the integral closure $S$ of $D$ in $L$ is a Noetherian ring, requires the most work.
 We start by following the first half of \cite[Theorem~15.29]{Dummit-and-Foote},
 so that it suffices to find a nondegenerate bilinear form $B$ such that all integral $x, y : L$ satisfy $B(x, y) \in \lean{integral\_closure}\ D\ L$.
-We formalized the results in \cite[\S\S~2.5--2.8],{Neukirch} to show the \emph{trace form} is a bilinear form satisfying these requirements.
+We formalized the results in \cite[\S\S~2.5--2.8]{Neukirch}, to show the \emph{trace form} is a bilinear form satisfying these requirements.
 
 \subsection{The trace form}\label{sec:trace-form}
 Retaining notations from the previous section, we have a bilinear form \lean{lmul = $\lambda$ x y : S, xy}.
