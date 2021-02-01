@@ -964,21 +964,34 @@ defining the integer-valued norm on $\Z[i]$ and classifying the prime elements o
 
 \subsection{Future directions}
 
-Having formalized the basics of algebraic number theory, there are several natural directions for future formalization work. These include the following.
-\begin{itemize}
-\item Finiteness of the class group for the ring of integers in all global fields. This would entail dropping the separability condition in the result mentioned in the first paragraph of Section~\ref{sec:integral-closure}, and consequently adapt some of the details in the final steps for the finiteness of the class group in the admissible case. Some basic prerequisites would be setting up some field theory dealing with (finite) inseparable field extensions, especially the purely inseparable ones. 
-All in all this seems a tedious though reasonable project.
-\item Finite generation of the group of units of the ring of integers in a number field, or slightly stronger, Dirichlet's unit theorem~\cite[Theorem 7.4]{Neukirch}. This seems a somewhat more involved, but still reasonable, project. The finite generation result also holds for function fields, so actually it would be nice (and doable) to consider all global fields (which would  involve finite inseparable field extensions, as in the previous item).
-\item Other finiteness results in algebraic number theory, most notably Hermite's theorem about the existence of only finitely many number fields, up to isomorphism,% or embedded in a fixed algebraically closed field containing $\Q$, e.g. $\C$) 
-with bounded discriminant~\cite[Theorem 2.16]{Neukirch}. 
-%This would be significantly more involved than the previous items and would require, amongst other things, setting up a lot of ramification theory (which is very important for algebraic number theory).
-%Also, Minkowski's lattice point theorem now becomes more essential (as far as we are aware).
-As usual, there are analogue results in the function field setting, though they are less straightforward. One reason being that the nondegenerateness of the trace form from Section~\ref{sec:trace-form} does not hold any more when the separability condition is dropped.
-\item From a computational point of view, our formalization lays some foundations to the verification of number theoretic software, such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}. Verifying computations for class groups, or just class numbers, in the case of ``small'' (say, quadratic) number fields, looks within reach. Of course, getting really efficient algorithms (or certificates), is a hard research topic. 
-% Which relates to the ERC consolidator grant of Assia Mahboubi..
-\item %Number theoretic applications.
- All the above items consider theoretical or computational aspects within algebraic number theory itself. There are many applications of these, for instance solving Diophantine equations. Solving Mordell equations, which asks for determining all pairs of integers $(x,y)$ such that $y^2=x^3+D$ for a given nonzero $D\in\Z$, could be an interesting first case study. Dealing with some values of $D$ where elementary methods fail would already be interesting.
-\end{itemize}
+Having formalized various basic results of algebraic number theory, there are several natural directions for future formalization work, including the following.
+%
+Finiteness of the class group for the ring of integers in all global fields, which would entail, amongst other things, dropping the separability condition in the result mentioned in the first paragraph of Section~\ref{sec:integral-closure}.
+Finite generation of the group of units of the ring of integers in a number field, or slightly stronger, Dirichlet's unit theorem~\cite[Theorem 7.4]{Neukirch} (and the function field analogue). 
+%
+Other finiteness results in algebraic number theory, most notably Hermite's theorem about the existence of only finitely many number fields, up to isomorphism,
+with bounded discriminant~\cite[Theorem 2.16]{Neukirch} (and the function field analogue). 
+%
+Verification of number theoretic software, such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}, e.g. class number computations for quadratic number fields.
+%
+Applications to Diophantine equations, e.g. determining all pairs of integers $(x,y)$ such that $y^2=x^3+D$ for several given ``interesting'' $D\in\Z$.
+
+
+%\begin{itemize}
+%\item Finiteness of the class group for the ring of integers in all global fields. This would entail dropping the separability condition in the result mentioned in the first paragraph of Section~\ref{sec:integral-closure}, and consequently adapt some of the details in the final steps for the finiteness of the class group in the admissible case. Some basic prerequisites would be setting up some field theory dealing with (finite) inseparable field extensions, especially the purely inseparable ones. 
+%All in all this seems a tedious though reasonable project.
+%\item Finite generation of the group of units of the ring of integers in a number field, or slightly stronger, Dirichlet's unit theorem~\cite[Theorem 7.4]{Neukirch}. This seems a somewhat more involved, but still reasonable, project. The finite generation result also holds for function fields, so actually it would be nice (and doable) to consider all global fields (which would  involve finite inseparable field extensions, as in the previous item).
+%\item Other finiteness results in algebraic number theory, most notably Hermite's theorem about the existence of only finitely many number fields, up to isomorphism,
+%% or embedded in a fixed algebraically closed field containing $\Q$, e.g. $\C$) 
+%with bounded discriminant~\cite[Theorem 2.16]{Neukirch}. 
+%%This would be significantly more involved than the previous items and would require, amongst other things, setting up a lot of ramification theory (which is very important for algebraic number theory).
+%%Also, Minkowski's lattice point theorem now becomes more essential (as far as we are aware).
+%As usual, there are analogue results in the function field setting, though they are less straightforward. One reason being that the nondegenerateness of the trace form from Section~\ref{sec:trace-form} does not hold any more when the separability condition is dropped.
+%\item From a computational point of view, our formalization lays some foundations to the verification of number theoretic software, such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}. Verifying computations for class groups, or just class numbers, in the case of ``small'' (say, quadratic) number fields, looks within reach. Of course, getting really efficient algorithms (or certificates), is a hard research topic. 
+%% Which relates to the ERC consolidator grant of Assia Mahboubi..
+%\item %Number theoretic applications.
+% All the above items consider theoretical or computational aspects within algebraic number theory itself. There are many applications of these, for instance solving Diophantine equations. Solving Mordell equations, which asks for determining all pairs of integers $(x,y)$ such that $y^2=x^3+D$ for a given nonzero $D\in\Z$, could be an interesting first case study. Dealing with some values of $D$ where elementary methods fail would already be interesting.
+%\end{itemize}
 
 \subsection{Conclusion}
 
