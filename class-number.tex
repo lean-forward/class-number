@@ -282,9 +282,9 @@ In unformalized mathematics, a field $L$ containing a subfield $K$ is said to be
 Often we encounter towers of field extensions: we might have that $\Q$ is contained in $K$, $K$ is contained in $L$, $L$ is contained in an algebraic closure $\bar{K}$ of $K$, and $\bar{K}$ is contained in $\C$.
 We might formalize this situation by viewing $\Q$, $K$, $L$ and $\bar{K}$ to be sets of complex numbers $\C$ and defining field extensions as subset relations between these subfields.
 This way, no coercions need to be inserted to map elements of one field into a larger field.
-In type theory we cannot define $\Q$ as a subset of $\C$ since we need $\Q$ to define $\C$.
-Thus, some coercion is always needed to go from the original definition of $\Q$ to its image in $\C$; and similar issues arise for other subfields that were not originally defined as such.
-Moreover, such an approach loses flexibility since we need to fix the top field, of which all others are subfields, at the start of our development and cannot adjoin more elements when needed.
+Unfortunately, we can only avoid coercions as far as we able to stay within one largest field.
+For example, to define the complex numbers requires many results for rational numbers, which must be reproved for or transported to $\Q$ as a subfield of $\C$.
+%In type theory we cannot define $\Q$ as a subset of $\C$ since we need $\Q$ to define $\C$.
 
 Instead, we formalize results about field extensions through parametrization. The fields $K$ and $L$ can be arbitrary types
 and the hypothesis ``$L$ is a field extension of $K$'' is represented by an instance parameter \lean{[algebra K L]} denoting a $K$-algebra structure on $L$.%
