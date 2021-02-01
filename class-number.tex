@@ -298,7 +298,7 @@ The main drawback of using arbitrary embeddings to represent field extensions is
 For example, we might start with a field extension $L / \Q$, then define a subfield $K$ of $L$,
 resulting in a tower of extensions $L / K / \Q$.
 In such a tower, the map $\Q \to L$ should be equal to the composition $\Q \to K$ followed by $K \to L$.
-The example has other maps depend on the map $\Q \to L$, so we cannot arrange the coherence condition by defining $\Q \to L$ after the fact.
+Such an equality cannot always be achieved by defining the map $\Q \to L$ to be this composition: in the example, the map $\Q \to K$ depends on the map $\Q \to L$.
 
 The solution in \mathlib is to parametrize over all three maps, as long a there is also a proof of coherence:
 a hypothesis of the form ``$L / K / F$ is a tower of field extensions'' is translated into three instance parameters \lean{[algebra F K]}, \lean{[algebra K L]} and \lean{[algebra F L]},
@@ -315,7 +315,7 @@ Since \lean{x~$\cdot$~y} for an $R$-algebra $A$ is defined as \lean{algebra\_map
 
 Common \lean{is\_scalar\_tower} instances are declared in \mathlib,
 such as for the maps $R \to S \to A$ when $S$ is a $R$-subalgebra of $S$.
-The effect is that almost all coherence proof obligations are automated through typeclass search.
+The effect is that almost all coherence proof obligations are automated through typeclass instance search.
 %In our formalization, we found that the \lean{is\_scalar\_tower} typeclass translates towers of field extension well.
 
 \subsection{Ring of integers} \label{sec:ring-of-integers}
