@@ -118,6 +118,11 @@ In particular, our project resulted in formalized definitions and elementary pro
 number fields and their rings of integers (described in Section~\ref{sec:ring-of-integers}),
 Dedekind domains (Section~\ref{sec:Dedekind-domain}),
 and the ideal class group and class number (Section~\ref{sec:class-number}).
+Apart form the very basics concerning number fields, these concept were not formalized before as far as we are aware of.
+We note that our formal definition of the class number is an essential requirement for the use of theorem provers in modern number theory research.
+%Tried to put the sentence above somehow in the previous paragraph, but there was not really a nice fit..
+%Also OK to simply erase the sentence..
+%
 The main proofs that we formalized show
 that two definitions of Dedekind domains are equivalent (Section \ref{sec:equivalence}),
 that the ring of integers %(or more generally: the integral closure of a Dedekind domain in a finite separable field extension)
@@ -140,13 +145,6 @@ namely number fields together with finite field extensions of $\Fq[\empty](t)$ w
 %noncomputable def class_number : ℕ :=
 %fintype.card (class_group (ring_of_integers.fraction_map K))
 %\end{lstlisting}
-
-Apart from the achievement of formalizing a non-trivial amount of mathematical theory,
-our formal definition of the class number is an essential requirement
-for the use of theorem provers in modern number theory research.
-% doing ``fashionable mathematics'' in a theorem prover, borrowing a term from prof. Kevin Buzzard~\cite{fashionable-mathematics}.
-%Additionally, our formalization opens the door to the verification of number theoretic software,
-%such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}.
 
 Our work is developed as part of the mathematical library \mathlib~\cite{mathlib} for the Lean 3 theorem prover~\cite{lean-prover}.
 The formal system of Lean is a dependent type theory based on the calculus of inductive constructions,
@@ -242,7 +240,7 @@ The order of $\Cl_{\OK}$ is called \emph{the class number} of $K$.
 Intuitively, then, the smaller the class number, the fewer factorizations are possible.
 %In particular, as long as we are concerned with ``uniqueness'' of factorization, and with measuring the lack thereof, already  is a tremendously interesting arithmetic feature.
 
-Actually, the same statement holds for \emph{function fields}, the fields which are finite extensions of $\Fq(t) \simeq \Frac \Fq[q][t]$, where $\Fq$ is a finite field with $q$ elements. Remind that when $q=p$ is a prime number, $\Fq$ is simply the field $(\Z/p\Z)$. 
+Actually, the same statement holds for \emph{function fields}, the fields which are finite extensions of $\Fq(t) \simeq \Frac \Fq[q][t]$, where $\Fq$ is a finite field with $q$ elements. Remind that when $q=p$ is a prime number, $\Fq$ is simply the field $\Z/p\Z$. 
 % A prototypical example is $K=(\Z/p\Z)(t)=\Fq[p](t)$, or an extension of the form, for instance, $K=\Fq[p^2](t)[s]/(s^2-t)$, obtained by adjoining to $\Fq[p](t)$ a square root of $t$ as well as the $(p^2-1)$-st roots of unity.
 A field which is either a number field or a function field is called a \emph{global field}.
 
@@ -356,7 +354,7 @@ Other examples of subobjects available in \mathlib are submonoids, subgroups and
 
 The new definitions found immediate use:
 soon after we contributed our definition of \lean{intermediate\_field} to \mathlib,
-the Berkeley Galois theory group used it in a proof of the primitive element theorem.
+the Berkeley Galois theory group used it in a formalization of the primitive element theorem.
 Soon after the primitive element theorem was merged into \mathlib,
 we used it in our development of the trace form.
 This anecdote illustrates the decentralized development style of \mathlib,
@@ -460,7 +458,7 @@ structure power_basis (F K : Type*) [field F] [field K] [algebra F K] :=
 (gen : S) (dim : ℕ)
 (is_basis : is_basis F (λ (i : fin dim), gen ^ (i : ℕ)))
 \end{lstlisting}
-We proved that the various notions of monogenic field extensions are equivalent to the existence of a power basis.
+We formalized that the various notions of monogenic field extensions are equivalent to the existence of a power basis.
 
 % TODO: or just refer here to the names of the Lean functions?
 %If $x : A$ is the generator of a power basis over $R$, it is also integral over $R$:
@@ -538,7 +536,7 @@ The structure of fractional ideals does not depend on the choice of a fraction m
 
 We defined the addition, multiplication and intersection operations on fractional ideals,
 by showing the corresponding operations on submodules map fractional ideals to fractional ideals.
-We also proved that these operations give a commutative semiring structure on the type of fractional ideals.
+We also formalized that these operations give a commutative semiring structure on the type of fractional ideals.
 For example, multiplication of fractional ideals is defined as:
 \begin{lstlisting}
 lemma fractional_mul (I J : fractional_ideal f) :
@@ -621,7 +619,7 @@ We now describe how we proved and formalized that the two definitions \lean{is\_
 To show that \lean{is\_dedekind\_domain\_inv} implies \lean{is\_dedekind\_domain}, we follow the proof given by Fr\"ohlich in~\cite[Chapter 1, \S~2, ~Proposition 1.2.1]{frohlich}. A constant challenge that was faced while coding this proof was already mentioned in Section \ref{subsection : fields of fractions}, namely the fact that elements of the ring must be traced along the fraction map. %\st{ that one must work with pushforwards and pull backs of elements that belong to the ring, and hence to its localisation.}
 The proofs for being integrally closed and of dimension being less than or equal to $1$ are fairly straightforward.
 
-Proving the Noetherian condition was the most challenging. In the original proof by Fr\"ohlich, he considers elements $a_1, \dots, a_n \in I$ and $b_1, \dots, b_n \in I^{-1}$ for any nonempty fractional ideal $I$,
+Formalizing the Noetherian condition was the most challenging. In the original proof by Fr\"ohlich, he considers elements $a_1, \dots, a_n \in I$ and $b_1, \dots, b_n \in I^{-1}$ for any nonempty fractional ideal $I$,
 satisfying $ \sum_i a_i b_i = 1 $.
 However, it is quite challenging to prove that an element of the product of two $D$-submodules $A$ and $B$ must be of the form $\sum_{i = 1}^m a_i*b_i$, for $a_i \in A$ and $b_i \in B$ for all $1 \leq i \leq m$.
 Instead, we show that, for every element of $A\ast B$, there are finite sets $T\subseteq A$, $T'\subseteq B$ such that \lean{x : span (T * T')}, formalized as %there exists an \lean{s : finset D} whose span is contained in the ideal, and which contains the element.
@@ -719,7 +717,7 @@ The second condition follows from \lean{principal\_ideal\_ring.irreducible\_iff\
 To prove that an irreducible element $p$ is prime, the proof uses that prime elements generate prime ideals and irreducible elements of a PID generate maximal ideals. Since all maximal ideals are prime ideals, the ideal generated by $p$ is maximal, hence prime, thus $p$ is prime.
 The lemma \lean{irreducible\_of\_prime} proves the converse holds in any commutative monoid with zero.
 
-In order to show that a UFM is integrally closed, we first proved the Rational Root Theorem, named \lean{denom\_dvd\_of\_is\_root},
+In order to show that a UFM is integrally closed, we first formalized the Rational Root Theorem, named \lean{denom\_dvd\_of\_is\_root},
 which states that for polynomial $p : R[X]$ and $x$ an element of the fraction field $\Frac R$ such that $p(x) = 0$, the denominator of $x$ divides the leading coefficient of $p$.
 If $x$ is integral with minimal polynomial $p$, the leading coefficient is $1$, therefore the denominator is a unit and $x$ is an element of $R$.
 This gives us the required lemma \lean{unique\_factorization\_monoid.integrally\_closed}, which states that the integral closure of $R$ in its fraction field is $R$ itself.
@@ -976,7 +974,7 @@ Applications to Diophantine equations, as determining all pairs of integers $(x,
 \subsection{Conclusion}
 
 In this project, we confirmed the rule that the hardest part of formalization is to get the definitions right.
-Once this is accomplished, the ``pen and paper'' proof almost always translates into a formal proof without too much effort.
+Once this is accomplished, the ``pen and paper'' proof (sometimes first adapted with formalization in mind) almost always translates into a formal proof without too much effort.
 % Informal mathematics effortlessly switches between different viewpoints, choosing whichever suits the situation best.
 In particular, we regularly had to invent abstractions in order to treat instances of the ``same'' situation uniformly.
 Instead of fixing a canonical representation, be it $K \subseteq L \subseteq F$ as subfields, or the field of fractions $\Frac R$, or the monogenic $K(\alpha)$, we found that making the essence of the situation an explicit parameter, as in \lean{is\_scalar\_tower}, \lean{fraction\_map} or \lean{power\_basis},
