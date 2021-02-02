@@ -442,36 +442,12 @@ We use a type synonym \lean{f.codomain := F} and instantiate the $R$-algebra str
 
 \subsection{Representing monogenic field extensions} \label{sec:simple-field-extension}
 
-% A number field $K$ is defined as a finite extension of $\Q$, or equivalently (by the primitive element theorem) a field of the form $\Q(\alpha)$ for some algebraic number $\alpha$. 
-% %A field extension $L / K$ is called \emph{simple} if there is an $\alpha$ algebraic over $K$, called the \emph{primitive element}, such that $L = K(\alpha)$.
-%The primitive element theorem states that a finite, separable extension is simple; the converse holds if the primitive element $\alpha$ is separable.
-We have seen in Section~\ref{sec math background} that every number field $K$ can be written as
-% The choice of $\alpha$ and is normally underspecified in informal mathematical usage. We can find 
-$K=\Q(\alpha)$ by adjoining to $\Q$ a root $\alpha$ of a polynomial: there is an irreducible polynomial $p \in \Q[X]$ such that $\Q[X] / p \simeq K$; we set $\alpha$ to be the image of $X$ in $\Q[X] / p$.
-%We can also take $\alpha : \bar{K}$, the algebraic closure of $K$, set $K(\alpha)$ to be the smallest subfield of $\bar{K}$ that contains $\alpha$ and the image of $K$, and have an equality $L = K(\alpha)$ as subsets of $\bar{K}$.
-If $K$ is given, we can also take $\alpha : K$ and let $\Q(\alpha)$ be the smallest subfield of $K$ containing $\alpha$; %and the image of $K$
-then $K = \Q(\alpha)$ means that $\Q(\alpha)$, as a subfield of $K$, is equal to the subfield $\top$ containing all elements of $K$. 
-% We could also view $K$ and $\Q(\alpha)$ as subfields of an arbitrary larger field $F$.
-% Because $\alpha$ is algebraic, the smallest subring containing $\alpha$ and $\Q$ will be a field, thus we can add two more representations, replacing ``smallest subfield'' with ``smallest subring''.
-% Moreover, all subfields/subrings containing $\Q$ are also $\Q$-algebras, so we can additionally replace ``subfield'' with ``intermediate field'' and ``subring'' with ``$\Q$-subalgebra''. 
-The same continues to hold if we replace the base field $\Q$ with $F$, thus considering extensions of the form $F(\alpha)$, now requiring that $\alpha$ be a root of some $p\in F[X]$. Many different constructions of $F(\alpha)$ have already been formalized in \mathlib. The ability to switch between these representations is important: sometimes $K$ and $F$ are fixed and we want an arbitrary $\alpha$; sometimes $\alpha$ is fixed and we want an arbitrary type representing $F(\alpha)$. 
+In Section~\ref{sec math background} we have informally said that every number field $K$ can be written as $K=\Q(\alpha)$ for a root $\alpha$ of an irreducible polynomial $P\in\Q[X]$. This can be made precise in several non-equivalent ways. For instance, one can consider a large field $E$ (of characteristic $0$) where $P$ splits completely, then choose a root $\alpha\in E$ and let $\Q(\alpha)$ be the smaller subfield of $E$ containing $\alpha$. Or, one can consider the quotient ring $\Q[X]/P$ and observe that this is a field where the class $X\pmod{P}$ is a root of $P$. The assignment $\alpha\mapsto X\pmod{P}$ yields an isomorphism of the two fields, but any other choice of a root $\alpha'\in E$ leads to another isomorphism $\Q(\alpha')\cong \Q[X]/P$. Hence, although mathematically we often tacitly identify the constructions, there is no canonical representation of the \emph{monogenic} extensions of $\Q$, those who can be obtained by adjoining a single root of one polynomial.
 
-%$K[X] / p$ is a type called \lean{adjoin\_root p};
-%$K(\alpha)$ as smallest $K$-subalgebra containing $\alpha$ is called \lean{subalgebra.adjoin $K$ \{$\alpha$\}},
-%which itself is defined as the smallest subring containing the image of $K$ and $\alpha$.
-%After we contributed intermediate fields and subfields to \mathlib,
-%the smallest intermediate field containing $\alpha$ was defined \lean{intermediate\_field.adjoin $K$ \{$\alpha$\}},
-%which itself is defined as the smallest field containing the image of $K$ and $\alpha$,
-%along with a formalization of the primitive element theorem as a statement of intermediate fields:
-%\begin{lstlisting}
-%theorem exists_primitive_element [finite_dimensional K L] [is_separable K L] :
-%  ∃ α : L, intermediate_field.adjoin K {α} = ⊤
-%\end{lstlisting}
 
-%Note that the choice of $\alpha$ (or the irreducible polynomial $p$) is not unique in general; both $3^\frac{1}{3}$ and $3^\frac{2}{3}$ generate $\Q(\sqrt[3]{3})$.
-%This means none of the above conditions provides a uniform way of reasoning about simple extensions:
-%if we use a predicate like ``finite, separable extension'' we cannot guarantee that the primitive element chosen for $K(\alpha)$ is indeed $\alpha$.
-%If we need to choose an $\alpha$ ahead of time and prove a result about $K(\alpha)$, we need extra work to transfer the result across the isomorphism $K(\alpha) \simeq L$.
+% We have seen in Section~\ref{sec math background} that every number field $K$ can be written as $K=\Q(\alpha)$ by adjoining to $\Q$ a root $\alpha$ of a polynomial: there is an irreducible polynomial $p \in \Q[X]$ such that $\Q[X] / p \simeq K$; we set $\alpha$ to be the image of $X$ in $\Q[X] / p$. If $K$ is given, we can also take $\alpha : K$ and let $\Q(\alpha)$ be the smallest subfield of $K$ containing $\alpha$; then $K = \Q(\alpha)$ means that $\Q(\alpha)$, as a subfield of $K$, is equal to the subfield $\top$ containing all elements of $K$. 
+The same continues to hold if we replace the base field $\Q$ with another field $F$, thus considering extensions of the form $F(\alpha)$, now requiring that $\alpha$ be a root of some $P\in F[X]$. Many different constructions of $F(\alpha)$ have already been formalized in \mathlib. The ability to switch between these representations is important: sometimes $K$ and $F$ are fixed and we want an arbitrary $\alpha$; sometimes $\alpha$ is fixed and we want an arbitrary type representing $F(\alpha)$. 
+
 
 To find a uniform way to reason about all these equivalent definitions,
 we chose to formalize the notion of \emph{power basis} to represent simple field extensions, a basis of the form $1, x, x^2, \dots, x^{n-1} : K$ (viewing $K$ as a $F$-vector space).\footnote{In the formalization we generalize this notion to any algebra $A$ over a commutative ring $R$.}
@@ -970,12 +946,12 @@ Having formalized various basic results of algebraic number theory, there are se
 Finiteness of the class group for the ring of integers in all global fields, which would entail, amongst other things, dropping the separability condition in the result mentioned in the first paragraph of Section~\ref{sec:integral-closure}.
 Finite generation of the group of units of the ring of integers in a number field, or slightly stronger, Dirichlet's unit theorem~\cite[Theorem 7.4]{Neukirch} (and the function field analogue). 
 %
-Other finiteness results in algebraic number theory, most notably Hermite's theorem about the existence of only finitely many number fields, up to isomorphism,
+Other finiteness results in algebraic number theory, most notably Hermite's theorem about the existence of finitely many number fields, up to isomorphism,
 with bounded discriminant~\cite[Theorem 2.16]{Neukirch} (and the function field analogue). 
 %
-Verification of number theoretic software, such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}, e.g. class number computations for quadratic number fields.
+Verification of number theoretic software, such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}, e.~g. class number computations for quadratic number fields.
 %
-Applications to Diophantine equations, e.g. determining all pairs of integers $(x,y)$ such that $y^2=x^3+D$ for several given ``interesting'' $D\in\Z$.
+Applications to Diophantine equations, as determining all pairs of integers $(x,y)$ such that $y^2=x^3+D$ for several given ``interesting'' $D\in\Z$.
 
 
 %\begin{itemize}
@@ -997,7 +973,7 @@ Applications to Diophantine equations, e.g. determining all pairs of integers $(
 \subsection{Conclusion}
 
 In this project, we confirmed the rule that the hardest part of formalization is to get the definitions right.
-Once this is accomplished, the ``pen and paper'' proof almost always translated to a formal proof without too much effort.
+Once this is accomplished, the ``pen and paper'' proof almost always translates into a formal proof without too much effort.
 % Informal mathematics effortlessly switches between different viewpoints, choosing whichever suits the situation best.
 In particular, we regularly had to invent abstractions in order to treat instances of the ``same'' situation uniformly.
 Instead of fixing a canonical representation, be it $K \subseteq L \subseteq F$ as subfields, or the field of fractions $\Frac R$, or the monogenic $K(\alpha)$, we found that making the essence of the situation an explicit parameter, as in \lean{is\_scalar\_tower}, \lean{fraction\_map} or \lean{power\_basis},
