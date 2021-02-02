@@ -937,7 +937,7 @@ Narrowing somewhat to a more algebraic setting, we are not aware of any other fo
 
 There are many libraries formalizing basic notions of commutative algebra such as field extensions and ideals, including the Mathematical Components library in Coq~\cite{mathcomp}, the algebraic library for Isabelle/HOL~\cite{algebra_isabelle}, the \texttt{set.mm} database for MetaMath~\cite{metamath} and the Mizar Mathematical Library~\cite{algebraic-hierarchy_mizar}. The field of algebraic numbers, or more generally algebraic closures of arbitrary fields, are also available in many provers, for example Coq~\cite{real-algebraic-numbers-coq, mathcomp}, Isabelle/HOL~\cite{algebraic-numbers-isabelle}, MetaMath~\cite{algebraic-numbers-metamath}, and Mizar~\cite{algebraic-numbers-mizar}. To our knowledge, the Coq Mathematical Components library is the only formal development beside ours specifically dealing with number fields~\cite[\texttt{field/algnum.v}]{mathcomp}.
 
-Apart from the general theory of algebraic numbers, there are formalizations of specific number rings: the Gaussian integers $\Z[i]$ are available in Isabelle/HOL~\cite{gaussian_integers-isabelle}, MetaMath~\cite{gaussian_integers-metamath} and Mizar~\cite{gaussian_integers-mizar}.
+Apart from the general theory of algebraic numbers, there are formalizations of specific rings of integers: the Gaussian integers $\Z[i]$ are available in Isabelle/HOL~\cite{gaussian_integers-isabelle}, MetaMath~\cite{gaussian_integers-metamath} and Mizar~\cite{gaussian_integers-mizar}.
 The Isabelle/HOL formalization deserves special mention since it introduces techniques from algebraic number theory,
 defining the integer-valued norm on $\Z[i]$ and classifying the prime elements of $\Z[i]$.
 
@@ -945,7 +945,8 @@ defining the integer-valued norm on $\Z[i]$ and classifying the prime elements o
 
 Having formalized various basic results of algebraic number theory, there are several natural directions for future formalization work, including the following.
 %
-Finiteness of the class group for the ring of integers in all global fields, which would entail, amongst other things, dropping the separability condition in the result mentioned in the first paragraph of Section~\ref{sec:integral-closure}.
+Finiteness of the class group for the ring of integers in all global fields, which would entail, apart from some details at the end of the proof, dropping the separability condition in the result mentioned in the first paragraph of Section~\ref{sec:integral-closure}. 
+%
 Finite generation of the group of units of the ring of integers in a number field, or slightly stronger, Dirichlet's unit theorem~\cite[Theorem 7.4]{Neukirch} (and the function field analogue). 
 %
 Other finiteness results in algebraic number theory, most notably Hermite's theorem about the existence of finitely many number fields, up to isomorphism,
