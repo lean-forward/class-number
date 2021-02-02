@@ -120,10 +120,12 @@ Dedekind domains (Section~\ref{sec:Dedekind-domain}),
 and the ideal class group and class number (Section~\ref{sec:class-number}).
 The main proofs that we formalized show
 that two definitions of Dedekind domains are equivalent (Section \ref{sec:equivalence}),
-that the ring of integers (or more generally: the integral closure of a Dedekind domain in a finite separable field extension) is a Dedekind domain (Section \ref{sec:integral-closure})
+that the ring of integers %(or more generally: the integral closure of a Dedekind domain in a finite separable field extension)
+is a Dedekind domain (Section \ref{sec:integral-closure})
 and that the class group of a number field is finite (Section \ref{sec:class-number}).
 In fact, most of our results for number fields are actually obtained in the more general setting of so-called \emph{global fields},
-namely number fields together with finite field extensions of $\Fq[\empty](t)$ with $\Fq[\empty]$ a finite field (restricting to $\Fq[\empty]\simeq \Z/p\Z$ with $p$ prime yields no loss of generality here).
+namely number fields together with finite field extensions of $\Fq[\empty](t)$ with $\Fq[\empty]$ a finite field.
+%(restricting to $\Fq[\empty]\simeq \Z/p\Z$ with $p$ prime yields no loss of generality here).
 
 %
 %As a preview, the latter two results correspond to the following declarations in Lean:
@@ -261,7 +263,7 @@ Round brackets mark parameters explicitly supplied by the user, such as \lean{(K
 square brackets mark instance parameters inferred by the typeclass system, such as \lean{[field K]}.
 
 The condition \lean{[cz : char\_zero K]} states that $K$ has characteristic zero, so the canonical ring homomorphism $\Z \to K$ is an embedding.
-This implies that there is a $\Q$-algebra structure on $K$ (found by typeclass search),
+This implies that there is a $\Q$-algebra structure on $K$ (found by typeclass instance search),
 and from this follows the vector space structure used in the \lean{[fd : finite\_dimensional ℚ K]} hypothesis.
 
 We define the function fields $K$ over a finite field $\Fq$ using the following typeclass:
@@ -280,7 +282,7 @@ the notation \lean{f.codomain} endows $F$ with the $\Fq[q][t]$-algebra structure
 The definition of \lean{is\_number\_field} illustrates our treatment of field extensions.
 In unformalized mathematics, a field $L$ containing a subfield $K$ is said to be a field extension $L / K$.
 Often we encounter towers of field extensions: we might have that $\Q$ is contained in $K$, $K$ is contained in $L$, $L$ is contained in an algebraic closure $\bar{K}$ of $K$, and $\bar{K}$ is contained in $\C$.
-We might formalize this situation by viewing $\Q$, $K$, $L$ and $\bar{K}$ to be sets of complex numbers $\C$ and defining field extensions as subset relations between these subfields.
+We might formalize this situation by viewing $\Q$, $K$, $L$ and $\bar{K}$ as sets of complex numbers $\C$ and defining field extensions as subset relations between these subfields.
 This way, no coercions need to be inserted to map elements of one field into a larger field.
 Unfortunately, we can only avoid coercions as far as we able to stay within one largest field.
 For example, to define the complex numbers requires many results for rational numbers, which must be reproved for or transported to $\Q$ as a subfield of $\C$.
@@ -440,7 +442,7 @@ We use a type synonym \lean{f.codomain := F} and instantiate the $R$-algebra str
 %
 %If the submonoid $P$ consists of all nonzero-divisors of $R$, we say that $f$ is a fraction map, and if $R$ is an integral domain, $K$ is a field. We call $K$ the fraction field of $R$.
 
-\subsection{Representing monogenic field extensions} \label{sec:simple-field-extension}
+\subsection{Representing monogenic field extensions} \label{sec:monogenic-field-extension}
 
 In Section~\ref{sec math background} we have informally said that every number field $K$ can be written as $K=\Q(\alpha)$ for a root $\alpha$ of an irreducible polynomial $P\in\Q[X]$. This can be made precise in several non-equivalent ways. For instance, one can consider a large field $E$ (of characteristic $0$) where $P$ splits completely, then choose a root $\alpha\in E$ and let $\Q(\alpha)$ be the smaller subfield of $E$ containing $\alpha$. Or, one can consider the quotient ring $\Q[X]/P$ and observe that this is a field where the class $X\pmod{P}$ is a root of $P$. The assignment $\alpha\mapsto X\pmod{P}$ yields an isomorphism of the two fields, but any other choice of a root $\alpha'\in E$ leads to another isomorphism $\Q(\alpha')\cong \Q[X]/P$. Hence, although mathematically we often tacitly identify the constructions, there is no canonical representation of the \emph{monogenic} extensions of $\Q$, those who can be obtained by adjoining a single root of one polynomial.
 
@@ -450,7 +452,7 @@ The same continues to hold if we replace the base field $\Q$ with another field 
 
 
 To find a uniform way to reason about all these equivalent definitions,
-we chose to formalize the notion of \emph{power basis} to represent simple field extensions, a basis of the form $1, x, x^2, \dots, x^{n-1} : K$ (viewing $K$ as a $F$-vector space).\footnote{In the formalization we generalize this notion to any algebra $A$ over a commutative ring $R$.}
+we chose to formalize the notion of \emph{power basis} to represent monogenic field extensions, a basis of the form $1, x, x^2, \dots, x^{n-1} : K$ (viewing $K$ as a $F$-vector space).\footnote{In the formalization we generalize this notion to any algebra $A$ over a commutative ring $R$.}
 % We call $x$ the \emph{generator} and $n$ the \emph{dimension} of this power basis.
 We defined a structure type bundling the information of a power basis:
 \begin{lstlisting}
@@ -458,7 +460,7 @@ structure power_basis (F K : Type*) [field F] [field K] [algebra F K] :=
 (gen : S) (dim : ℕ)
 (is_basis : is_basis F (λ (i : fin dim), gen ^ (i : ℕ)))
 \end{lstlisting}
-We proved that the various notions of simple field extensions are equivalent to the existence of a power basis.
+We proved that the various notions of monogenic field extensions are equivalent to the existence of a power basis.
 
 % TODO: or just refer here to the names of the Lean functions?
 %If $x : A$ is the generator of a power basis over $R$, it is also integral over $R$:
@@ -466,10 +468,10 @@ We proved that the various notions of simple field extensions are equivalent to 
 %thus $p(X) = X^n - \sum_i c_i X^i$ is a polynomial with root $x$.
 %That $p$ has minimal degree, follows from the linear independence of the powers of $x$ up to $n$.
 %Conversely, for algebraic (and therefore integral) $\alpha$, $\Q(\alpha)$ has a power basis generated by $\alpha$.
-%This shows that the condition of having a power basis is equivalent to being a simple field extension.
+%This shows that the condition of having a power basis is equivalent to being a monogenic field extension.
 
 With the \lean{power\_basis} structure, we have the ability to parametrize our results,
-being able to choose the $F$ and $K$ in a simple field extension $K / F$, or being able to choose the $\alpha$ generating $F(\alpha)$ (by setting \lean{power\_basis.gen\ pb} equal to $\alpha$). Specializing a result from an arbitrary $K$ with a power basis over $F$,
+being able to choose the $F$ and $K$ in a monogenic field extension $K / F$, or being able to choose the $\alpha$ generating $F(\alpha)$ (by setting \lean{power\_basis.gen\ pb} equal to $\alpha$). Specializing a result from an arbitrary $K$ with a power basis over $F$,
 to a specific value of $K$ such as $F(\alpha) = \lean{algebra.adjoin F \{α\}}$, is a matter of applying the result to the power basis generated by $\alpha$, and rewriting $\lean{power\_basis.gen (adjoin.power\_basis F $\alpha$)} = \alpha$.
 
 
@@ -798,7 +800,7 @@ The value of the trace depends on the choice of $E$ and $L$; we formalized this 
 %Since a basis $b : \iota \to L$ for $K : L$ and a basis $c : \kappa \to F$ for $L : F$ induce a basis $b \cdot c : \iota \times \kappa \to F$ for $K : F$,
 These results follow by direct computation.
 
-To compute $\Tr_{L/F}(x)$ it therefore suffices to consider the trace of $x$ in the smallest field containing $x$ and $F$, which is the simple extension $F(x)$ discussed in Section \ref{sec:simple-field-extension}.
+To compute $\Tr_{L/F}(x)$ it therefore suffices to consider the trace of $x$ in the smallest field containing $x$ and $F$, which is the monogenic extension $F(x)$ discussed in Section \ref{sec:monogenic-field-extension}.
 There is a nice formula for the trace in $F(x)$, although the terms in this formula are elements in a larger field $E$
 (such as the \emph{splitting field} of the minimal polynomial of $x$).
 In formalizing this formula, we must first map the trace to $F$ using the canonical embedding $\lean{algebra\_map E F}$,
