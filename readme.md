@@ -46,8 +46,10 @@ We will now provide an overview of the source code files containing results ment
 ### Section 3
 
  * number fields: [`src/algebraic_number_theory/number_field.lean`](src/number_field.lean)
+ * function fields: [`src/algebraic_number_theory/function_field.lean`](src/function_field.lean)
  * scalar towers: [`src/group_theory/group_action/defs.lean`](src/defs.lean)
- * ring of integers: [`src/algebraic_number_theory/number_field.lean`](src/number_field.lean)
+ * ring of integers (of a number field): [`src/algebraic_number_theory/number_field.lean`](src/number_field.lean)
+ * ring of integers (of a function field): [`src/algebraic_number_theory/function_field.lean`](src/function_field.lean)
  * subfield: [`src/field_theory/subfield.lean`](src/subfield.lean)
  * intermediate field: [`src/field_theory/intermediate_field.lean`](src/intermediate_field.lean)
  * fraction field, fraction map: [`src/ring_theory/localization.lean`](src/localization.lean)
@@ -62,7 +64,7 @@ We will now provide an overview of the source code files containing results ment
  * Noetherian ring: [`src/ring_theory/noetherian.lean`](src/noetherian.lean)
  * fractional ideal: [`src/ring_theory/fractional_ideal.lean`](src/fractional_ideal.lean)
 
- ### Section 5
+### Section 5
  * principal ideal domain: [`src/ring_theory/principal_ideal_domain.lean`](src/principal_ideal_domain.lean)
  * unique factorization monoid (UFM): [`src/ring_theory/unique_factorization_domain.lean`](src.unique_factorization_domain.lean)
 
