@@ -67,7 +67,7 @@ A.~N.~and F.~N.~wish to express their deepest gratitude to Anne Baanen for the g
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\pow}{\textasciicircum\xspace}
 \newcommand{\Q}{\mathbb{Q}}
-\newcommand{\Qbar}{\mathbb{\bar{Q}}}
+% \newcommand{\Qbar}{\mathbb{\bar{Q}}}
 \newcommand{\Z}{\mathbb{Z}}
 \DeclareMathOperator{\Frac}{Frac}
 
@@ -186,11 +186,11 @@ and, up to isomorphism, these are all the number fields of degree $n$.
 
 The \emph{ring of integers} $\OK$ of a number field $K$ is defined as the integral closure of $\Z$ in $K$, which amounts to
 \[
-  \OK := \{x \in K : f(x)=0 \text{ for some \emph{monic} polynomial } f \text{ with integer coefficients}\},\]
+  \OK := \big\{x \in K : f(x)=0 \text{ for some \emph{monic} polynomial } f \text{ with integer coefficients}\big\},\]
 where we recall that a polynomial is called \emph{monic} if its leading coefficient equals $1$.
 While it might not be immediately obvious that $\OK$ is a ring, this follows from general algebraic properties of integral closures.
-Some examples of $\OK$ are as follows. Taking $K=\Q$, we get $\OK=\Z$ back.
-For $K=\Q(i)=\Q(\sqrt{-1})$ we get that $\OK$ is the Gaussian integers $\Z[i]=\{a+bi : a,b \in \Z\}$.
+Some examples of $\OK$ are the following. Taking $K=\Q$, we get $\OK=\Z$ back.
+For $K=\Q(i)=\Q(\sqrt{-1})$ we get that $\OK$ is the ring of Gaussian integers $\Z[i]=\{a+bi : a,b \in \Z\}$.
 %For $K=\Q(\sqrt{2})$ we get $\OK=\Z[\sqrt{2}]=\{a+b\sqrt{2} : a,b \in \Z\}$.
 But for $K=\Q(\sqrt{5})$ we do \emph{not} simply get $\Z[\sqrt{5}]=\{a+b\sqrt{5} : a,b \in \Z\}$ as $\OK$, since the golden ratio $\varphi:=(1+\sqrt{5})/2\not\in \Z[\sqrt{5}]$ satisfies the monic polynomial equation $\varphi^2-\varphi-1=0$; hence by definition, $\varphi \in \OK$.
 It turns out that $\OK=\Z[\varphi]=\{a+b\varphi : a,b \in \Z\}$.
@@ -255,13 +255,10 @@ We formalized number fields as the following typeclass:
 class is_number_field (K : Type*) [field K] : Prop :=
 [cz : char_zero K] [fd : finite_dimensional ℚ K]
 \end{lstlisting}
-The \emph{class} keyword declares a structure type (i.e. a type of records) and enables typeclass inference for terms of this type.
+The \emph{class} keyword declares a structure type (namely, a type of records) and enables typeclass inference for terms of this type.
 Round brackets mark parameters explicitly supplied by the user, such as \lean{(K : Type*)},
-square brackets mark instance parameters inferred by the typeclass system, such as \lean{[field K]}.
-
-The condition \lean{[cz : char\_zero K]} states that $K$ has characteristic zero, so the canonical ring homomorphism $\Z \to K$ is an embedding.
-This implies that there is a $\Q$-algebra structure on $K$ (found by typeclass instance search),
-and from this follows the vector space structure used in the \lean{[fd : finite\_dimensional ℚ K]} hypothesis.
+square brackets mark instance parameters inferred by the typeclass system, such as \lean{[field K]}. The condition \lean{[cz : char\_zero K]} states that $K$ has characteristic zero, so the canonical ring homomorphism $\Z \to K$ is an embedding.
+This implies that there is a $\Q$-algebra structure on $K$ (found by typeclass instance search), endowing $K$ with the $\Q$-vector space structure used in the \mbox{\lean{[fd : finite\_dimensional ℚ K]}} hypothesis.
 
 We defined the function fields $K$ over a finite field $\Fq$ using the following typeclass:
 \begin{lstlisting}
@@ -272,23 +269,23 @@ class is_function_field_over {$\Fq$ F : Type*} [field $\Fq$] [fintype $\Fq$]
 \end{lstlisting}
 Curly brackets mark implicit parameters inferred through unification, such as \lean{\{$\Fq$ F : Type*\}}.
 The map \lean{f} witnesses that $F$ is a fraction field of the polynomial ring $\Fq[q][t]$,
-the notation \lean{f.codomain} endows $F$ with the $\Fq[q][t]$-algebra structure of $\Fq(t)$. We present a more detailed examination of \lean{fraction\_map} in Section \ref{subsection : fields of fractions}.
+the notation \lean{f.codomain} endows $F$ with the $\Fq[q][t]$-algebra structure of $\Fq(t)$. We present a more detailed analysis of \lean{fraction\_map} in Section \ref{subsection : fields of fractions}.
 
 \subsection{Field extensions}
 
 The definition of \lean{is\_number\_field} illustrates our treatment of field extensions.
 %In unformalized mathematics,
 A field $L$ containing a subfield $K$ is said to be a field extension $L / K$.
-Often we encounter towers of field extensions: we might have that $\Q$ is contained in $K$, $K$ is contained in $L$, $L$ is contained in an algebraic closure $\bar{K}$ of $K$, and $\bar{K}$ is contained in $\C$.
-We might formalize this situation by viewing $\Q$, $K$, $L$ and $\bar{K}$ as sets of complex numbers $\C$ and defining field extensions as subset relations between these subfields.
-This way, no coercions need to be inserted to map elements of one field into a larger field.
-Unfortunately, we can only avoid coercions as far as we able to stay within one largest field.
-For example, the definition of complex numbers depends on many results for rational numbers, which must be proved again for or transported to $\Q$ as a subfield of $\C$.
+Often we encounter towers of field extensions: we might have that $\Q$ is contained in $K$, $K$ is contained in $L$, $L$ is contained in an algebraic closure $\overline{K}$ of $K$, and $\overline{K}$ is contained in $\C$.
+We might formalize this situation by viewing $\Q$, $K$, $L$ and $\overline{K}$ as sets of complex numbers $\C$ and defining field extensions as subset relations between these subfields.
+This way, no coercions need to be inserted in order to map elements of one field into a larger field.
+Unfortunately, we can only avoid coercions as far as we are able to stay within one largest field.
+For example, the definition of complex numbers depends on many results for rational numbers, which would need to be proved again, or transported, for the subfield of $\C$ isomorphic to $\Q$.
 %In type theory we cannot define $\Q$ as a subset of $\C$ since we need $\Q$ to define $\C$.
 
 Instead, we formalized results about field extensions through parametrization. The fields $K$ and $L$ can be arbitrary types
 and the hypothesis ``$L$ is a field extension of $K$'' is represented by an instance parameter \lean{[algebra K L]} denoting a $K$-algebra structure on $L$.
-There are multiple $K$-algebra structures possible for a field $L$ and Lean does not enforce uniqueness of typeclass instances,
+There are multiple possible $K$-algebra structures for a field $L$ and Lean does not enforce uniqueness of typeclass instances,
 but the \mathlib maintainers try to ensure all instances that can be inferred are definitionally equal.
 The \lean{algebra} structure provides us with a canonical ring homomorphism $\lean{algebra\_map K L} : K \to L$; this map is injective because $K$ and $L$ are fields.
 In other words, field extensions are given by their canonical embeddings.
@@ -319,11 +316,11 @@ such as for the maps $R \to S \to A$ when $S$ is a $R$-subalgebra of $S$.
 The effect is that almost all coherence proof obligations are automated through typeclass instance search.
 %In our formalization, we found that the \lean{is\_scalar\_tower} typeclass translates towers of field extension well.
 
-\subsection{Ring of integers} \label{sec:ring-of-integers}
+\subsection{Rings of integers} \label{sec:ring-of-integers}
 
 %A number ring is defined as a ring whose fraction field is a number field, the ring of integers $\OK$ is an important example.
 When $K$ is a number field, the ring $\OK$ of integers in $K$ is defined as the integral closure of $\Z$ in $K$.
-This is the subring containing those $x : K$ that are the root of a monic polynomial with coefficients in $\Z$, which we formalized as:
+This is the subring containing those $x : K$ that are the roots of monic polynomials with coefficients in $\Z$, which we formalized as:
 \begin{lstlisting}
 def number_field.ring_of_integers (K : Type*) [field K]
   [is_number_field K] : subalgebra ℤ K :=
@@ -340,17 +337,17 @@ where \lean{integral\_closure} was previously defined in \mathlib.
 
 When $K$ is a function field over the finite field $\Fq$, we defined $\OK$ analogously as \lean{integral\_closure (polynomial K) F}.
 % TODO: or should the following remarks be in another section?
-To reason uniformly for both concepts of the ring of integers,
+To treat both definitions of ring of integers on an equal footing, 
+% To reason uniformly for both concepts of the ring of integers,
 we will work with the integral closure of any principal ideal domain when possible.
 
 \subsection{Subobjects} \label{sec:subobjects}
 
-The ring of integers are one example of a subobject, such as a subfield, subring or subalgebra, defined through a characteristic predicate.
+The ring of integers is one example of a subobject, such as a subfield, subring or subalgebra, defined through a characteristic predicate.
 In \mathlib, subobjects are ``bundled'', in the form of a \lean{structure} comprising the carrier set and proofs showing the carrier set is closed under the relevant operations.
 
-Two new subobjects we needed in our development were \lean{subfield} and \lean{intermediate\-\_field}.
-We defined a subfield of a field $K$ as a subset of $K$ that contains $0$ and $1$ and is closed under addition, negation, multiplication and taking inverses.
-If $L$ is a field extension of $K$, we defined an intermediate field as a subfield that is also a subalgebra: a subfield that contains the image of $\lean{algebra\_map K L}$.
+Two new subobjects that we defined in our development were \lean{subfield} as well as \lean{intermediate\_field}. We defined a subfield of a field $K$ as a subset of $K$ that contains $0$ and $1$ and is closed under addition, negation, multiplication and taking inverses.
+If $L$ is a field extension of $K$, we defined an intermediate field as a subfield that is also a $K$-subalgebra: a subfield that contains the image of $\lean{algebra\_map K L}$.
 Other examples of subobjects available in \mathlib are submonoids, subgroups and submodules (with ideals as a special case of submodules).
 
 The new definitions found immediate use:
@@ -373,7 +370,7 @@ The fraction field $\Frac R$ of an integral domain $R$ can be defined explicitly
 starting from the set of pairs $(a,b)$ with $a,b \in R$ such that $b\neq 0$,
 one quotients by the equivalence relation stating that $(\alpha a, \alpha b) \sim (a,b)$ for all $\alpha \ne 0 : R$, writing the equivalence class of $(a,b)$ as $\frac{a}{b}$.
 It can easily be proved that the ring structure on $R$ extends uniquely to a field structure on $\Frac R$;
-in \mathlib this construction is called \lean{fraction\_ring R}.
+in \mathlib this construction is called \mbox{\lean{fraction\_ring R}}.
 When $R=\Z$, this yields the traditional description of $\Q$ as the set of equivalence classes of fractions, where $\frac{2}{3}=\frac{-4}{-6}$, etc.
 The drawback of this construction is that there are many other fields that can serve as the field of fractions for the same ring.
 %For instance, although there is an isomorphism of $\Frac \C[\![t]\!]$ with the field
@@ -381,7 +378,7 @@ The drawback of this construction is that there are many other fields that can s
 %\C(\!(t)\!)=\Big\{\sum_{i=a}^{+\infty} a_it^i\quad\text{ with }a \in \Z\Big\}
 %\]
 %of Laurent series, there is no (definitional) equality between the types. Another example comes from the field
-Consider the field $\{z \in \C : \Re z \in \Q, \Im z\in\Q\}$, which is isomorphic to $\Frac (\Z[i])$ but not definitionally equal.
+Consider the field $\{z \in \C : \Re z \in \Q, \Im z\in\Q\}$, which is isomorphic to $\Frac (\Z[i])$ but not definitionally equal to it.
 % In fact, even the rational numbers in Lean are a counterexample:
 % for computational efficiency, $\Q$ is defined as a subtype where the numerator and denominator are coprime,
 % instead of a quotient by ``scalar multiplication''. A definition like
@@ -392,13 +389,13 @@ Consider the field $\{z \in \C : \Re z \in \Q, \Im z\in\Q\}$, which is isomorphi
 % would require transferring results across isomorphisms.% as soon as one needs to handle a different construction of a field isomorphic to $\Frac R$.
 
 The strategy used in \mathlib is to rather allow for many different \emph{fraction fields} of our given integral domain $R$,
-as fields $F$ along with an injective \emph{fraction map} $f : R \to F$ which witnesses that all elements of $F$ are ``fractions'' of elements of $R$,
+as fields $F$ along with an injective \emph{fraction map} $f \colon R \to F$ which witnesses that all elements of $F$ are ``fractions'' of elements of $R$,
 and to parametrize every result over the choice of $f$.
 In the definition used by \mathlib, a fraction map is a special case of a \emph{localization map}.
-Different localizations restrict the denominators to different submonoids of $R^\times$.
+Different localizations restrict the denominators to different multiplicative submonoids of $R\setminus\{0\}$.
 
 The conditions on $f$ imply that $F$ is the smallest field containing $R$, expressed by the following unique mapping property.
-If $g \colon R \to A$ is an injective map to a ring $A$ such that $g(x)$ has a multiplicative inverse for all $x \ne 0 : R$,
+If $g \colon R \to A$ is an injective map to a ring $A$ such that $g(x)$ has a multiplicative inverse for all $x \ne 0 : R$, then
 it can be extended uniquely to a map $F \to A$ compatible with $f$ and $g$.
 In particular, if $f_1 \colon R \to F_1$ and $f_2 \colon R \to F_2$ are fraction maps, they induce an isomorphism $F_1 \simeq F_2$.
 The construction of $\Frac R$ then results in \emph{a} field of fractions (with fraction map \lean{fraction\_ring.of R}) rather than \emph{the} field of fractions.
@@ -445,17 +442,17 @@ We use a type synonym \lean{f.codomain := F} and instantiate the $R$-algebra str
 
 \subsection{Representing monogenic field extensions} \label{sec:monogenic-field-extension}
 
-In Section~\ref{sec math background} we have informally said that every number field $K$ can be written as $K=\Q(\alpha)$ for a root $\alpha$ of an irreducible polynomial $P\in\Q[X]$. This can be made precise in several ways. For instance, one can consider a large field $E$ (of characteristic $0$) where $P$ splits completely, then choose a root $\alpha\in E$ and let $\Q(\alpha)$ be the smaller subfield of $E$ containing $\alpha$. Or, one can consider the quotient ring $\Q[X]/P$ and observe that this is a field where the class $X\pmod{P}$ is a root of $P$. The assignment $\alpha\mapsto X\pmod{P}$ yields an isomorphism of the two fields, but any other choice of a root $\alpha'\in E$ leads to another isomorphism $\Q(\alpha')\cong \Q[X]/P$. Although mathematically we often tacitly identify the constructions, there is no canonical representation of the \emph{monogenic} extensions of $\Q$, those which can be obtained by adjoining a single root of one polynomial.
+In Section~\ref{sec math background} we have informally said that every number field $K$ can be written as $K=\Q(\alpha)$ for a root $\alpha$ of an irreducible polynomial $P\in\Q[X]$. This can be made precise in several ways. For instance, one can consider a large field $E$ (of characteristic $0$) where $P$ splits completely, then choose a root $\alpha\in E$ and let $\Q(\alpha)$ be the smallest subfield of $E$ containing $\alpha$. Or, one can consider the quotient ring $\Q[X]/P$ and observe that this is a field where the class $X\pmod{P}$ is a root of $P$. The assignment $\alpha\mapsto X\pmod{P}$ yields an isomorphism of the two fields, but any other choice of a root $\alpha'\in E$ leads to another isomorphism $\Q(\alpha')\cong \Q[X]/P$. Although mathematically we often tacitly identify the constructions, there is no canonical representation of the \emph{monogenic} extensions of $\Q$, those which can be obtained by adjoining a single root of one polynomial.
 
 
 % We have seen in Section~\ref{sec math background} that every number field $K$ can be written as $K=\Q(\alpha)$ by adjoining to $\Q$ a root $\alpha$ of a polynomial: there is an irreducible polynomial $p \in \Q[X]$ such that $\Q[X] / p \simeq K$; we set $\alpha$ to be the image of $X$ in $\Q[X] / p$. If $K$ is given, we can also take $\alpha : K$ and let $\Q(\alpha)$ be the smallest subfield of $K$ containing $\alpha$; then $K = \Q(\alpha)$ means that $\Q(\alpha)$, as a subfield of $K$, is equal to the subfield $\top$ containing all elements of $K$. 
 The same continues to hold if we replace the base field $\Q$ with another field $F$, thus considering extensions of the form $F(\alpha)$, now requiring that $\alpha$ be a root of some $P\in F[X]$. Various constructions of $F(\alpha)$ have already been formalized in \mathlib. The ability to switch between these representations is important: sometimes $K$ and $F$ are fixed and we want an arbitrary $\alpha$; sometimes $\alpha$ is fixed and we want an arbitrary type representing $F(\alpha)$.
 
 To find a uniform way to reason about all these definitions,
-we chose to formalize the notion of \emph{power basis} to represent monogenic field extensions, a basis of the form $1, x, x^2, \dots, x^{n-1} : K$ (viewing $K$ as a $F$-vector space).
+we chose to formalize the notion of \emph{power basis} to represent monogenic field extensions: this is a basis of the form $1, x, x^2, \dots, x^{n-1} : K$ (viewing $K$ as a $F$-vector space).
 % We call $x$ the \emph{generator} and $n$ the \emph{dimension} of this power basis.
 We defined a structure type bundling the information of a power basis.
-Omitting some generalizations not needed in the paper, the definition reads:
+Omitting some generalizations not needed in this paper, the definition reads:
 \begin{lstlisting}
 structure power_basis (F K : Type*) [field F] [field K] [algebra F K] :=
 (gen : S) (dim : ℕ)
@@ -973,7 +970,7 @@ Having formalized various basic results of algebraic number theory, there are se
 \item Other finiteness results in algebraic number theory, most notably Hermite's theorem about the existence of finitely many number fields, up to isomorphism,
 with bounded discriminant~\cite[Theorem 2.16]{Neukirch} (and the function field analogue).
 
-\item Correctness of number theoretic software, such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}, e.g. class number computations for quadratic number fields.
+\item Correctness of number theoretic software, such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}, used, for instance, for class number computations of quadratic number fields.
 
 \item Applications to Diophantine equations, such as determining all pairs of integers $(x,y)$ such that $y^2=x^3+D$ for % several given ``interesting'' $D\in\Z$.
 given nonzero $D \in \Z$.
