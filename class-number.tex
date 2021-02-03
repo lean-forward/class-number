@@ -640,7 +640,7 @@ The theorem \lean{fractional\_ideal.mul\_inv\_cancel} proves the converse, namel
 \begin{lstlisting}
 lemma coe_ideal_mul_one_div [hD : is_dedekind_domain D] 
   (I : ideal D) (hne : I ≠ ⊥) :
-  ↑I * ((1 : fractional_ideal f) / ↑I) = (1 : fractional_ideal f) :=
+  ↑I * ((1 : fractional_ideal f) / ↑I) = (1 : fractional_ideal f)
 \end{lstlisting}
 from where it becomes apparent that we had to repeatedly distinguish between \lean{I:ideal D}, and its coercion \lean{↑I:fractional\_ideal f} although these objects, from a mathematical point of view, are identical.
 
@@ -920,8 +920,7 @@ noncomputable instance : fintype
   (class_group (number_field.ring_of_integers.fraction_map K)) :=
 class_group.finite_of_admissible K int.fraction_map int.admissible_abs
 
-variables [is_separable f.codomain K]
-noncomputable instance : fintype
+noncomputable instance [is_separable f.codomain K] : fintype
   (class_group (function_field.ring_of_integers.fraction_map f K)) :=
 class_group.finite_of_admissible F f polynomial.admissible_card_pow_degree
 \end{lstlisting}
@@ -956,7 +955,8 @@ with bounded discriminant~\cite[Theorem 2.16]{Neukirch} (and the function field 
 %
 Verification of number theoretic software, such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}, e.~g. class number computations for quadratic number fields.
 %
-Applications to Diophantine equations, as determining all pairs of integers $(x,y)$ such that $y^2=x^3+D$ for several given ``interesting'' $D\in\Z$.
+Applications to Diophantine equations, as determining all pairs of integers $(x,y)$ such that $y^2=x^3+D$ for % several given ``interesting'' $D\in\Z$.
+given $D \in Z$.
 
 
 %\begin{itemize}
