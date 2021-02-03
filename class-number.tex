@@ -891,7 +891,7 @@ We formalized, in the theorem \lean{class\_group.finite\_of\_admissible}, that t
 %                     ∃ (t : fin n → fin (card ε)),
 %                     ∀ i₀ i₁, t i₀ = t i₁ → (to_fun (A i₁ % b - A i₀ % b) : ℝ) < to_fun b • ε)
 %\end{lstlisting}
-Informally, the admissibility conditions require that the remainder operator produces values that are not too far apart.
+Very informally, the admissibility conditions require that the remainder operator produces values that are not too far apart.
 Formally, we defined the type of admissible absolute values on $D$ as follows, where \lean{to\_fun} stands for an application of the absolute value operator:
 \pagebreak[3] % Hint that we want the code block on one page
 \begin{lstlisting}
@@ -903,10 +903,9 @@ structure admissible_absolute_value (D : Type*) [euclidean_domain D]
   (to_fun (A i₁ % b - A i₀ % b) : ℝ) < to_fun b • ε)
 \end{lstlisting}
 
-The above condition formalized an intermediate result in pen-and-paper finiteness proofs;
-the different proofs for number fields and function fields (still assuming $L/F$ separable) are the same after this point.
-We used division with remainder to replace the \emph{fractional part} operator on $F$ in the classical proof,
-allowing our proof to stay entirely within $D$ to avoid coercions.
+The above condition formalizes and generalizes an intermediate result in pen-and-paper finiteness proofs;
+the different proofs for number fields and function fields (still assuming $L/F$ separable) become the same after this point.
+We used division with remainder to replace the \emph{fractional part} operator on $F$ in the classical proof, which was essential to incorporate function fields, and at the same time allowing our proof to stay entirely within $D$ to avoid coercions.
 
 The absolute value extends to a norm \lean{abs\_norm f abs:integral\_closure D L → ℤ}.
 We used the admissibility of \lean{abs} to find a finite set \lean{finset\_approx L f abs} of elements of $D$,
@@ -937,7 +936,7 @@ Finally, we defined \lean{number\_field.class\_number} and \lean{function\_field
 
 \subsection{Related work}
 
-Broadly speaking, one could see the formalization work as part of number theory. There are several formalization results in this direction.% for instance, one of the authors collaborated \cite[Section 6]{CapSetProblem}.
+Broadly speaking, one could see the formalization work as part of number theory. There are several formalization results in this direction. % for instance, one of the authors collaborated \cite[Section 6]{CapSetProblem}.
 Most notably, Eberl formalized a substantial part of analytic number theory in Isabelle/HOL~\cite{Eberl19}.
 Narrowing somewhat to a more algebraic setting, we are not aware of any other formal developments of fractional ideals, Dedekind domains or class groups of global fields.
 %Since our project touches upon the theories of field extensions, ideals, number fields and number rings,
