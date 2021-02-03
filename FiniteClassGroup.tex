@@ -65,7 +65,7 @@
 \section{Introduction}\label{intro}
 %------------------------------------------
 
-In order to formalize, e.g. in the theorem prover \emph{Lean}, the finiteness of the class group of rings of integers in number fields, we write some proof in detail. Much of the proof actually applies uniformly to the function field case, assuming (for the time being \ldots) it's a separable extension of the \lq base\rq\ field $\Fq(t)$.
+In order to formalize, e.~g.~ in the theorem prover \emph{Lean}, the finiteness of the class group of rings of integers in number fields, we write some proof in detail. Much of the proof actually applies uniformly to the function field case, assuming (for the time being \ldots) it's a separable extension of the \lq base\rq\ field $\Fq(t)$.
 
 NOTE: the only actual intended use of this informal document was to use it in combination with discussions, explanations, etc. to formalize finiteness results for class groups in Lean. In particular, with very few exceptions, no attempt was made to correct errors or complete omissions unless still beneficial for the formalization process.
 Perhaps it will be \lq polished\rq\ a little bit more in the future.
@@ -148,7 +148,7 @@ Let $I$ be a nonzero ideal in a Dedekind domain $R$. Then there are only finitel
 \end{proposition}
 
 \begin{proof}
-This follows e.g. from unique factorization~\ref{thm Dedekind unique fac}.
+This follows e.~g.~ from unique factorization~\ref{thm Dedekind unique fac}.
 \end{proof}
 
 
@@ -187,7 +187,7 @@ In particular, taking $D=\F_q$ (a finite field with $q$ elements) and $c=q$, we 
 Write out definitions, and use standard properties of the degree function, i.e. $\deg (fg)=\deg f+\deg g$ and $\deg(f+g)\leq \max(\deg f,\deg g)$ (treating the zero polynomials separately, or setting $\deg(0)=-\infty$ with the appropriate operations/inequalities for $-\infty$). The second case gives the stronger triangel inequality $|f+g|_{\deg} \leq \max(|f|_{\deg},|g|_{deg})$, which  immediately implies the weaker \lq normal\rq\ triangle inequality.
 \end{proof}
 
-We note that taking $c=q$ for the last absolute value is just some natural normalisation choice. It is of no importance for the results here. So if e.g. taking $c=2$ would make things easier, that choice would be fine too. Also, just considering $q=p$ (so $\F_q=\F_p \simeq \Z/p\Z$) suffices for our purposes.
+We note that taking $c=q$ for the last absolute value is just some natural normalisation choice. It is of no importance for the results here. So if e.~g.~ taking $c=2$ would make things easier, that choice would be fine too. Also, just considering $q=p$ (so $\F_q=\F_p \simeq \Z/p\Z$) suffices for our purposes.
 
 A crude estimate for the determinant of a matrix is given below.
 \begin{lemma}
@@ -245,7 +245,7 @@ We call $R$ \emph{admissible} if both:
 \end{itemize}
 \end{definition}
 
-There are equivalent, arguably cleaner, definitions (e.g. without actually incorporating division with remainder), but for the time being this one seems to work just fine. (And will probably be handy for actual computations at some point.)
+There are equivalent, arguably cleaner, definitions (e.~g.~ without actually incorporating division with remainder), but for the time being this one seems to work just fine. (And will probably be handy for actual computations at some point.)
 
 We will show later that $\Z$ and $\Fq[t]$ are admissible domains.
 Now our main ingredient for the finiteness of the class group.
@@ -335,7 +335,7 @@ Trivial, namely $\{|\NN(b)| : b \in I-\{0\} \}$ contains a smallest element, whi
 \end{proof}
 
 \begin{theorem}
-Let $M$ be as in Corollary~\ref{cor generalized norm euclidean} and let $m$ be a nonzero common multiple of all elements in $M$ (e.g. the product, so it exists).
+Let $M$ be as in Corollary~\ref{cor generalized norm euclidean} and let $m$ be a nonzero common multiple of all elements in $M$ (e.~g.~ the product, so it exists).
 Then for any nonzero ideal $I$ of $S$, there exists an ideal $J$ of $S$ such that $I \sim J$ and $J | \langle m \rangle_S$.
 \end{theorem}
 
@@ -395,7 +395,7 @@ i.e. $\deg (A_1(k)-A_1(j))<\deg b-D$, as was to be shown.
 
 We now translate the previous lemma.
 \begin{lemma}
-Let $\epsilon \in \R_{>0}$, $b \in \F_q[t]$, and choose $D \in \N$ such that $M:=q^D\geq 1/\epsilon$ (e.g. $D:=\operatorname{ceiling} (-\log \epsilon/\log q)$).
+Let $\epsilon \in \R_{>0}$, $b \in \F_q[t]$, and choose $D \in \N$ such that $M:=q^D\geq 1/\epsilon$ (e.~g.~ $D:=\operatorname{ceiling} (-\log \epsilon/\log q)$).
 Then for every function
 $A_1: \N_{\leq M} \to \F_q[t]$ there exists $j,k \in \N_{\leq M}$ such that
 \[j \neq k \text{ and } |\remainder(A_1(k),b)-\remainder(A_1(j),b)| < \epsilon |b|.\]
