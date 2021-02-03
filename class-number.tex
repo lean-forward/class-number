@@ -7,9 +7,8 @@
 \titlerunning{Dedekind domains and class groups}
 
 \author{Anne Baanen}{Department of Computer Science, Vrije Universiteit Amsterdam, The Netherlands \and \url{https://cs.vu.nl/~tbn305}}{t.baanen@vu.nl}{https://orcid.org/0000-0001-8497-3683}
-{NWO Vidi grant No. 016.Vidi.189.037, Lean Forward}
-%{Received funding from the NWO under the Vidi program (project No. 016.Vidi.189.037, Lean Forward)}
-\author{Sander R. Dahmen}{Department of Mathematics, Vrije Universiteit Amsterdam, The Netherlands \and \url{https://few.vu.nl/~sdn249/}}{s.r.dahmen@vu.nl}{https://orcid.org/0000-0002-0014-0789}{NWO Vidi grant No. 639.032.613, New Diophantine Directions}
+{NWO Vidi grant No.\ 016.Vidi.189.037, Lean Forward}
+\author{Sander R. Dahmen}{Department of Mathematics, Vrije Universiteit Amsterdam, The Netherlands \and \url{https://few.vu.nl/~sdn249/}}{s.r.dahmen@vu.nl}{https://orcid.org/0000-0002-0014-0789}{NWO Vidi grant No.\ 639.032.613, New Diophantine Directions}
 \author{Ashvni Narayanan}{London School of Geometry and Number Theory}{a.narayanan20@imperial.ac.uk}{https://orcid.org/0000-0003-2777-4228}{EPSRC Grant EP/S021590/1 (UK)}
 \author{Filippo A. E. Nuccio Mortarino Majno di Capriglio}{Univ Lyon, Université Jean Monnet Saint-Étienne, CNRS UMR 5208, Institut Camille Jordan, F-42023 Saint-\'Etienne, France\and\url {https://perso.univ-st-etienne.fr/nf51454h/index.html}}{filippo.nuccio@univ-st-etienne.fr}{https://orcid.org/0000-0002-5318-9869}{\empty}
 
@@ -27,7 +26,7 @@
 {Software}{https://github.com/lean-forward/class-number}
 
 \acknowledgements{We want to thank the whole \mathlib community for invaluable advice all along the project.\\
-A.~N.~would like to thank Prof Kevin Buzzard for his constant support and encouragement, and for introducing her to the other co-authors.\\
+A.~N.~would like to thank Prof.\ Kevin Buzzard for his constant support and encouragement, and for introducing her to the other co-authors.\\
 A.~N.~and F.~N.~wish to express their deepest gratitude to Anne Baanen for the generosity shown along all stages of the project. Without Anne's never-ending patience, it would have been impossible for them to contribute to this project, and to overcome several difficulties.
 }
 
@@ -49,12 +48,11 @@ A.~N.~and F.~N.~wish to express their deepest gratitude to Anne Baanen for the g
 \ArticleNo{}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\usepackage{xcolor}
 \usepackage{xspace}
 \usepackage{soul}
 \usepackage{listings}
 \def\lstlanguagefiles{lstlean.tex}
-\lstset{language=lean}
+\lstset{language=lean,backgroundcolor=\color[rgb]{0.9,0.9,0.9}}
 
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\lean}[1]{\texttt{#1}\xspace} % for writing Lean expressions
@@ -104,9 +102,9 @@ This paper describes the formalization process, noting the idioms we found usefu
 
 In its basic form, number theory studies properties of the integers $\Z$
 %(say as a set together with the ``standard'' addition and multiplication operations)
-and its fraction field, the rational numbers $\Q$.\footnote{From a classical point of view, one could even argue that the positive, or perhaps nonnegative, integers and rational numbers are the most basic objects of study of number theory. From an algebraic point of view, this would still quickly lead into studying $\Z$ and $\Q$.}
+and its fraction field, the rational numbers $\Q$.%\footnote{From a classical point of view, one could even argue that the positive, or perhaps nonnegative, integers and rational numbers are the most basic objects of study of number theory. From an algebraic point of view, this would still quickly lead into studying $\Z$ and $\Q$.}
 Both for the sake of generalization, as well as for providing powerful techniques to answer questions about the original objects $\Z$ and $\Q$,
-it is worthwhile to study finite extensions of $\Q$, called \emph{number fields}, as well as their \emph{rings of integers} (defined in Section~\ref{sec math background} below),
+it is worthwhile to study finite extensions of $\Q$, called \emph{number fields}, as well as their \emph{rings of integers} (Section~\ref{sec math background}),
 whose relations mirror the way $\Q$ contains $\Z$ as a subring. 
 % These number fields and their rings of integers form the basic objects of study of algebraic number theory, an important brach of modern number theory.--[F] seems redundant, as it is more or less the same as the previous sentence
 In this paper, we describe our project aiming at formalizing these notions and some of their important properties. Our goal, however, is not to get to the definitions and properties as quickly as possible,
@@ -115,7 +113,7 @@ to lay the foundations for future work,
 as part of a natural and more general theory as we shall explain below.
 
 In particular, our project resulted in formalized definitions and elementary properties of
-number fields and their rings of integers (described in Section~\ref{sec:ring-of-integers}),
+number fields and their rings of integers (Section~\ref{sec:ring-of-integers}),
 Dedekind domains (Section~\ref{sec:Dedekind-domain}),
 and the ideal class group and class number (Section~\ref{sec:class-number}).
 Apart form the very basics concerning number fields, these concept were not formalized before as far as we are aware of.
@@ -128,7 +126,7 @@ that two definitions of Dedekind domains are equivalent (Section \ref{sec:equiva
 that the ring of integers %(or more generally: the integral closure of a Dedekind domain in a finite separable field extension)
 is a Dedekind domain (Section \ref{sec:integral-closure})
 and that the class group of a number field is finite (Section \ref{sec:class-number}).
-In fact, most of our results for number fields are actually obtained in the more general setting of so-called \emph{global fields},
+In fact, most of our results for number fields are actually obtained in the more general setting of \emph{global fields},
 namely number fields together with finite field extensions of $\Fq[\empty](t)$ with $\Fq[\empty]$ a finite field.
 %(restricting to $\Fq[\empty]\simeq \Z/p\Z$ with $p$ prime yields no loss of generality here).
 
@@ -148,27 +146,30 @@ namely number fields together with finite field extensions of $\Fq[\empty](t)$ w
 
 Our work is developed as part of the mathematical library \mathlib~\cite{mathlib} for the Lean 3 theorem prover~\cite{lean-prover}.
 The formal system of Lean is a dependent type theory based on the calculus of inductive constructions,
-with a proof-irrelevant impredicative universe \lean{Prop} at the bottom of a noncumulative hierarchy of universes \lean{Prop : Type : Type 1 : Type 2 : \dots}.\footnote{In our code samples, we use \lean{Type*} as abbreviation of ``\lean{Type u} for an arbitrary choice of \lean{u}''.}
+with a proof-irrelevant impredicative universe \lean{Prop} at the bottom of a noncumulative hierarchy of universes \lean{Prop : Type : Type 1 : Type 2 : \dots}\,; ``an arbitrary \lean{Type u}'' is abbreviated as \lean{Type*}.
+%\footnote{In our code samples, we use \lean{Type*} as abbreviation of ``\lean{Type u} for an arbitrary choice of \lean{u}''.}
 Other important characteristics of Lean as used in \mathlib are the use of quotient types, ubiquitous classical reasoning and the use of typeclasses to define the hierarchy of algebraic structures.
 
 Organizationally, \mathlib is characterized by a distributed and decentralized community of contributors, a willingness to refactor its basic definitions, and a preference for small yet complete contributions over larger projects added all at once.
-Our own project, being part of the development of \mathlib, follows this philosophy by contributing pieces of our work as they are finished,
-in turn taking advantage of results contributed by others after the start of the project.
+In this project, as part of the development of \mathlib, we follow this philosophy by contributing pieces of our work as they are finished.
+We, in turn, use results contributed by others after the start of the project.
 At several points, we had just merged a formalization into \mathlib that another contributor needed,
 immediately before they contributed a result that we needed.
-Due to the decentralized organization and fluid nature of contributions to \mathlib, its contents are built up of many different contributions from many different authors. Attributing each formalization to a single set of main authors would not do justice to all others whose additions and tweaks are essential to its current use. Therefore, we will make clear whether a contribution is part of our project or not, but we will not stress whom we consider to be the main author(s).
+Due to the decentralized organization and fluid nature of contributions to \mathlib, its contents are built up of many different contributions from over 100 different authors.
+Attributing each formalization to a single set of main authors would not do justice to all others whose additions and tweaks are essential to its current use. Therefore, we will make clear whether a contribution is part of our project or not, but we will not stress whom we consider to be the main authors.
 
-The source files of the formalization are currently in the process of being merged into \mathlib, an up-to-date branch being available \url{https://github.com/leanprover-community/mathlib/tree/dedekind-domain-dev}. We also maintain a %separate
-repository containing the source code referred to in this paper, available at \url{https://github.com/lean-forward/class-number}.
+The source files of the formalization are currently in the process of being merged into \mathlib.
+The up-to-date development branch is publically available\footnote{\url{https://github.com/leanprover-community/mathlib/tree/dedekind-domain-dev}}. We also maintain a %separate
+repository containing the source code referred to in this paper\footnote{\url{https://github.com/lean-forward/class-number}}.
 
 \section{Mathematical background}\label{sec math background}
 
-Let us now introduce some of the main objects we study, described in a ``standard'' mathematical way. We assume some familiarity with basic ring and field theory.% In the later sections we will detail their formalization in Lean.
+Let us now introduce some of the main objects we study, described informally. We assume some familiarity with basic ring and field theory.% In the later sections we will detail their formalization in Lean.
 
 A \emph{number field} $K$ is a finite extension of the field $\Q$, and as such has the structure of a finite dimensional vector space over $\Q$; its dimension is called the \emph{degree} of $K$.
 The easiest example is $\Q$ itself, and the two-dimensional cases are given by the quadratic number fields
 $\Q(\sqrt{d})=\{a+b\sqrt{d} : a,b \in \Q\}$
-with $d \in \Z$ not a square. 
+where $d \in \Z$ is not a square.
 %where $d\not=1$ is a squarefree (i.e. not divisible by $p^2$ for any prime $p$) integer.
 %, and there is no loss in generality in considering $\sqrt{d}$ as a complex number (since every number field can be embedded into the complex numbers).
 For an interesting cubic example, let $\alpha$ be the unique real number satisfying $\alpha^3 + \alpha^2 - 2\alpha + 8=0$: it gives rise to the number field
@@ -178,7 +179,7 @@ In general, taking any root $\alpha$ of an irreducible polynomial of degree $n$ 
 $\Q(\alpha)=\{c_0+c_1\alpha+\ldots+c_{n-1} \alpha^{n-1} : c_0,c_1,\ldots,c_{n-1} \in \Q \}$,
 and, up to isomorphism, these are all the number fields of degree $n$.
 
-The \emph{ring of integers} $\OK$ of a number field $K$ is defined as the integral closure of $\Z$ in $K$, which boils down to
+The \emph{ring of integers} $\OK$ of a number field $K$ is defined as the integral closure of $\Z$ in $K$, which amounts to
 \[
   \OK := \{x \in K : f(x)=0 \text{ for some \emph{monic} polynomial } f \text{ with integer coefficients}\},\]
 where we recall that a polynomial is called \emph{monic} if its leading coefficient equals $1$.
@@ -186,18 +187,11 @@ While it might not be immediately obvious that $\OK$ is a ring, this follows fro
 Some examples of $\OK$ are as follows. Taking $K=\Q$, we get $\OK=\Z$ back.
 For $K=\Q(i)=\Q(\sqrt{-1})$ we get that $\OK$ is the Gaussian integers $\Z[i]=\{a+bi : a,b \in \Z\}$.
 %For $K=\Q(\sqrt{2})$ we get $\OK=\Z[\sqrt{2}]=\{a+b\sqrt{2} : a,b \in \Z\}$.
-But for $K=\Q(\sqrt{5})$ we do \emph{not} simply get $\Z[\sqrt{5}]=\{a+b\sqrt{5} : a,b \in \Z\}$ as $\OK$, since the golden ratio $\varphi:=(1+\sqrt{5})/2\not\in \Z[\sqrt{5}]$ satisfies the monic polynomial equation $\varphi^2-\varphi-1=0$, hence by definition $\varphi \in \OK$; it turns out that $\OK=\Z[\varphi]=\{a+b\varphi : a,b \in \Z\}$. %For quadratic numbers field $\Q(\sqrt{d})$, with $d$ as above, the previous two examples in fact generalize to
-% \begin{equation*}
-% \OK[\Q(\sqrt{d})]=
-% \begin{cases}
-% \Z[\sqrt{d}]=\{a+b\sqrt{d}: a,b \in \Z\} \text { if } d \not\equiv 1 \pmod{4}\\
-%  \Z\left[\frac{1+\sqrt{d}}{2}\right]=\left\{a+b \frac{1+\sqrt{d}}{2} : a,b \in \Z \right\} \text { if } d \equiv 1 \pmod{4}.
-% \end{cases}
-% \end{equation*}%[F] TODO I wonder if this is not too much.
+But for $K=\Q(\sqrt{5})$ we do \emph{not} simply get $\Z[\sqrt{5}]=\{a+b\sqrt{5} : a,b \in \Z\}$ as $\OK$, since the golden ratio $\varphi:=(1+\sqrt{5})/2\not\in \Z[\sqrt{5}]$ satisfies the monic polynomial equation $\varphi^2-\varphi-1=0$; hence by definition, $\varphi \in \OK$.
+It turns out that $\OK=\Z[\varphi]=\{a+b\varphi : a,b \in \Z\}$.
 Finally, if $K=\Q(\alpha)$ with $\alpha$ as before, then $\OK=\{a+b \alpha+c (\alpha+\alpha^2)/2 : a,b,c \in \Z\}$, illustrating that explicitly writing down $\OK$ can quickly become complicated.
 Further well-known rings of integers are % the Gaussian integers $\Z[i]=\{a+b i : a,b, \in \Z\}$ (where $i^2=-1$),
-the Eisenstein integers $\Z[(1+\sqrt{-3})/2]$, and the %``real'' quadratic 
-ring $\Z[\sqrt{2}]$.
+the Eisenstein integers $\Z[(1+\sqrt{-3})/2]$ and the ring $\Z[\sqrt{2}]$.
 %TODO do we want to say something here about the existence of an integral basis? And the existence/nonexistence of a power basis for number fields/rings of integers?
 
 Thinking of $\OK$ as a generalization of $\Z$, it is natural to ask which of its properties %of $\Z$ if they
@@ -278,7 +272,8 @@ the notation \lean{f.codomain} endows $F$ with the $\Fq[q][t]$-algebra structure
 \subsection{Field extensions}
 
 The definition of \lean{is\_number\_field} illustrates our treatment of field extensions.
-In unformalized mathematics, a field $L$ containing a subfield $K$ is said to be a field extension $L / K$.
+%In unformalized mathematics,
+A field $L$ containing a subfield $K$ is said to be a field extension $L / K$.
 Often we encounter towers of field extensions: we might have that $\Q$ is contained in $K$, $K$ is contained in $L$, $L$ is contained in an algebraic closure $\bar{K}$ of $K$, and $\bar{K}$ is contained in $\C$.
 We might formalize this situation by viewing $\Q$, $K$, $L$ and $\bar{K}$ as sets of complex numbers $\C$ and defining field extensions as subset relations between these subfields.
 This way, no coercions need to be inserted to map elements of one field into a larger field.
@@ -310,7 +305,7 @@ class is_scalar_tower (M N α : Type*)
   [has_scalar M N] [has_scalar N α] [has_scalar M α] : Prop :=
 (smul_assoc : ∀ (x : M) (y : N) (z : α), (x • y) • z = x • (y • z))
 \end{lstlisting}
-For example, if $R$ is a ring, $A$ is an $R$-algebra and $M$ an $A$-module, we can express the fact that $M$ is also an $R$-module by adding a \lean{[is\_scalar\_tower R A M]} parameter.
+For example, if $R$ is a ring, $A$ is an $R$-algebra and $M$ an $A$-module, we can state that $M$ is also an $R$-module by adding a \lean{[is\_scalar\_tower R A M]} parameter.
 Since \lean{x~$\cdot$~y} for an $R$-algebra $A$ is defined as \lean{algebra\_map R A x * y}, applying \lean{smul\_assoc} for each $x : K$ with $y = (1 : L)$ and $z = (1 : F)$ shows that the \lean{algebra\_map}\kern-.3em s indeed commute.
 
 Common \lean{is\_scalar\_tower} instances are declared in \mathlib,
