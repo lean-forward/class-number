@@ -874,7 +874,7 @@ Extending this proof to show the finiteness of $\Cl_{\OK[K']}$ is quite involved
 %While there exist analogues of Minkowski's theorem in the function field setting, which can be used for proving finiteness of $\Cl_S$, formalizing this approach would be quite involved and would also not give a very uniform proof of the finiteness of $\Cl_R$ and  $\Cl_S$.
 Our formalization adapted and generalized a classical approach to the finiteness of $\Cl_{\OK}$, where the use of Minkowski's theorem is replaced by the pigeonhole principle. This approach seems to go back to Kronecker
 %\footnote{\url{https://mathoverflow.net/questions/19021/avoiding-minkowskis-theorem-in-algebraic-number-theory/19035#19035}}
-and can be found, for instance, in~\cite{Ireland-Rosen}. 
+and can be found, for instance, in~\cite{Ireland-Rosen}.
 %so that on the one hand most ingredients became more \mathlib ``friendly'' (by e.g. avoiding unnecessary field extensions, as used for example in norm estimates), and on the other hand it works in the function field setting as well.
 We note that some other ``uniform'' approaches can be found in~\cite{Artin-Whaples} and~\cite{Stasinski}.
 
@@ -937,33 +937,46 @@ Finally, we defined \lean{number\_field.class\_number} and \lean{function\_field
 
 \subsection{Related work}
 
-Broadly speaking, one could see the formalization work as part of number theory. There are several formalization results in this direction; see, for instance, ~\cite[Section 6]{CapSetProblem}, most notably the formalization in Isabelle/HOL of a substantial part of analytic number theory~\cite{Eberl19}.
+Broadly speaking, one could see the formalization work as part of number theory. There are several formalization results in this direction.% for instance, one of the authors collaborated \cite[Section 6]{CapSetProblem}.
+Most notably, Eberl formalized a substantial part of analytic number theory in Isabelle/HOL~\cite{Eberl19}.
 Narrowing somewhat to a more algebraic setting, we are not aware of any other formal developments of fractional ideals, Dedekind domains or class groups of global fields.
 %Since our project touches upon the theories of field extensions, ideals, number fields and number rings,
 %we provide here a partial overview of formalizations in these areas.
 
-There are many libraries formalizing basic notions of commutative algebra such as field extensions and ideals, including the Mathematical Components library in Coq~\cite{mathcomp}, the algebraic library for Isabelle/HOL~\cite{algebra_isabelle}, the \texttt{set.mm} database for MetaMath~\cite{metamath} and the Mizar Mathematical Library~\cite{algebraic-hierarchy_mizar}. The field of algebraic numbers, or more generally algebraic closures of arbitrary fields, are also available in many provers, for example Coq~\cite{real-algebraic-numbers-coq, mathcomp}, Isabelle/HOL~\cite{algebraic-numbers-isabelle}, MetaMath~\cite{algebraic-numbers-metamath}, and Mizar~\cite{algebraic-numbers-mizar}. To our knowledge, the Coq Mathematical Components library is the only formal development beside ours specifically dealing with number fields~\cite[\texttt{field/algnum.v}]{mathcomp}.
+There are many libraries formalizing basic notions of commutative algebra such as field extensions and ideals, including the Mathematical Components library in Coq~\cite{mathcomp},
+the algebraic library for Isabelle/HOL~\cite{algebra_isabelle},
+the \texttt{set.mm} database for MetaMath~\cite{metamath} and the Mizar Mathematical Library~\cite{algebraic-hierarchy_mizar}.
+The field of algebraic numbers, or more generally algebraic closures of arbitrary fields, are also available in many provers.
+For example, Blot~\cite{algebraic-numbers-ccorn} formalized algebraic numbers in Coq,
+Thiemann, Yamada and Joosten~\cite{algebraic-numbers-isabelle} in Isabelle/HOL,
+Carneiro~\cite{algebraic-numbers-metamath} in MetaMath,
+and Watase~\cite{algebraic-numbers-mizar} in Mizar.
+To our knowledge, the Coq Mathematical Components library is the only formal development beside ours specifically dealing with number fields~\cite[\texttt{field/algnum.v}]{mathcomp}.
 
-Apart from the general theory of algebraic numbers, there are formalizations of specific rings of integers: the Gaussian integers $\Z[i]$ are available in Isabelle/HOL~\cite{gaussian_integers-isabelle}, MetaMath~\cite{gaussian_integers-metamath} and Mizar~\cite{gaussian_integers-mizar}.
-The Isabelle/HOL formalization deserves special mention since it introduces techniques from algebraic number theory,
+Apart from the general theory of algebraic numbers, there are formalizations of specific rings of integers.
+For instance, the Gaussian integers $\Z[i]$ have been formalized
+in Isabelle/HOL by Eberl~\cite{gaussian_integers-isabelle},
+in MetaMath by Carneiro~\cite{gaussian_integers-metamath}
+and in Mizar by Futa, Mizushima, and Okazaki~\cite{gaussian_integers-mizar}.
+Eberl's Isabelle/HOL formalization deserves special mention in this context since it introduces techniques from algebraic number theory,
 defining the integer-valued norm on $\Z[i]$ and classifying the prime elements of $\Z[i]$.
 
 \subsection{Future directions}
 
-Having formalized various basic results of algebraic number theory, there are several natural directions for future formalization work, including the following.
-%
-Finiteness of the class group for the ring of integers in all global fields, which would entail, apart from some details at the end of the proof, dropping the separability condition in the result mentioned in the first paragraph of Section~\ref{sec:integral-closure}. 
-%
-Finite generation of the group of units of the ring of integers in a number field, or slightly stronger, Dirichlet's unit theorem~\cite[Theorem 7.4]{Neukirch} (and the function field analogue). 
-%
-Other finiteness results in algebraic number theory, most notably Hermite's theorem about the existence of finitely many number fields, up to isomorphism,
-with bounded discriminant~\cite[Theorem 2.16]{Neukirch} (and the function field analogue). 
-%
-Verification of number theoretic software, such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}, e.~g. class number computations for quadratic number fields.
-%
-Applications to Diophantine equations, as determining all pairs of integers $(x,y)$ such that $y^2=x^3+D$ for % several given ``interesting'' $D\in\Z$.
-given nonzero $D \in \Z$.
+Having formalized various basic results of algebraic number theory, there are several natural directions for future work, including formalizing some of the following results.
+\begin{itemize}
+\item Finiteness of the class group for the ring of integers in all global fields. This would entail, apart from some details at the end of the proof, dropping the separability condition in the result mentioned in the first paragraph of Section~\ref{sec:integral-closure}. 
 
+\item The group of units of the ring of integers in a number field is finitely generated, or slightly stronger, Dirichlet's unit theorem~\cite[Theorem 7.4]{Neukirch} (and the function field analogue).
+
+\item Other finiteness results in algebraic number theory, most notably Hermite's theorem about the existence of finitely many number fields, up to isomorphism,
+with bounded discriminant~\cite[Theorem 2.16]{Neukirch} (and the function field analogue).
+
+\item Verification of number theoretic software, such as KASH/KANT~\cite{kash} and PARI/GP~\cite{PARI2}, e.~g. class number computations for quadratic number fields.
+
+\item Applications to Diophantine equations, as determining all pairs of integers $(x,y)$ such that $y^2=x^3+D$ for % several given ``interesting'' $D\in\Z$.
+given nonzero $D \in \Z$.
+\end{itemize}
 
 %\begin{itemize}
 %\item Finiteness of the class group for the ring of integers in all global fields. This would entail dropping the separability condition in the result mentioned in the first paragraph of Section~\ref{sec:integral-closure}, and consequently adapt some of the details in the final steps for the finiteness of the class group in the admissible case. Some basic prerequisites would be setting up some field theory dealing with (finite) inseparable field extensions, especially the purely inseparable ones. 
@@ -984,10 +997,10 @@ given nonzero $D \in \Z$.
 \subsection{Conclusion}
 
 In this project, we confirmed the rule that the hardest part of formalization is to get the definitions right.
-Once this is accomplished, the ``pen and paper'' proof (sometimes first adapted with formalization in mind) almost always translates into a formal proof without too much effort.
+Once this is accomplished, the paper proof (sometimes first adapted with formalization in mind) almost always translates into a formal proof without too much effort.
 % Informal mathematics effortlessly switches between different viewpoints, choosing whichever suits the situation best.
 In particular, we regularly had to invent abstractions to treat instances of the ``same'' situation uniformly.
-Instead of fixing a canonical representation, be it $K \subseteq L \subseteq F$ as subfields, or the field of fractions $\Frac R$, or the monogenic $K(\alpha)$, we found that making the essence of the situation an explicit parameter, as in \lean{is\_scalar\_tower}, \lean{fraction\_map} or \lean{power\_basis},
+Instead of fixing a canonical representation, be it $K \subseteq L \subseteq F$ as subfields or the field of fractions $\Frac R$, or the monogenic $K(\alpha)$, we found that making the essence of the situation an explicit parameter, as in \lean{is\_scalar\_tower}, \lean{fraction\_map} or \lean{power\_basis},
 allows to treat equivalent viewpoints uniformly without the need for transferring results.
 
 The formalization efforts described in this paper cannot be cleanly separated from the development of \mathlib as a whole.
