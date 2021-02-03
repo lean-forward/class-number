@@ -629,7 +629,10 @@ Now considering a nonzero integral ideal $I$ of the ring $D$, its invertibility 
 % due to its invertibility (as a fractional ideal), by \lean{submodule.mem\_span\_mul\_finite\_of\_mem\_span\_mul}, we %obtain 
 finite sets $T \subset I$ and $T' \subset 1/I$ such that $1$ is contained in the $D$-span of $T*T'$. We used \lean{norm\_cast} to resolve most coercions, however, this tactic did not solve coercions coming from the fraction map. With coercions, the actual statement of the latter expression in Lean is \lean{↑T' ⊆ ↑↑(1 / ↑I)}, which reads:
 \begin{lstlisting}
-(T' : set (fraction_ring.of D).codomain) ⊆ (((1 / (I : fractional_ideal (fraction_ring.of D))) : submodule D (fraction_ring.of D).codomain) : set (fraction_ring.of D).codomain
+(T' : set (fraction_ring.of D).codomain) ⊆
+  (((1 / (I : fractional_ideal (fraction_ring.of D)))
+    : submodule D (fraction_ring.of D).codomain)
+    : set (fraction_ring.of D).codomain
 \end{lstlisting}
 The lemma \lean{fg\_of\_one\_mem\_span\_mul} then shows that $I$ is finitely generated, concluding the proof.
 
@@ -883,6 +886,7 @@ We formalize in the theorem \lean{class\_group.finite\_of\_admissible} that the 
 %\end{lstlisting}
 Informally, the admissibility conditions require that the remainder operator produces values that are not too far apart.
 Formally, we define the type of admissible absolute values on $D$ as follows, where \lean{to\_fun} stands for an application of the absolute value operator:
+\pagebreak[3] % Hint that we want the code block on one page
 \begin{lstlisting}
 structure admissible_absolute_value (D : Type*) [euclidean_domain D]
   extends euclidean_absolute_value D ℤ :=
