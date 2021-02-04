@@ -736,8 +736,8 @@ This gave us the required lemma \lean{unique\_factorization\_monoid.integrally\_
 
 %An important class of Dedekind domains consists of the rings of integers of number fields.%TODO Haven't we said this already at the beginning?
 
-An important classical result in algebraic number theory, is that the ring of integers of a number field $K$, defined as the integral closure of $\Z$ in $K$, is a Dedekind domain. We formalized a stronger result: given a Dedekind domain $D$ and a field of fractions $F$, if $L$ is a finite separable extension of $F$, then the integral closure of $D$ in $L$ is a Dedekind domain with fraction field $L$.
-Our approach was adapted from \cite[Theorem~3.1]{Neukirch}.
+An important classical result in algebraic number theory is that the ring of integers of a number field $K$, defined as the integral closure of $\Z$ in $K$, is a Dedekind domain. We formalized a stronger result: given a Dedekind domain $D$ and a field of fractions $F$, if $L$ is a finite separable extension of $F$, then the integral closure of $D$ in $L$ is a Dedekind domain with fraction field $L$.
+Our approach was adapted from Neukirch \cite[Theorem~3.1]{Neukirch}.
 Throughout this section, let $D$ be a Dedekind domain with a field of fractions $F$ (given by the map $f \colon D \to F$), $L$ a finite, separable field extension of $F$ and let $S$ denote the integral closure of $D$ in $L$.
 % corresponding to the following Lean declarations:
 %% either the above or below, both might be unnecessary
@@ -780,13 +780,14 @@ theorem is_prime.comap (I : ideal S) [hI : is_prime I] :
 The final condition, that the integral closure $S$ of $D$ in $L$ is a Noetherian ring, required the most work.
 We started by following the first half of \cite[Theorem~15.29]{Dummit-and-Foote},
 so that it sufficed to find a nondegenerate bilinear form $B$ such that all integral $x, y : L$ satisfy $B(x, y) \in \lean{integral\_closure}\ D\ L$.
-We formalized the results in \cite[\S\S~2.5--2.8]{Neukirch}, and showed that the \emph{trace form} is a bilinear form satisfying these requirements.
+We formalized the results in Neukirch \cite[\S\S~2.5--2.8]{Neukirch}, and showed that the \emph{trace form} is a bilinear form satisfying these requirements.
 
 \subsection{The trace form}\label{sec:trace-form}
 In the notation from the previous section, consider the bilinear form \lean{lmul := $\lambda$ x y $:$ S, x~*~y}.
 The trace of the linear map \lean{lmul x} is called the \emph{algebra trace} $\Tr_{L / F}(x)$ of $x$.
-We defined the algebra trace\footnote{In fact, we defined the trace and trace form for any algebra over a commutative ring.
-For simplicity of exposition in this paper we consider only finite extensions of fields.} as a linear map from $L$ to $F$:
+We defined the algebra trace
+%\footnote{In fact, we defined the trace and trace form for any algebra over a commutative ring.  For simplicity of exposition in this paper we consider only finite extensions of fields.}
+as a linear map, in this case from $L$ to $F$:
 \begin{lstlisting}
 noncomputable def trace : L →ₗ[F] F :=
 linear_map.comp (linear_map.trace F L) (to_linear_map (lmul F L))
