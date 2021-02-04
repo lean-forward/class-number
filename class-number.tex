@@ -239,7 +239,7 @@ The order of $\Cl_{\OK}$ is called \emph{the class number} of $K$.
 Intuitively, then, the smaller the class number, the fewer factorizations are possible.
 %In particular, as long as we are concerned with ``uniqueness'' of factorization, and with measuring the lack thereof, already  is a tremendously interesting arithmetic feature.
 
-The statements in the previous paragraph also hold when $K$ is a \emph{function field}, a field which is a finite extension of $\Fq(t) \simeq \Frac \Fq[q][t]$, where $\Fq$ is a finite field with $q$ elements. Recall that when $q$ is a prime number $p$, $\Fq$ is simply the field $\Z/p\Z$.
+The statements in the previous paragraph also hold when $K$ is a \emph{function field}, a field which is a finite extension of $\Fq(t) \simeq \Frac \Fq[q][t]$, where $\Fq$ is a finite field with $q$ elements. Recall that when $q$ is a prime number, $\Fq$ is simply the field $\Z/q\Z$.
 % A prototypical example is $K=(\Z/p\Z)(t)=\Fq[p](t)$, or an extension of the form, for instance, $K=\Fq[p^2](t)[s]/(s^2-t)$, obtained by adjoining to $\Fq[p](t)$ a square root of $t$ as well as the $(p^2-1)$-st roots of unity.
 A field which is either a number field or a function field is called a \emph{global field}.
 
@@ -255,7 +255,7 @@ We formalized number fields as the following typeclass:
 class is_number_field (K : Type*) [field K] : Prop :=
 [cz : char_zero K] [fd : finite_dimensional ℚ K]
 \end{lstlisting}
-The \emph{class} keyword declares a structure type (namely, a type of records) and enables typeclass inference for terms of this type.
+The \emph{class} keyword declares a structure type (in other words, a type of records) and enables typeclass inference for terms of this type.
 Round brackets mark parameters explicitly supplied by the user, such as \lean{(K : Type*)},
 square brackets mark instance parameters inferred by the typeclass system, such as \lean{[field K]}. The condition \lean{[cz : char\_zero K]} states that $K$ has characteristic zero, so the canonical ring homomorphism $\Z \to K$ is an embedding.
 This implies that there is a $\Q$-algebra structure on $K$ (found by typeclass instance search), endowing $K$ with the $\Q$-vector space structure used in the \mbox{\lean{[fd : finite\_dimensional ℚ K]}} hypothesis.
