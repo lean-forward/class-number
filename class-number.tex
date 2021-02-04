@@ -728,7 +728,7 @@ To prove that an irreducible element $p$ is prime, the proof uses that prime ele
 We proved the lemma \lean{irreducible\_of\_prime}, which shows the converse holds in any commutative monoid with zero.
 
 To show that a UFM is integrally closed, we first formalized the Rational Root Theorem, named \lean{denom\_dvd\_of\_is\_root},
-which states that for polynomial $p : R[X]$ and $x$ an element of the fraction field $\Frac R$ such that $p(x) = 0$, the denominator of $x$ divides the leading coefficient of $p$.
+which states that for a polynomial $p : R[X]$ and an element of the fraction field $x : \Frac R$ such that $p(x) = 0$, the denominator of $x$ divides the leading coefficient of $p$.
 If $x$ is integral with minimal polynomial $p$, the leading coefficient is $1$, therefore the denominator is a unit and $x$ is an element of $R$.
 This gave us the required lemma \lean{unique\_factorization\_monoid.integrally\_closed}, which states that the integral closure of $R$ in its fraction field is $R$ itself.
 
