@@ -312,7 +312,7 @@ For example, if $R$ is a ring, $A$ is an $R$-algebra and $M$ an $A$-module, we c
 Since \lean{x~$\cdot$~y} for an $R$-algebra $A$ is defined as \lean{algebra\_map R A x * y}, applying \lean{smul\_assoc} for each $x : K$ with $y = (1 : L)$ and $z = (1 : F)$ shows that the \lean{algebra\_map}\kern-.3em s indeed commute.
 
 Common \lean{is\_scalar\_tower} instances are declared in \mathlib,
-such as for the maps $R \to S \to A$ when $S$ is a $R$-subalgebra of $S$.
+such as for the maps $R \to S \to A$ when $S$ is a $R$-subalgebra of $A$.
 The effect is that almost all coherence proof obligations are automated through typeclass instance search.
 %In our formalization, we found that the \lean{is\_scalar\_tower} typeclass translates towers of field extension well.
 
