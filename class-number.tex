@@ -355,7 +355,7 @@ the Berkeley Galois theory group used it in a formalization of the primitive ele
 Soon after the primitive element theorem was merged into \mathlib,
 we used it in our development of the trace form.
 This anecdote illustrates the decentralized development style of \mathlib,
-with different groups and people building on each other's results in a collaborative process.
+with different groups and people building on each others' results in a collaborative process.
 
 By providing a coercion from subobjects to types, sending a subobject $S$ to the subtype of all elements of $S$,
 and putting typeclass instances on this subtype,
@@ -411,7 +411,7 @@ informally, at any given stage of one's reasoning, the field $F$ is fixed and th
 It is now impossible to view $f(R) \leq F$ as an inclusion of subalgebras,
 because the map $f$ is needed explicitly to give the $R$-algebra structure on $F$.
 %because the extra structure on the map $f$ that $K$ was endowed with the structure of an $R$-algebra and that any of our results might have been applied in a setting where the field of fractions under consideration was different, although isomorphic, to $K$.
-We use a type synonym \lean{f.codomain := F} and instantiate the $R$-algebra structure given by $f$ on this synonym.
+As a solution, we use a type synonym \lean{f.codomain := F} and instantiate the $R$-algebra structure given by $f$ on this synonym.
 
 % In the following sections, let $f \colon R \to F$ be a fraction map.
 
@@ -526,7 +526,7 @@ allowing the typeclass system to automatically infer the Dedekind domain structu
 The notion that is pivotal to the definition of the ideal class group of a Dedekind domain is that of \emph{fractional ideals}: given any integral domain $R$ with a field of fractions $F$, these are 
 %$R$-ideals divided by some $x : R$,
 %or equivalently 
-$R$-submodules $J$ of $F$ such that there is an $x : R$ with $x J \subseteq R$. %The reason for introducing them is that, unlike their subset of proper ideals, 
+$R$-submodules $J$ of $F$ such that there is an $x : R$ with $x J \subseteq R$, encoded in the definition~\lean{is\_fractional}. %The reason for introducing them is that, unlike their subset of proper ideals, 
 %Recall that, f
 For a Dedekind domain, they form a group under multiplication. As seen in Section~\ref{subsection : fields of fractions}, this notion depends on the field $F$ as well as on the fraction map $f\colon R\to F$. A more precise way of stating the above condition is then 
 %  allowing to speak about $R$-submodules of $F$ and, more importantly, to see an element $x:R$ as the element $f x : F$, so as to be able to write the inclusion 
@@ -542,14 +542,14 @@ We also formalized that these operations give a commutative semiring structure o
 For example, multiplication of fractional ideals is defined as
 \begin{lstlisting}
 lemma fractional_mul (I J : fractional_ideal f) :
-  is_fractional f (I.1 * J.1) := _ -- proof omitted
+  is_fractional f (I * J : submodule R f.codomain) := _ -- proof omitted
 
 instance : has_mul (fractional_ideal f) :=
-⟨λ I J, ⟨I.1 * J.1, fractional_mul I J⟩⟩
+⟨λ I J, ⟨I * J : submodule R f.codomain, fractional_mul I J⟩⟩
 \end{lstlisting}
 
-Defining the quotient of two fractional ideals requires slightly more work. Consider any $R$-algebra $A$ and an injection $R\hookrightarrow A$. Given ideals $I,J\le R$, the submodule quotient $I / J\le A$ %\footnote{The $:$ operator typically used for the submodule quotient is already reserved by the type theory, so \mathlib uses $/$ instead.}
-is characterized by the property
+Defining the quotient of two fractional ideals requires slightly more work. Consider any $R$-algebra $A$ and an injection $R\hookrightarrow A$. Given ideals $I,J\le R$, the submodule $I / J\le A$ %\footnote{The $:$ operator typically used for the submodule quotient is already reserved by the type theory, so \mathlib uses $/$ instead.}
+is defined by the property
 \begin{lstlisting}
 lemma submodule.mem_div_iff_forall_mul_mem {x : A} {I J : submodule R A} :
   x ∈ I / J ↔ ∀ y ∈ J, x * y ∈ I
@@ -624,10 +624,10 @@ The proofs for being integrally closed and of dimension being less than or equal
 Formalizing the Noetherian condition was the most challenging. Fr\"ohlich considers elements $a_1, \dots, a_n \in I$ and $b_1, \dots, b_n \in I^{-1}$ for any nonempty fractional ideal $I$,
 satisfying $ \sum_i a_i b_i = 1 $.
 However, it is quite challenging to prove that an element of the product of two $D$-submodules $A$ and $B$ must be of the form $\sum_{i = 1}^m a_i*b_i$, for $a_i \in A$ and $b_i \in B$ for all $1 \leq i \leq m$.
-Instead, we show that, for every element of $A\ast B$, there are finite sets $T\subseteq A$, $T'\subseteq B$ such that \lean{x $:$ span (T * T')}, formalized as %there exists an \lean{s : finset D} whose span is contained in the ideal, and which contains the element.
+Instead, we show that, for every element $x\in A\ast B$, there are finite sets $T\subseteq A$, $T'\subseteq B$ such that \lean{x $\in$ span (T * T')}, formalized as %there exists an \lean{s : finset D} whose span is contained in the ideal, and which contains the element.
 %This is accomplished by the lemma 
 \lean{submodule.mem\_span\_mul\_finite\_of\_mem\_mul}.
-Now considering a nonzero integral ideal $I$ of the ring $D$, its invertibility allows to write \lean{1 $:$ (1 $:$ fractional\_ideal f) = I * 1 / I}. Hence, we obtain 
+Now considering a nonzero integral ideal $I$ of the ring $D$, by definition of invertibility we can write \lean{1 $\in$ (1 $:$ fractional\_ideal f) = I * 1 / I}. Hence, we obtain 
 % due to its invertibility (as a fractional ideal), by \lean{submodule.mem\_span\_mul\_finite\_of\_mem\_span\_mul}, we %obtain 
 finite sets $T \subset I$ and $T' \subset 1/I$ such that $1$ is contained in the $D$-span of $T*T'$. We used \lean{norm\_cast} to resolve most coercions, however, this tactic did not solve coercions coming from the fraction map. With coercions, the actual statement of the latter expression in Lean is \lean{↑T' ⊆ ↑↑(1 / ↑I)}, which reads
 \begin{lstlisting}
