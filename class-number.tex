@@ -25,7 +25,8 @@
 \supplementdetails%[swhid={Software Heritage Identifier}]
 {Software}{https://github.com/lean-forward/class-number}
 
-\acknowledgements{We would like to thank Jasmin Blanchette for useful comments on a first version of the manuscript.\\
+\acknowledgements{%We would like to thank Jasmin Blanchette for useful comments on a first version of the manuscript.\\
+We would like to thank Jasmin Blanchette and the anonymous reviewers for useful comments and suggestions that found their way into this paper.\\
 A.~N.~would like to thank Prof.\ Kevin Buzzard for his constant support and encouragement, and for introducing her to the other co-authors.\\
 A.~N.~and F.~N.~wish to express their deepest gratitude to Anne Baanen for the generosity shown along all stages of the project. Without Anne's never-ending patience, it would have been impossible for them to contribute to this project, and to overcome several difficulties.\\
 Finally, we would like to thank the whole \mathlib community for invaluable advice all along the project.
@@ -222,7 +223,7 @@ translates to the fact that the quotient group of nonzero fractional ideals modu
 
 It turns out that this quotient group can be %extended of defining the group of fractional ideals, embedding the multiplicative group of the fraction field into the first group, and taking the quotient, can be
 defined for every ring of integers $\OK$.
-The fundamental theoretical notion beneath this construction is that of Dedekind domain: these are integral domains $D$ which are Noetherian (every ideal of $D$ is finitely generated), integrally closed (if an element $x$ in the fraction field of $D$ is a root of a monic polynomial with coefficients in $D$, then actually $x \in D$), and of Krull dimension at most $1$ (every nonzero prime ideal of $D$ is maximal).
+The fundamental theoretical notion beneath this construction is that of Dedekind domain: these are integral domains $D$ which are Noetherian (every ideal of $D$ is finitely generated), integrally closed (if an element $x$ in $\Frac D$ (the fraction field of $D$) is a root of a monic polynomial with coefficients in $D$, then actually $x \in D$), and of Krull dimension at most $1$ (every nonzero prime ideal of $D$ is maximal).
 %It can be proved that considering the group of invertible ideals of $\OK$, embedding $K^\times$ into the latter group% of invertible ideals
 %, and then taking the quotient makes sense in every Dedekind domain. This quotient group we call the \emph{ideal class group} $\Cl_D$ of the Dedekind domain $D$. %the procedure of 
 It can be proved that the nonzero fractional ideals of $D$ %$\OK$
@@ -238,7 +239,7 @@ The order of $\Cl_{\OK}$ is called \emph{the class number} of $K$.
 Intuitively, then, the smaller the class number, the fewer factorizations are possible.
 %In particular, as long as we are concerned with ``uniqueness'' of factorization, and with measuring the lack thereof, already  is a tremendously interesting arithmetic feature.
 
-The statements in the previous paragraph also hold for \emph{function fields}, namely fields which are finite extensions of $\Fq(t) \simeq \Frac \Fq[q][t]$, where $\Fq$ is a finite field with $q$ elements. Recall that when $q$ is a prime number, $\Fq$ is simply the field $\Z/q\Z$.
+The statements in the previous paragraph also hold for \emph{function fields}, namely fields which are finite extensions of $\Fq(t) \simeq \Frac \Fq[q][t]$, where $\Fq[q][t]$ stands for the ring of univariate polynomials (in a free variable $t$) with coefficients in a finite field with $q$ elements $\Fq$. Recall that when $q$ is a prime number, $\Fq$ is simply the field $\Z/q\Z$.
 % A prototypical example is $K=(\Z/p\Z)(t)=\Fq[p](t)$, or an extension of the form, for instance, $K=\Fq[p^2](t)[s]/(s^2-t)$, obtained by adjoining to $\Fq[p](t)$ a square root of $t$ as well as the $(p^2-1)$-st roots of unity.
 A field which is either a number field or a function field is called a \emph{global field}.
 
@@ -355,7 +356,7 @@ the Berkeley Galois theory group used it in a formalization of the primitive ele
 Soon after the primitive element theorem was merged into \mathlib,
 we used it in our development of the trace form.
 This anecdote illustrates the decentralized development style of \mathlib,
-with different groups and people building on each others' results in a collaborative process.
+with different groups and people building on each other's results in a collaborative process.
 
 By providing a coercion from subobjects to types, sending a subobject $S$ to the subtype of all elements of $S$,
 and putting typeclass instances on this subtype,
@@ -883,6 +884,7 @@ We note that some other ``uniform'' approaches can be found in~\cite{Artin-Whapl
 
 Let $D$ be an Euclidean domain: in particular, it will be a PID and hence a Dedekind domain. Given a fraction map $f \colon D \to F$, let $L$ be a finite separable field extension of $F$.
 We formalized, in the theorem \lean{class\_group.finite\_of\_admissible}, that the integral closure of $D$ in $L$ has a finite class group if $D$ has an ``admissible'' absolute value \lean{abs}.
+This notion originated in our project from the adaptation and generalization of the classical finiteness proof in interaction with the formalization efforts.
 %In other words, we require that $R$ is a Dedekind domain with ``division with remainder'' operators \lean{/, \%} and an absolute value operator such that:
 %\begin{align*}
 %	|a \% b| &< |b| & (\lean{mod\_lt}) \\
