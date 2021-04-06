@@ -184,7 +184,7 @@ In general, taking any root $\alpha$ of an irreducible polynomial of degree $n$ 
 $\Q(\alpha)=\{c_0+c_1\alpha+\ldots+c_{n-1} \alpha^{n-1} : c_0,c_1,\ldots,c_{n-1} \in \Q \}$,
 and, up to isomorphism, these are all the number fields of degree $n$.
 
-The \emph{ring of integers} $\OK$ of a number field $K$ is defined as the integral closure of $\Z$ in $K$, which amounts to
+The \emph{ring of integers} $\OK$ of a number field $K$ is defined as the integral closure of $\Z$ in $K$, namely
 \[
   \OK := \big\{x \in K : f(x)=0 \text{ for some \emph{monic} polynomial } f \text{ with integer coefficients}\big\},\]
 where we recall that a polynomial is called \emph{monic} if its leading coefficient equals $1$.
@@ -284,7 +284,7 @@ For example, the definition of complex numbers depends on many results for ratio
 %In type theory we cannot define $\Q$ as a subset of $\C$ since we need $\Q$ to define $\C$.
 
 Instead, we formalized results about field extensions through parametrization. The fields $K$ and $L$ can be arbitrary types
-and the hypothesis ``$L$ is a field extension of $K$'' is represented by an instance parameter \lean{[algebra K L]} denoting a $K$-algebra structure on $L$.
+and the hypothesis ``$L$ is a field extension of~$K$'' is represented by an instance parameter \lean{[algebra K L]} denoting a $K$-algebra structure on $L$.
 There are multiple possible $K$-algebra structures for a field $L$ and Lean does not enforce uniqueness of typeclass instances,
 but the \mathlib maintainers try to ensure all instances that can be inferred are definitionally equal.
 The \lean{algebra} structure provides us with a canonical ring homomorphism $\lean{algebra\_map K L} : K \to L$; this map is injective because $K$ and $L$ are fields.
@@ -314,7 +314,9 @@ Since \lean{x~$\cdot$~y} for an $R$-algebra $A$ is defined as \lean{algebra\_map
 Common \lean{is\_scalar\_tower} instances are declared in \mathlib,
 such as for the maps $R \to S \to A$ when $S$ is a $R$-subalgebra of $A$.
 The effect is that almost all coherence proof obligations are automated through typeclass instance search.
-%In our formalization, we found that the \lean{is\_scalar\_tower} typeclass translates towers of field extension well.
+Only when defining a new algebra structure were we required to supply the \lean{is\_scalar\_tower} instances ourselves.
+Our reliance on typeclasses did not cause any noticeable slowness in proof checking:
+there was no instance that should be found but could not due to timeouts.
 
 \subsection{Rings of integers} \label{sec:ring-of-integers}
 
@@ -345,9 +347,10 @@ we will work with the integral closure of any principal ideal domain when possib
 
 The ring of integers is one example of a subobject, such as a subfield, subring or subalgebra, defined through a characteristic predicate.
 In \mathlib, subobjects are ``bundled'', in the form of a \lean{structure} comprising the carrier set and proofs showing the carrier set is closed under the relevant operations.
+Bundled subobjects provide similar benefits as bundled morphisms; the choice for the latter is explained in the \mathlib overview paper~\cite{mathlib}.
 
 Two new subobjects that we defined in our development were \lean{subfield} as well as \lean{intermediate\_field}. We defined a subfield of a field $K$ as a subset of $K$ that contains $0$ and $1$ and is closed under addition, negation, multiplication and taking inverses.
-If $L$ is a field extension of $K$, we defined an intermediate field as a subfield that is also a $K$-subalgebra: a subfield that contains the image of $\lean{algebra\_map K L}$.
+If $L$ is a field extension of~$K$, we defined an intermediate field as a subfield that is also a $K$-subalgebra: a subfield that contains the image of $\lean{algebra\_map K L}$.
 Other examples of subobjects available in \mathlib are submonoids, subgroups and submodules (with ideals as a special case of submodules).
 
 The new definitions found immediate use:
@@ -453,6 +456,7 @@ we chose to formalize the notion of \emph{power basis} to represent monogenic fi
 % We call $x$ the \emph{generator} and $n$ the \emph{dimension} of this power basis.
 We defined a structure type bundling the information of a power basis.
 Omitting some generalizations not needed in this paper, the definition reads:
+% TODO: keep the listing on one page
 \begin{lstlisting}
 structure power_basis (F K : Type*) [field F] [field K] [algebra F K] :=
 (gen : S) (dim : ℕ)
@@ -470,8 +474,8 @@ We formalized that the previously defined notions of monogenic field extensions 
 
 With the \lean{power\_basis} structure, we gained the ability to parametrize our results,
 being able to choose the $F$ and $K$ in a monogenic field extension $K / F$, or being able to choose the $\alpha$ generating $F(\alpha)$ (by setting \lean{power\_basis.gen\ pb} equal to $\alpha$).
-To specialize a result from an arbitrary $K$ with a power basis over $F$ to a specific value of $K$ such as $F(\alpha) = \lean{algebra.adjoin F \{α\}}$,
-one can apply the result to the power basis generated by $\alpha$ and rewrite $\lean{power\_basis.gen (adjoin.power\_basis F $\alpha$)} = \alpha$.
+To specialize a result from an arbitrary $K$ with a power basis over $F$ to a specific construction of $K = F(\alpha)$,
+one can apply the result to the power basis generated by $\alpha$ and rewrite $\lean{power\_basis.gen F($\alpha$)} = \alpha$.
 
 
 \section{Dedekind domains} \label{sec:Dedekind-domain}
@@ -538,7 +542,7 @@ $f(x)J\subseteq f(R)$. We formalized the definition of fractional ideals relativ
 The structure of fractional ideals does not depend on the choice of a fraction map, which we formalized as an isomorphism \lean{fractional\_ideal.canonical\_equiv} between the fractional ideals relative to fraction maps $f_1\colon R\to F_1$ and $f_2\colon R\to F_2$.
 
 We defined the addition, multiplication and intersection operations on fractional ideals,
-by showing the corresponding operations on submodules map fractional ideals to fractional ideals.
+by showing that the corresponding operations on submodules map fractional ideals to fractional ideals.
 We also formalized that these operations give a commutative semiring structure on the type of fractional ideals.
 For example, multiplication of fractional ideals is defined as
 \begin{lstlisting}
@@ -568,9 +572,8 @@ lemma fractional_ideal.is_unit {hD : is_dedekind_domain D}
 \end{lstlisting}
 This justifies the notation $I^{-1}=1/I$. In fact, we define this notation even for the ideal $0$, by declaring that $0^{-1}=0$. This reflects the existence of the typeclass \lean{group\_with\_zero} in \mathlib, consisting of groups endowed with an extra element \lean{0} whose inverse is again \lean{0}. %In particular, the zero fractional ideal is invertible (in the \mathlib sense) but is not a unit, leading to the strange phenomenon above. %Moreover, the fact that~\eqref{eq:mul_div_frac_ideals} might fail to hold in certain circumstances shows that, for general domains, $1/I\neq I^{-1}$. 
 
-Moreover, \mathlib used to define \lean{$a / b := a * b^{-1}$}, but our definition of $I^{-1} = 1 / I$ would cause circularity. This led us to a major refactor of this core definition. In particular, we had to weaken the definitional equality to a proposition; this involved many small changes throughout \mathlib.
-
-
+Moreover, \mathlib used to define \lean{$a / b := a * b^{-1}$}, but our definition of $I^{-1} = 1 / I$ would cause circularity. This led us to a major refactor of this core definition. In particular, we had to weaken the definitional equality to a proposition; this involved many small changes throughout \mathlib.%
+\footnote{The pull requests are available as \url{https://github.com/leanprover-community/mathlib/pull/5302} and \url{https://github.com/leanprover-community/mathlib/pull/5303}.}
 
 % Since \lean{a / b} used to have the built-in definition $a / b = a \ast b^{-1}$, the notation $1 / I$, defined for every nonzero $I$, was conflicting with the fact that $I$ might not be invertible. Since, for Dedekind domains, we wanted to \emph{define} $I^{-1}$ as $1 / I$, a major refactor of a core definition was needed. In particular, to break the circularity, we had to weaken the definitional equality to a proposition
 %
@@ -630,7 +633,7 @@ Instead, we show that, for every element $x\in A\ast B$, there are finite sets $
 \lean{submodule.mem\_span\_mul\_finite\_of\_mem\_mul}.
 Now considering a nonzero integral ideal $I$ of the ring $D$, by definition of invertibility we can write \lean{1 $\in$ (1 $:$ fractional\_ideal f) = I * 1 / I}. Hence, we obtain 
 % due to its invertibility (as a fractional ideal), by \lean{submodule.mem\_span\_mul\_finite\_of\_mem\_span\_mul}, we %obtain 
-finite sets $T \subset I$ and $T' \subset 1/I$ such that $1$ is contained in the $D$-span of $T*T'$. We used \lean{norm\_cast} to resolve most coercions, however, this tactic did not solve coercions coming from the fraction map. With coercions, the actual statement of the latter expression in Lean is \lean{↑T' ⊆ ↑↑(1 / ↑I)}, which reads
+finite sets $T \subset I$ and $T' \subset 1/I$ such that $1$ is contained in the $D$-span of $T*T'$. We used the \lean{norm\_cast} tactic\cite{norm_cast} to resolve most coercions, however, this tactic did not solve coercions coming from the fraction map. With coercions, the actual statement of the latter expression in Lean is \lean{↑T' ⊆ ↑↑(1 / ↑I)}, which reads
 \begin{lstlisting}
 (T' : set (fraction_ring.of D).codomain) ⊆
   (((1 / (I : fractional_ideal (fraction_ring.of D)))
@@ -737,9 +740,9 @@ This gave us the required lemma \lean{unique\_factorization\_monoid.integrally\_
 
 %An important class of Dedekind domains consists of the rings of integers of number fields.%TODO Haven't we said this already at the beginning?
 
-An important classical result in algebraic number theory is that the ring of integers of a number field $K$, defined as the integral closure of $\Z$ in $K$, is a Dedekind domain. We formalized a stronger result: given a Dedekind domain $D$ and a field of fractions $F$, if $L$ is a finite separable extension of $F$, then the integral closure of $D$ in $L$ is a Dedekind domain with fraction field $L$.
+An important classical result in algebraic number theory is that the ring of integers of a number field $K$, defined as the integral closure of $\Z$ in $K$, is a Dedekind domain. We formalized a stronger result: given a Dedekind domain $D$ and a field of fractions $F$, if $L$ is a finite separable extension of~$F$, then the integral closure of $D$ in $L$ is a Dedekind domain with fraction field $L$.
 Our approach was adapted from Neukirch \cite[Theorem~3.1]{Neukirch}.
-Throughout this section, let $D$ be a Dedekind domain with a field of fractions $F$ (given by the map $f \colon D \to F$), $L$ a finite, separable field extension of $F$ and let $S$ denote the integral closure of $D$ in $L$.
+Throughout this section, let $D$ be a Dedekind domain with a field of fractions $F$ (given by the map $f \colon D \to F$), $L$ a finite, separable field extension of~$F$ and let $S$ denote the integral closure of $D$ in $L$.
 % corresponding to the following Lean declarations:
 %% either the above or below, both might be unnecessary
 %% \begin{lstlisting}
@@ -793,8 +796,8 @@ as a linear map, in this case from $L$ to $F$:
 noncomputable def trace : L →ₗ[F] F :=
 linear_map.comp (linear_map.trace F L) (to_linear_map (lmul F L))
 \end{lstlisting}
-This definition was marked noncomputable since \lean{linear\_map.trace} makes a case distinction on the existence of a basis,
-choosing an arbitrary basis if one exists and returning $0$ otherwise.
+This definition was marked noncomputable since \lean{linear\_map.trace} makes a case distinction on the existence of a finite basis,
+choosing an arbitrary finite basis if one exists and returning $0$ otherwise.
 This latter case did not occur in our development.
 
 We defined the \emph{trace form} to be an $F$-bilinear form on $L$, mapping $x, y : L$ to $\Tr_{L/F}(xy)$.
@@ -882,7 +885,7 @@ and can be found, for instance, in~\cite{Ireland-Rosen}.
 %so that on the one hand most ingredients became more \mathlib ``friendly'' (by e.g. avoiding unnecessary field extensions, as used for example in norm estimates), and on the other hand it works in the function field setting as well.
 We note that some other ``uniform'' approaches can be found in~\cite{Artin-Whaples} and~\cite{Stasinski}.
 
-Let $D$ be an Euclidean domain: in particular, it will be a PID and hence a Dedekind domain. Given a fraction map $f \colon D \to F$, let $L$ be a finite separable field extension of $F$.
+Let $D$ be an Euclidean domain: in particular, it will be a PID and hence a Dedekind domain. Given a fraction map $f \colon D \to F$, let $L$ be a finite separable field extension of~$F$.
 We formalized, in the theorem \lean{class\_group.finite\_of\_admissible}, that the integral closure of $D$ in $L$ has a finite class group if $D$ has an ``admissible'' absolute value \lean{abs}.
 This notion originated in our project from the adaptation and generalization of the classical finiteness proof in interaction with the formalization efforts.
 %In other words, we require that $R$ is a Dedekind domain with ``division with remainder'' operators \lean{/, \%} and an absolute value operator such that:
@@ -896,8 +899,8 @@ This notion originated in our project from the adaptation and generalization of 
 %                     ∃ (t : fin n → fin (card ε)),
 %                     ∀ i₀ i₁, t i₀ = t i₁ → (to_fun (A i₁ % b - A i₀ % b) : ℝ) < to_fun b • ε)
 %\end{lstlisting}
-Very informally, the admissibility conditions require that the remainder operator produces values that are not too far apart.
-Formally, we defined the type of admissible absolute values on $D$ as follows, where \lean{to\_fun} stands for an application of the absolute value operator:
+Very informally, the admissibility conditions require that the remainder operator \lean{\%} produces values that are not too far apart.
+Formally, we defined the type of admissible absolute values on $D$ as follows, where \lean{to\_fun} is local notation for an application of the absolute value operator:
 \pagebreak[3] % Hint that we want the code block on one page
 \begin{lstlisting}
 structure admissible_absolute_value (D : Type*) [euclidean_domain D]
@@ -922,7 +925,7 @@ theorem exists_mem_finset_approx' (a b : integral_closure D L) :=
 \end{lstlisting}
 After this, the classical approach mentioned above formalized smoothly.
 
-It remained to define an admissible absolute value for $\Z$ and $\Fq[q][t]$. On $\Z$, it was straightforward to formalize that the usual Archimedean absolute value fulfils the requirements. For $\Fq[q][t]$, we showed that $\lvert f\rvert_{\deg}:=q^{\deg f}$ for $f \in \Fq[q][t]$ is the required admissible absolute value; observe that this was somewhat more involved to formalize.
+It remained to define an admissible absolute value for $\Z$ and $\Fq[q][t]$. On $\Z$, it was straightforward to formalize that the usual Archimedean absolute value fulfils the requirements. For $\Fq[q][t]$, we showed that $\lvert f\rvert_{\deg}:=q^{\deg f}$ for $f \in \Fq[q][t]$ is the required admissible absolute value; we note that thi was somewhat more involved to formalize.
 %(Note that these absolute values coincide with cardinalities in corresponding residue rings, but we do not need this result.)
 We concluded that when $K$ is a global field, restricting to \emph{separable} extensions of $\Fq[q](t)$ in the function field case, the class group is finite:
 \begin{lstlisting}
@@ -937,13 +940,17 @@ class_group.finite_of_admissible F f polynomial.admissible_card_pow_degree
 
 Finally, we defined \lean{number\_field.class\_number} and \lean{function\_field.class\_number} as the cardinality of the respective class groups.
 
+
+
 \section{Discussion}
 
 \subsection{Related work}
 
 Broadly speaking, one could see the formalization work as part of number theory. There are several formalization results in this direction. % for instance, one of the authors collaborated \cite[Section 6]{CapSetProblem}.
 Most notably, Eberl formalized a substantial part of analytic number theory in Isabelle/HOL~\cite{Eberl19}.
-Narrowing somewhat to a more algebraic setting, we are not aware of any other formal developments of fractional ideals, Dedekind domains or class groups of global fields.
+Narrowing somewhat to a more algebraic setting,
+Cano, Cohen, Dénès, Mörtberg and Siles formalized constructive definitions in ring theory, most notable for our discussion being the Krull dimension~\cite{linear-algebra-coq}.
+We are not aware of any other formal developments of fractional ideals, Dedekind domains or class groups of global fields.
 %Since our project touches upon the theories of field extensions, ideals, number fields and number rings,
 %we provide here a partial overview of formalizations in these areas.
 
@@ -952,7 +959,8 @@ the algebraic library for Isabelle/HOL~\cite{algebra_isabelle},
 the \texttt{set.mm} database for MetaMath~\cite{metamath} and the Mizar Mathematical Library~\cite{algebraic-hierarchy_mizar}.
 The field of algebraic numbers, or more generally algebraic closures of arbitrary fields, are also available in many provers.
 For example, Blot~\cite{algebraic-numbers-ccorn} formalized algebraic numbers in Coq,
-Thiemann, Yamada and Joosten~\cite{algebraic-numbers-isabelle} in Isabelle/HOL,
+Cohen~\cite{real-algebraic-numbers-coq} constructed the subfield of real algebraic numbers in Coq,
+Thiemann, Yamada and Joosten~\cite{algebraic-numbers-isabelle} formalized algebraic numbers in Isabelle/HOL,
 Carneiro~\cite{algebraic-numbers-metamath} in MetaMath,
 and Watase~\cite{algebraic-numbers-mizar} in Mizar.
 To our knowledge, the Coq Mathematical Components library is the only formal development beside ours specifically dealing with number fields~\cite[\texttt{field/algnum.v}]{mathcomp}.
