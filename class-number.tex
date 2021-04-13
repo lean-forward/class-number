@@ -238,6 +238,7 @@ consequently, as a measure of the failure of unique factorization.
 The order of $\Cl_{\OK}$ is called \emph{the class number} of $K$.
 Intuitively, then, the smaller the class number, the fewer factorizations are possible.
 %In particular, as long as we are concerned with ``uniqueness'' of factorization, and with measuring the lack thereof, already  is a tremendously interesting arithmetic feature.
+In particular, the class number of $K$ is equal to $1$ if and only if $\OK$ is a UFD.
 
 The statements in the previous paragraph also hold for \emph{function fields}, namely fields which are finite extensions of $\Fq(t) \simeq \Frac \Fq[q][t]$, where $\Fq[q][t]$ stands for the ring of univariate polynomials (in a free variable $t$) with coefficients in a finite field with $q$ elements $\Fq$. Recall that when $q$ is a prime number, $\Fq$ is simply the field $\Z/q\Z$.
 % A prototypical example is $K=(\Z/p\Z)(t)=\Fq[p](t)$, or an extension of the form, for instance, $K=\Fq[p^2](t)[s]/(s^2-t)$, obtained by adjoining to $\Fq[p](t)$ a square root of $t$ as well as the $(p^2-1)$-st roots of unity.
@@ -940,7 +941,15 @@ class_group.finite_of_admissible F f polynomial.admissible_card_pow_degree
 
 Finally, we defined \lean{number\_field.class\_number} and \lean{function\_field.class\_number} as the cardinality of the respective class groups.
 
-
+We rounded off our development by determining the class number in the simplest possible case: the rational numbers $\Q$.
+First, we formalized the theorem \lean{class\_number\_eq\_one\_iff}, stating that the class number of $K$ is $1$ if and only if $\OK$ is a principal ideal domain.
+After defining the isomorphism \lean{rat.ring\_of\_integers\_equiv} showing $\OK[\Q]$ is $\Z$,
+we could use the fact that $\Z$ is a PID to conclude that the class number of $\Q$ is equal to $1$:
+\begin{lstlisting}
+theorem rat.class_number : number_field.class_number ℚ = 1 :=
+class_number_eq_one_iff.mpr (is_principal_ideal_ring.of_surjective _
+  rat.ring_of_integers_equiv.symm.surjective)
+\end{lstlisting}
 
 \section{Discussion}
 
