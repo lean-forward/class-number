@@ -942,9 +942,9 @@ theorem exists_mem_finset_approx' (a b : integral_closure D L) :=
 \end{lstlisting}
 After this, the classical approach mentioned above formalized smoothly.
 
-It remained to define an admissible absolute value for $\Z$ and $\Fq[q][t]$. On $\Z$, it was straightforward to formalize that the usual Archimedean absolute value fulfils the requirements. For $\Fq[q][t]$, we showed that $\lvert f\rvert_{\deg}:=q^{\deg f}$ for $f \in \Fq[q][t]$ is the required admissible absolute value; we note that thi was somewhat more involved to formalize.
+It remained to define an admissible absolute value for $\Z$ and $\Fq[q][t]$. On $\Z$, it was straightforward to formalize that the usual Archimedean absolute value fulfils the requirements. For $\Fq[q][t]$, we showed that $\lvert f\rvert_{\deg}:=q^{\deg f}$ for $f \in \Fq[q][t]$ is the required admissible absolute value; we note that this was somewhat more involved to formalize.
 %(Note that these absolute values coincide with cardinalities in corresponding residue rings, but we do not need this result.)
-We concluded that when $K$ is a global field, restricting to \emph{separable} extensions of $\Fq[q](t)$ in the function field case, the class group is finite:
+We concluded that when $K$ is a global field, restricting to \emph{separable} extensions of $\Fq[q](t)$ in the function field case (but see the remark below the next block of Lean code), the class group is finite:
 \begin{lstlisting}
 noncomputable instance : fintype
   (class_group (number_field.ring_of_integers.fraction_map K)) :=
@@ -954,6 +954,8 @@ noncomputable instance [is_separable f.codomain K] : fintype
   (class_group (function_field.ring_of_integers.fraction_map f K)) :=
 class_group.finite_of_admissible F f polynomial.admissible_card_pow_degree
 \end{lstlisting}
+
+We note that any function field is actually isomorphic to a finite \emph{and separable} extension of a field isomorphic to $\Fq[q](t)$; see for example \cite[Cor. 4.4 in Ch. VIII]{Lang}. Formalizing this result would be one way to get rid of the \lean{[is\_separable f.codomain K]} assumption in the function field case. A trivial way to get rid of this assumption in the finiteness statement above is to simply move it to our function field definition. While this would be mathematically consistent by the result just cited above, we did not opt to do this since in general, it seems a good rule of thumb to avoid making (mathematically) redundant assumptions in definitions (though one can find some elementary exceptions of this in \mathlib). In particular, moving the assumption to the definition would simply preserve the obligation to formalize the cited result when trying to formalize otherwise obvious statements such as: a finite field extension of a function field is a function field.
 
 Finally, we defined \lean{number\_field.class\_number} and \lean{function\_field.class\_number} as the cardinality of the respective class groups.
 
@@ -1002,7 +1004,7 @@ defining the integer-valued norm on $\Z[i]$ and classifying the prime elements o
 
 Having formalized various basic results of algebraic number theory, there are several natural directions for future work, including formalizing some of the following results.
 \begin{itemize}
-\item Finiteness of the class group for rings of integers in all global fields. This would entail, apart from some details at the end of the proof, dropping the separability condition in the result mentioned in the first paragraph of Section~\ref{sec:integral-closure}. 
+%\item Finiteness of the class group for rings of integers in all global fields. This would entail, apart from some details at the end of the proof, dropping the separability condition in the result mentioned in the first paragraph of Section~\ref{sec:integral-closure}. 
 
 \item The group of units of the ring of integers in a number field is finitely generated, or slightly stronger, Dirichlet's unit theorem~\cite[Theorem 7.4]{Neukirch} (and the function field analogue).
 
