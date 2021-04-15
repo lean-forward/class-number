@@ -261,6 +261,22 @@ Round brackets mark parameters explicitly supplied by the user, such as \lean{(K
 square brackets mark instance parameters inferred by the typeclass system, such as \lean{[field K]}. The condition \lean{[cz : char\_zero K]} states that $K$ has characteristic zero, so the canonical ring homomorphism $\Z \to K$ is an embedding.
 This implies that there is a $\Q$-algebra structure on $K$ (found by typeclass instance search), endowing $K$ with the $\Q$-vector space structure used in the \mbox{\lean{[fd : finite\_dimensional ℚ K]}} hypothesis.
 
+Typeclasses were originally introduced in Haskell as a mechanism for operator overloading~\cite{typeclasses-haskell},
+and are used throughout Lean's core library and \mathlib to endow types with mathematical structures consisting of both operators and their properties~\cite{mathlib}.
+When a declaration using instance parameters is applied, the typeclass system will infer a value for this parameter automatically,
+by searching for values of the appropriate type among the local parameters or declarations marked as an \emph{instance}~\cite{theorem-proving-in-lean}.
+%Since instances can have instance parameters, found by further typeclass search, typeclasses allow for automated generalization of assumptions.
+%For example, the $\Q$-vector space structure assumed by \lean{is\_number\_field} is inferred using the following instances:
+%\begin{lstlisting}
+%instance field.to_division_ring {K : Type u}
+%  [field K] : division_ring K
+%instance rat.algebra_rat {K : Type*}
+%  [division_ring K] [char_zero K] : algebra K α
+%instance algebra.to_semimodule {R A : Type *}
+%  [comm_semiring R] [semiring A] [algebra R A] : semimodule R A
+%\end{lstlisting}
+% Using the fact that \lean{vector\_space} is a synonym for a \lean{semimodule} over a field.
+
 We defined the function fields $K$ over a finite field $\Fq$ using the following typeclass:
 \begin{lstlisting}
 class is_function_field_over {$\Fq$ F : Type*} [field $\Fq$] [fintype $\Fq$]
