@@ -264,7 +264,7 @@ This implies that there is a $\Q$-algebra structure on $K$ (found by typeclass i
 Typeclasses were originally introduced in Haskell as a mechanism for operator overloading~\cite{typeclasses-haskell},
 and are used throughout Lean's core library and \mathlib to endow types with mathematical structures consisting of both operators and their properties~\cite{mathlib}.
 When a declaration using instance parameters is applied, the typeclass system will infer a value for this parameter automatically,
-by searching for values of the appropriate type among the local parameters or declarations marked as an \emph{instance}~\cite{theorem-proving-in-lean}.
+by searching for values of the appropriate type among the local parameters or declarations marked as an \emph{instance}~\cite[\S 10]{theorem-proving-in-lean}.
 %Since instances can have instance parameters, found by further typeclass search, typeclasses allow for automated generalization of assumptions.
 %For example, the $\Q$-vector space structure assumed by \lean{is\_number\_field} is inferred using the following instances:
 %\begin{lstlisting}
