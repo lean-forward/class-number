@@ -277,12 +277,12 @@ by searching for values of the appropriate type among the local parameters or de
 %\end{lstlisting}
 % Using the fact that \lean{vector\_space} is a synonym for a \lean{semimodule} over a field.
 
-We defined the function fields $K$ over a finite field $\Fq$ using the following typeclass:
+We defined the function field $K$ over a finite field $\Fq$ using the following typeclass:
 \begin{lstlisting}
 class is_function_field_over {$\Fq$ F : Type*} [field $\Fq$] [fintype $\Fq$]
-  [field F] (f : fraction_map (polynomial $\Fq$) F) (L : Type*) [field L]
-  [algebra f.codomain L] : Prop :=
-[fd : finite_dimensional f.codomain L]
+  [field F] (f : fraction_map (polynomial $\Fq$) F) (K : Type*) [field K]
+  [algebra f.codomain K] : Prop :=
+[fd : finite_dimensional f.codomain K]
 \end{lstlisting}
 Curly brackets mark implicit parameters inferred through unification, such as \lean{\{$\Fq$ F : Type*\}}.
 The map \lean{f} witnesses that $F$ is a fraction field of the polynomial ring $\Fq[q][t]$,
@@ -354,7 +354,7 @@ where \lean{integral\_closure} was previously defined in \mathlib.
 %Some examples of rings of integers include $\Z$ and $\Z[i]$.
 %We prove ahead that the ring of integers of a number field is, in fact, a Dedekind domain. Moreover, it is a finitely-generated free $\Z$-module, with rank equal to the degree of the number field over $\Q$.%TODO : USEFUL?
 
-When $K$ is a function field over the finite field $\Fq$, we defined $\OK$ analogously as \lean{integral\_closure (polynomial K) F}.
+When $K$ is a function field over the finite field $\Fq$, we defined $\OK$ analogously as \lean{integral\_closure (polynomial $\Fq$) K}.
 % TODO: or should the following remarks be in another section?
 To treat both definitions of ring of integers on an equal footing,
 % To reason uniformly for both concepts of the ring of integers,
@@ -409,15 +409,15 @@ Consider the field $\{z \in \C : \Re z \in \Q, \Im z\in\Q\}$, which is isomorphi
 % would require transferring results across isomorphisms.% as soon as one needs to handle a different construction of a field isomorphic to $\Frac R$.
 
 The strategy used in \mathlib is to rather allow for many different \emph{fraction fields} of our given integral domain $R$,
-as fields $F$ along with an injective \emph{fraction map} $f \colon R \to F$ which witnesses that all elements of $F$ are ``fractions'' of elements of $R$,
+as fields $K$ along with an injective \emph{fraction map} $f \colon R \to K$ which witnesses that all elements of $K$ are ``fractions'' of elements of $R$,
 and to parametrize every result over the choice of $f$.
 In the definition used by \mathlib, a fraction map is a special case of a \emph{localization map}.
 Different localizations restrict the denominators to different multiplicative submonoids of $R\setminus\{0\}$.
 
-The conditions on $f$ imply that $F$ is the smallest field containing $R$, expressed by the following unique mapping property.
+The conditions on $f$ imply that $K$ is the smallest field containing $R$, expressed by the following unique mapping property.
 If $g \colon R \to A$ is an injective map to a ring $A$ such that $g(x)$ has a multiplicative inverse for all $x \ne 0 : R$, then
-it can be extended uniquely to a map $F \to A$ compatible with $f$ and $g$.
-In particular, if $f_1 \colon R \to F_1$ and $f_2 \colon R \to F_2$ are fraction maps, they induce an isomorphism $F_1 \simeq F_2$.
+it can be extended uniquely to a map $K \to A$ compatible with $f$ and $g$.
+In particular, if $f_1 \colon R \to K_1$ and $f_2 \colon R \to K_2$ are fraction maps, they induce an isomorphism $K_1 \simeq K_2$.
 The construction of $\Frac R$ then results in \emph{a} field of fractions (with fraction map \lean{fraction\_ring.of R}) rather than \emph{the} field of fractions.
 
 % As the notion of \emph{fractional ideals}, which is pivotal to the definition of the (ideal) class group, depends on the choice of an ambient field of fraction $K$ and on the map $f\colon R\to K$, we could either fix a field of fractions (say, $\Frac R$) once and for all, or rather let all our construction be relative to this choice.  As Lean already contained the following
@@ -427,12 +427,12 @@ The construction of $\Frac R$ then results in \emph{a} field of fractions (with 
 %and because the nonzero divisor of an integral domain coincide with $R\setminus\{0\}$, we opted for this setting for our development of fields of fractions and of fractional ideals. 
 
 This comes at a price: % one is normally used to consider that $\Z \subseteq \Q$ and that $(2 : \Z) \in \Q$, for instance.  Likewise, in the abstract framework of integral domains,
-informally, at any given stage of one's reasoning, the field $F$ is fixed and the map $f\colon R\to F$ is applied implicitly, just viewing every $x:R$ as $x:F$.
+informally, at any given stage of one's reasoning, the field $K$ is fixed and the map $f\colon R\to K$ is applied implicitly, just viewing every $x:R$ as $x:K$.
 %This is clearly false from a type-theoretical point of view, but
-It is now impossible to view $f(R) \leq F$ as an inclusion of subalgebras,
-because the map $f$ is needed explicitly to give the $R$-algebra structure on $F$.
+It is now impossible to view $f(R) \leq K$ as an inclusion of subalgebras,
+because the map $f$ is needed explicitly to give the $R$-algebra structure on $K$.
 %because the extra structure on the map $f$ that $K$ was endowed with the structure of an $R$-algebra and that any of our results might have been applied in a setting where the field of fractions under consideration was different, although isomorphic, to $K$.
-As a solution, we use a type synonym \lean{f.codomain := F} and instantiate the $R$-algebra structure given by $f$ on this synonym.
+As a solution, we use a type synonym \lean{f.codomain := K} and instantiate the $R$-algebra structure given by $f$ on this synonym.
 
 % In the following sections, let $f \colon R \to F$ be a fraction map.
 
@@ -522,10 +522,10 @@ we could easily replace usages of \lean{is\_dedekind\_domain\_inv} with \lean{is
 %Separating the different definitions meshed well with the contribution philosophy followed by \mathlib, preferring small, standalone additions over in-progress work or entire finished projects.
 % This is basically how gregkh described the ideal Linux patch in a talk, but I can't find a good source.
 
-The conditions \lean{is\_dedekind\_domain} and \lean{is\_dedekind\_domain\_inv} require a fraction field $F$,
-although the truth value of the predicates does not depend on the choice of $F$.
+The conditions \lean{is\_dedekind\_domain} and \lean{is\_dedekind\_domain\_inv} require a fraction field $K$,
+although the truth value of the predicates does not depend on the choice of $K$.
 For ease of use, we let the type of \lean{is\_dedekind\_domain} depend only on the domain $D$
-by instantiating $F$ in the definition as \lean{fraction\_ring D}. From now on, we fix a fraction map $f\colon D\to F$.
+by instantiating $K$ in the definition as \lean{fraction\_ring D}. From now on, we fix a fraction map $f\colon D\to K$.
 \begin{lstlisting}
 class is_dedekind_domain (D : Type*) [integral_domain D] : Prop :=
 (to_is_noetherian_ring : is_noetherian_ring D)
@@ -538,7 +538,7 @@ and \lean{$\bot$ $:$ ideal D} denotes the zero ideal.
 
 Applications of \lean{is\_dedekind\_domain} can choose a specific fraction field through the following lemma exposing the alternate definition:
 \begin{lstlisting}
-lemma is_dedekind_domain_iff (f : fraction_map D F) :
+lemma is_dedekind_domain_iff (f : fraction_map D K) :
   is_dedekind_domain D ↔
     is_noetherian_ring D ∧ dimension_le_one D ∧
     integral_closure D f.codomain = ⊥
@@ -548,19 +548,19 @@ We marked \lean{is\_dedekind\_domain} as a typeclass by using the keyword \lean{
 allowing the typeclass system to automatically infer the Dedekind domain structure when an appropriate instance is declared, such as for PIDs or rings of integers.
 
 \subsection{Fractional ideals}\label{subsection:frac_ideals}
-%\st{When working with fraction fields, it is useful to extend the notion of $R$-ideals to fractional ideals:} 
-The notion that is pivotal to the definition of the ideal class group of a Dedekind domain is that of \emph{fractional ideals}: given any integral domain $R$ with a field of fractions $F$, these are 
+%\st{When working with fraction fields, it is useful to extend the notion of $R$-ideals to fractional ideals:}
+The notion that is pivotal to the definition of the ideal class group of a Dedekind domain is that of \emph{fractional ideals}: given any integral domain $R$ with a field of fractions $K$, these are
 %$R$-ideals divided by some $x : R$,
-%or equivalently 
-$R$-submodules $J$ of $F$ such that there is an $x : R$ with $x J \subseteq R$, encoded in the definition~\lean{is\_fractional}. %The reason for introducing them is that, unlike their subset of proper ideals, 
+%or equivalently
+$R$-submodules $J$ of $K$ such that there is an $x : R$ with $x J \subseteq R$, encoded in the definition~\lean{is\_fractional}. %The reason for introducing them is that, unlike their subset of proper ideals,
 %Recall that, f
-For a Dedekind domain, they form a group under multiplication. As seen in Section~\ref{subsection : fields of fractions}, this notion depends on the field $F$ as well as on the fraction map $f\colon R\to F$. A more precise way of stating the above condition is then 
-%  allowing to speak about $R$-submodules of $F$ and, more importantly, to see an element $x:R$ as the element $f x : F$, so as to be able to write the inclusion 
-$f(x)J\subseteq f(R)$. We formalized the definition of fractional ideals relative to a map $f\colon R\to F$ as a type \lean{fractional\_ideal f}. 
+For a Dedekind domain, they form a group under multiplication. As seen in Section~\ref{subsection : fields of fractions}, this notion depends on the field $K$ as well as on the fraction map $f\colon R\to K$. A more precise way of stating the above condition is then
+%  allowing to speak about $R$-submodules of $K$ and, more importantly, to see an element $x:R$ as the element $f x : K$, so as to be able to write the inclusion
+$f(x)J\subseteq f(R)$. We formalized the definition of fractional ideals relative to a map $f\colon R\to K$ as a type \lean{fractional\_ideal f}.
 %\st{The dependency on $f$ follows from the module structure on $K$ being determined by $f$.
 %Despite the dependency, }
-%We encoded that 
-The structure of fractional ideals does not depend on the choice of a fraction map, which we formalized as an isomorphism \lean{fractional\_ideal.canonical\_equiv} between the fractional ideals relative to fraction maps $f_1\colon R\to F_1$ and $f_2\colon R\to F_2$.
+%We encoded that
+The structure of fractional ideals does not depend on the choice of a fraction map, which we formalized as an isomorphism \lean{fractional\_ideal.canonical\_equiv} between the fractional ideals relative to fraction maps $f_1\colon R\to K_1$ and $f_2\colon R\to K_2$.
 
 We defined the addition, multiplication and intersection operations on fractional ideals,
 by showing that the corresponding operations on submodules map fractional ideals to fractional ideals.
@@ -641,7 +641,7 @@ Moreover, \mathlib used to define \lean{$a / b := a * b^{-1}$}, but our definiti
 %
 
 \subsection{Equivalence of the definitions} \label{sec:equivalence}
-We now describe how we proved and formalized that the two definitions \lean{is\_dedekind\_domain} and \lean{is\_dedekind\_domain\_inv} of being a Dedekind domain are equivalent. Let $D$ be a Dedekind domain, and $f\colon D\to F$ a fraction map to a field of fractions $F$ of $D$.
+We now describe how we proved and formalized that the two definitions \lean{is\_dedekind\_domain} and \lean{is\_dedekind\_domain\_inv} of being a Dedekind domain are equivalent. Let $D$ be a Dedekind domain, and $f\colon D\to K$ a fraction map to a field of fractions $K$ of $D$.
 
 To show that \lean{is\_dedekind\_domain\_inv} implies \lean{is\_dedekind\_domain}, we follow the proof given by Fr\"ohlich in~\cite[Chapter 1, \S~2, ~Proposition 1.2.1]{frohlich}. A constant challenge that was faced while coding this proof was already mentioned in Section \ref{subsection : fields of fractions}, namely the fact that elements of the ring must be traced along the fraction map. %\st{ that one must work with pushforwards and pull backs of elements that belong to the ring, and hence to its localisation.}
 The proofs for being integrally closed and of dimension being less than or equal to $1$ are fairly straightforward.
@@ -654,7 +654,7 @@ Instead, we show that, for every element $x\in A\ast B$, there are finite sets $
 \lean{submodule.mem\_span\_mul\_finite\_of\_mem\_mul}.
 Now considering a nonzero integral ideal $I$ of the ring $D$, by definition of invertibility we can write \lean{1 $\in$ (1 $:$ fractional\_ideal f) = I * 1 / I}. Hence, we obtain 
 % due to its invertibility (as a fractional ideal), by \lean{submodule.mem\_span\_mul\_finite\_of\_mem\_span\_mul}, we %obtain 
-finite sets $T \subset I$ and $T' \subset 1/I$ such that $1$ is contained in the $D$-span of $T*T'$. We used the \lean{norm\_cast} tactic\cite{norm_cast} to resolve most coercions, however, this tactic did not solve coercions coming from the fraction map. With coercions, the actual statement of the latter expression in Lean is \lean{↑T' ⊆ ↑↑(1 / ↑I)}, which reads
+finite sets $T \subset I$ and $T' \subset 1/I$ such that $1$ is contained in the $D$-span of $T*T'$. We used the \lean{norm\_cast} tactic~\cite{norm_cast} to resolve most coercions, however, this tactic did not solve coercions coming from the fraction map. With coercions, the actual statement of the latter expression in Lean is \lean{↑T' ⊆ ↑↑(1 / ↑I)}, which reads
 \begin{lstlisting}
 (T' : set (fraction_ring.of D).codomain) ⊆
   (((1 / (I : fractional_ideal (fraction_ring.of D)))
@@ -674,19 +674,19 @@ lemma coe_ideal_mul_one_div [hD : is_dedekind_domain D]
 \end{lstlisting}
 from where it becomes apparent that we had to repeatedly distinguish between \lean{I $:$ ideal D}, and its coercion \lean{↑I $:$ fractional\_ideal f} although these objects, from a mathematical point of view, are identical.
 
-The formal proof of the above result relies on the lemma \lean{exists\_not\_mem\_one\_of\_ne\_bot}, which says that for every non-trivial ideal $0\subsetneq I\subsetneq D$, there exists an element in the field $F$ which is not integral (so, not in $f(D)$) but lies in $1/I$. The proof begins by invoking that every nonzero ideal in the Noetherian ring $D$ contains a product of nonzero prime ideals. This result was not previously available in \mathlib. %, and we formalized it as \lean{exists\_prime\_spectrum\_prod\_le\_and\_ne\_bot\_of\_domain}.
+The formal proof of the above result relies on the lemma \lean{exists\_not\_mem\_one\_of\_ne\_bot}, which says that for every non-trivial ideal $0\subsetneq I\subsetneq D$, there exists an element in the field $K$ which is not integral (so, not in $f(D)$) but lies in $1/I$. The proof begins by invoking that every nonzero ideal in the Noetherian ring $D$ contains a product of nonzero prime ideals. This result was not previously available in \mathlib. %, and we formalized it as \lean{exists\_prime\_spectrum\_prod\_le\_and\_ne\_bot\_of\_domain}.
 The dimension condition shows its full force when applying this lemma:
 each prime ideal in the product, being nonzero, will be maximal because the Krull dimension of $D$ is at most $1$; from this, \lean{exists\_not\_mem\_one\_of\_ne\_bot} follows easily. Having the above lemma at our disposal,
-we were able to prove that every ideal $I\ne 0$ is invertible by arguing by contradiction: if $I\ast 1/I\lneq D$, we can find an element $x\in F\setminus f(R)$ which is in $1/(1\ast 1/I)$ thanks to \lean{exists\_not\_mem\_one\_of\_ne\_bot} and some easy algebraic manipulation will imply that $x$ is actually integral over $D$. Since $D$ is integrally closed, it must lie in $f(D)$, contradicting the construction of $x$. Combining these results gives the equivalence between the two conditions for being a Dedekind domain.
+we were able to prove that every ideal $I\ne 0$ is invertible by arguing by contradiction: if $I\ast 1/I\lneq D$, we can find an element $x\in K\setminus f(R)$ which is in $1/(1\ast 1/I)$ thanks to \lean{exists\_not\_mem\_one\_of\_ne\_bot} and some easy algebraic manipulation will imply that $x$ is actually integral over $D$. Since $D$ is integrally closed, it must lie in $f(D)$, contradicting the construction of $x$. Combining these results gives the equivalence between the two conditions for being a Dedekind domain.
 
 % The final step, when we prove that invertibility of ideals implies that of fractional ones as well, was easy: the material developed for the general theory of \lean{fractional\_ideals f} allowed to smoothly deduce that a fractional ideal $J$ must be invertible as soon as a certain multiple $xJ$ of it is, and since there always exists an $\lean{x : D}$ satisfying the latter condition (because $xJ$ can be made into a ``usual'' ideal), this leads to the final \lean{lemma fractional\_ideal.is\_unit} quoted above.
 % \subsection{from above}
-% In our setting, %we consider a field of fractions $K$, together with a localization map $f\colon R\to K$: 
-% we can look at every ideal as the fractional ideal $I/1 \le F$. The first main theoretical result that we need to define the ideal class group is to show that every nonzero ideal $0<I \le R$ becomes invertible when seen as a fractional ideal: this means, by definition, that the equality 
+% In our setting, %we consider a field of fractions $K$, together with a localization map $f\colon R\to K$:
+% we can look at every ideal as the fractional ideal $I/1 \le K$. The first main theoretical result that we need to define the ideal class group is to show that every nonzero ideal $0<I \le R$ becomes invertible when seen as a fractional ideal: this means, by definition, that the equality
 % \begin{equation}\label{eq:mul_div_frac_ideals}
-% f(I) \ast \frac{1}{f(I)} = 1=f(R)\le F
+% f(I) \ast \frac{1}{f(I)} = 1=f(R)\le K
 % \end{equation}
-% as $R$-submodules of $F$, holds. 
+% as $R$-submodules of $K$, holds.
 
 % it can be proved that Dedekind domain are precisely the right class of integral domains for which~\eqref{eq:mul_div_frac_ideals} always holds. This was formalised as the following
 % \begin{lstlisting}
@@ -695,7 +695,7 @@ we were able to prove that every ideal $I\ne 0$ is invertible by arguing by cont
 % \end{lstlisting}
 % together with
 % \begin{lstlisting}
-% noncomputable instance [is_dedekind_domain D] (g : fraction_map D F) :
+% noncomputable instance [is_dedekind_domain D] (g : fraction_map D K) :
 %   has_inv (fractional_ideal g) :=
 % ⟨λ I, 1 / I⟩
 % \end{lstlisting}
@@ -709,7 +709,7 @@ we were able to prove that every ideal $I\ne 0$ is invertible by arguing by cont
 %We show in general that it is sufficient to prove invertibility for nonzero ideals of $R$.
 %This is done in the lemma \lean{coe\_ideal\_mul\_one\_div}.
 %
-%We consider, for a nonzero ideal $I$, the ideal $J := I * (1/I)$, and show that $1/J \leq 1 \le J$, hence $J = 1$ since $J \le 1$ holds in an arbitrary domain. So, we want to show that any element $x \in 1/J$ is in $R$, or equivalently, since we have \lean{is\_dedekind\_domain R}, it suffices to prove that $x$ is in the integral closure of $R$. We consider $A := R[x]$, and show that $A \leq 1/I$, which is Noetherian, hence $A$ is a finitely generated subalgebra containing $x$. It suffices to prove that for every $n \in \mathbb{N}$, $x^n \in 1/I$. This follows from repeated usage of the lemma \lean{submodule.mem\_div\_iff\_forall\_mul\_mem} and \lean{fractional\_ideal.coe\_div}. The latter statement requires $I$ and $J$ to be nonzero. 
+%We consider, for a nonzero ideal $I$, the ideal $J := I * (1/I)$, and show that $1/J \leq 1 \le J$, hence $J = 1$ since $J \le 1$ holds in an arbitrary domain. So, we want to show that any element $x \in 1/J$ is in $R$, or equivalently, since we have \lean{is\_dedekind\_domain R}, it suffices to prove that $x$ is in the integral closure of $R$. We consider $A := R[x]$, and show that $A \leq 1/I$, which is Noetherian, hence $A$ is a finitely generated subalgebra containing $x$. It suffices to prove that for every $n \in \mathbb{N}$, $x^n \in 1/I$. This follows from repeated usage of the lemma \lean{submodule.mem\_div\_iff\_forall\_mul\_mem} and \lean{fractional\_ideal.coe\_div}. The latter statement requires $I$ and $J$ to be nonzero.
 \section{Principal ideal domains are Dedekind}
 
 As an example of our definitions, we discuss in some detail our formalization of the fact that a principal ideal domain is a Dedekind domain. There is no explicit definition of PIDs in \mathlib, rather it is split up into two hypotheses.
@@ -761,9 +761,9 @@ This gave us the required lemma \lean{unique\_factorization\_monoid.integrally\_
 
 %An important class of Dedekind domains consists of the rings of integers of number fields.%TODO Haven't we said this already at the beginning?
 
-An important classical result in algebraic number theory is that the ring of integers of a number field $K$, defined as the integral closure of $\Z$ in $K$, is a Dedekind domain. We formalized a stronger result: given a Dedekind domain $D$ and a field of fractions $F$, if $L$ is a finite separable extension of~$F$, then the integral closure of $D$ in $L$ is a Dedekind domain with fraction field $L$.
+An important classical result in algebraic number theory is that the ring of integers of a number field $K$, defined as the integral closure of $\Z$ in $K$, is a Dedekind domain. We formalized a stronger result: given a Dedekind domain $D$ and a field of fractions $F$, if $K$ is a finite separable extension of~$F$, then the integral closure of $D$ in $K$ is a Dedekind domain with fraction field $K$.
 Our approach was adapted from Neukirch \cite[Theorem~3.1]{Neukirch}.
-Throughout this section, let $D$ be a Dedekind domain with a field of fractions $F$ (given by the map $f \colon D \to F$), $L$ a finite, separable field extension of~$F$ and let $S$ denote the integral closure of $D$ in $L$.
+Throughout this section, let $D$ be a Dedekind domain with a field of fractions $F$ (given by the map $f \colon D \to F$), $K$ a finite, separable field extension of~$F$ and let $S$ denote the integral closure of $D$ in $K$.
 % corresponding to the following Lean declarations:
 %% either the above or below, both might be unnecessary
 %% \begin{lstlisting}
@@ -773,21 +773,21 @@ Throughout this section, let $D$ be a Dedekind domain with a field of fractions 
 %% notation `S` := integral_closure R L
 %% \end{lstlisting}
 
-The first step was to show that $L$ is a field of fractions for the integral closure, namely, there is a map \lean{fraction\_map\_of\_finite\_extension f L : fraction\_map S L}.
+The first step was to show that $K$ is a field of fractions for the integral closure, namely, there is a map \lean{fraction\_map\_of\_finite\_extension f K : fraction\_map S K}.
 %We formalized the following definition, which implies the desired result:
 %\begin{lstlisting}
 % def fraction_map_of_algebraic (alg : is_algebraic D L)
 %   (inj : function.injective (algebra_map D L)) :
 %   fraction_map S L
 % \end{lstlisting}
-The main content of \lean{fraction\_map\_of\_finite\_extension} consisted of showing that all elements $x : L$ can be written as $y / z$ for elements $y \in S$, $z \in D \subseteq S$;
+The main content of \lean{fraction\_map\_of\_finite\_extension} consisted of showing that all elements $x : K$ can be written as $y / z$ for elements $y \in S$, $z \in D \subseteq S$;
 the standard proof of this fact (see~\cite[Theorem~15.29]{Dummit-and-Foote}) formalized readily.
 %Since $x$ is algebraic over $A$, it satisfies an equation $a_n x^n + a_{n-1} x^{n-1} + \cdots + a_0 = 0$, with $a_n, \dots, a_0 : A$.
 %Multiplying each term by $a_n^{n-1}$, we see $(a_n x)^{n} + a_{n-1} (a_n x)^{n - 1} + \cdots + a_0 a_n^{n-1} = 0$,
 %therefore $a_n x$ is integral, and we can write $x = (a_n x) / a_n$.
 
-We could then show that the integral closure of $D$ in $L$ is a Dedekind domain,
-by proving it is integrally closed in $L$, has Krull dimension at most $1$ and is Noetherian.
+We could then show that the integral closure of $D$ in $K$ is a Dedekind domain,
+by proving it is integrally closed in $K$, has Krull dimension at most $1$ and is Noetherian.
 The fact that the integral closure is integrally closed was immediate.
 
 To show the Krull dimension is at most $1$, we needed to develop basic going-up theory for ideals.
@@ -804,46 +804,46 @@ theorem is_prime.comap (I : ideal S) [hI : is_prime I] :
 
 The final condition, that the integral closure $S$ of $D$ in $L$ is a Noetherian ring, required the most work.
 We started by following the first half of \cite[Theorem~15.29]{Dummit-and-Foote},
-so that it sufficed to find a nondegenerate bilinear form $B$ such that all integral $x, y : L$ satisfy $B(x, y) \in \lean{integral\_closure}\ D\ L$.
+so that it sufficed to find a nondegenerate bilinear form $B$ such that all integral $x, y : K$ satisfy $B(x, y) \in \lean{integral\_closure}\ D\ K$.
 We formalized the results in Neukirch \cite[\S\S~2.5--2.8]{Neukirch}, and showed that the \emph{trace form} is a bilinear form satisfying these requirements.
 
 \subsection{The trace form}\label{sec:trace-form}
-In the notation from the previous section, consider the bilinear form \lean{lmul := $\lambda$ x y $:$ L, x~*~y}.
-The trace of the linear map \lean{lmul x} is called the \emph{algebra trace} $\Tr_{L / F}(x)$ of $x$.
+In the notation from the previous section, consider the bilinear form \lean{lmul := $\lambda$ x y $:$ K, x~*~y}.
+The trace of the linear map \lean{lmul x} is called the \emph{algebra trace} $\Tr_{K / F}(x)$ of $x$.
 We defined the algebra trace
 %\footnote{In fact, we defined the trace and trace form for any algebra over a commutative ring.  For simplicity of exposition in this paper we consider only finite extensions of fields.}
-as a linear map, in this case from $L$ to $F$:
+as a linear map, in this case from $K$ to $F$:
 \begin{lstlisting}
-noncomputable def trace : L →ₗ[F] F :=
-linear_map.comp (linear_map.trace F L) (to_linear_map (lmul F L))
+noncomputable def trace : K →ₗ[F] F :=
+linear_map.comp (linear_map.trace F K) (to_linear_map (lmul F K))
 \end{lstlisting}
 This definition was marked noncomputable since \lean{linear\_map.trace} makes a case distinction on the existence of a finite basis,
 choosing an arbitrary finite basis if one exists and returning $0$ otherwise.
 This latter case did not occur in our development.
 
-We defined the \emph{trace form} to be an $F$-bilinear form on $L$, mapping $x, y : L$ to $\Tr_{L/F}(xy)$.
+We defined the \emph{trace form} to be an $F$-bilinear form on $K$, mapping $x, y : K$ to $\Tr_{K/F}(xy)$.
 \begin{lstlisting}
-noncomputable def trace_form : bilin_form F L :=
-{ bilin := λ x y, trace F L (x * y), .. /- proofs omitted -/ }
+noncomputable def trace_form : bilin_form F K :=
+{ bilin := λ x y, trace F K (x * y), .. /- proofs omitted -/ }
 \end{lstlisting}
 
  %% We are only considering trace forms of finite field extensions in this paper.
-In the following, let $E / L / F$ be a tower of finite extensions of fields, namely we assumed \lean{[algebra E L] [algebra L F] [algebra E F] [is\_scalar\_tower E L F]}, as described in Section~\ref{sec:scalar_tower}.
+In the following, let $L / K / F$ be a tower of finite extensions of fields, namely we assumed \lean{[algebra F K] [algebra K L] [algebra F L] [is\_scalar\_tower F K L]}, as described in Section~\ref{sec:scalar_tower}.
 
-The value of the trace depends on the choice of $E$ and $L$; we formalized this as lemmas \lean{trace\_algebra\_map x $:$ trace E L (algebra\_map E L x) = findim E L • x} as well as \lean{trace\_comp L x $:$ trace E F x = trace E L (trace L F x)}.
+The value of the trace depends on the choice of $F$ and $K$; we formalized this as lemmas \lean{trace\_algebra\_map x $:$ trace F K (algebra\_map F K x) = findim F K • x} as well as \lean{trace\_comp K x $:$ trace F L x = trace F K (trace K L x)}.
 %Since a basis $b : \iota \to L$ for $K : L$ and a basis $c : \kappa \to F$ for $L : F$ induce a basis $b \cdot c : \iota \times \kappa \to F$ for $K : F$,
 These results followed by direct computation.
 
-To compute $\Tr_{L/F}(x)$, it therefore suffices to consider the trace of $x$ in the smallest field containing $x$ and $F$, which is the monogenic extension $F(x)$ discussed in Section \ref{sec:monogenic-field-extension}.
-There is a nice formula for the trace in $F(x)$, although the terms in this formula are elements in a larger field $E$
+To compute $\Tr_{K/F}(x)$, it therefore suffices to consider the trace of $x$ in the smallest field containing $x$ and $F$, which is the monogenic extension $F(x)$ discussed in Section \ref{sec:monogenic-field-extension}.
+There is a nice formula for the trace in $F(x)$, although the terms in this formula are elements in a larger field $L$
 (such as the \emph{splitting field} of the minimal polynomial of $x$).
-In formalizing this formula, we first mapped the trace to $F$ using the canonical embedding $\lean{algebra\_map E F}$,
+In formalizing this formula, we first mapped the trace to $L$ using the canonical embedding $\lean{algebra\_map F L}$,
 which gave the following lemma statement:
 \begin{lstlisting}
-lemma power_basis.trace_gen_eq_sum_roots (pb : power_basis F L)
-  (h : polynomial.splits (algebra_map F E) pb.minpoly_gen) :
-  algebra_map F E (trace F L pb.gen) =
-    sum (roots (map (algebra_map F E) pb.minpoly_gen))
+lemma power_basis.trace_gen_eq_sum_roots (pb : power_basis F K)
+  (h : polynomial.splits (algebra_map F L) pb.minpoly_gen) :
+  algebra_map F L (trace F K pb.gen) =
+    sum (roots (map (algebra_map F L) pb.minpoly_gen))
 \end{lstlisting}
 %Applying this result to a specific $x$ is then a question of applying it to the power basis for $K(x)$ generated by $x$, to give:
 %\begin{lstlisting}
@@ -854,9 +854,9 @@ lemma power_basis.trace_gen_eq_sum_roots (pb : power_basis F L)
 %  (findim K(x) L) • ((minimal_polynomial hx).map (algebra_map K F)).roots.sum
 %\end{lstlisting}
 We formulated the lemma in terms of the power basis, since we needed to use it for $F(x)$ here
-and for an arbitrary finite separable extension $L / F$ later in the proof.
+and for an arbitrary finite separable extension $L / K$ later in the proof.
 
-The elements of \lean{(pb.minpoly\_gen.map (algebra\_map F E)).roots} are called \emph{conjugates} of $x$ in $E$.
+The elements of \lean{(pb.minpoly\_gen.map (algebra\_map F L)).roots} are called \emph{conjugates} of $x$ in $L$.
 Each conjugate of $x$ is integral since it is a root of (the same) monic polynomial,
 and integer multiples and sums of integral elements are integral.
 Combining \lean{trace\_gen\_eq\_sum\_roots} and \lean{trace\_algebra\_map} showed that the trace of $x$ is an integer multiple (namely \lean{findim F(x) L}) of a sum of conjugate roots, hence we concluded that the trace (and trace form) of an integral element is also integral.
@@ -864,16 +864,16 @@ Combining \lean{trace\_gen\_eq\_sum\_roots} and \lean{trace\_algebra\_map} showe
 % `integral_closure', since subalgebras are closed under sums and smul "for free".
 
 Finally, we showed that the trace form is nondegenerate, following Neukirch~\cite[Proposition~2.8]{Neukirch}.
-Since $L / F$ is a finite, separable field extension, it has a power basis \lean{pb} generated by $x$.
-Letting $x_k$ denote the $k$-th conjugate of $x$ in an algebraically closed field $E / L / F$,
-the main difficulty was in checking the equality $\sum_k x_k^{i + j} = \Tr_{L / F} (x^{i + j})$.
+Since $K / F$ is a finite, separable field extension, it has a power basis \lean{pb} generated by $x$.
+Letting $x_k$ denote the $k$-th conjugate of $x$ in an algebraically closed field $L / K / F$,
+the main difficulty was in checking the equality $\sum_k x_k^{i + j} = \Tr_{K / F} (x^{i + j})$.
 Directly applying \lean{trace\_gen\_eq\_sum\_roots} was tempting, since we had a sum over conjugates of powers on both sides.
 However, the two expressions did not precisely match: the left hand side is a sum of conjugates of $x$, where each conjugate is raised to the power $i + j$,
 while the conclusion of \lean{trace\_gen\_eq\_sum\_roots} resulted in a sum over conjugates of $x^{i + j}$.
 
 Instead, the paper proof switched here to an equivalent definition of conjugate:
-the conjugates of $x$ in $E$ are the images (counted with multiplicity) of $x$ under each embedding $\sigma \colon F(x) \to E$ that fixes $F$. This equivalence between the two notions of conjugate was contributed to \mathlib by the Berkeley group in the week before we realized we needed it. Mapping \lean{trace\_gen\_eq\_sum\_roots} through the equivalence gave
-$\Tr_{L / F}(x) = \sum_{\sigma} \sigma x$.
+the conjugates of $x$ in $L$ are the images (counted with multiplicity) of $x$ under each embedding $\sigma \colon F(x) \to L$ that fixes $F$. This equivalence between the two notions of conjugate was contributed to \mathlib by the Berkeley group in the week before we realized we needed it. Mapping \lean{trace\_gen\_eq\_sum\_roots} through the equivalence gave
+$\Tr_{K / F}(x) = \sum_{\sigma} \sigma x$.
 % \lean{algebra\_map F E (trace F L pb.gen) = ∑ (σ : L →ₐ[F] E), σ pb.gen}.
 Since each $\sigma$ is a ring homomorphism, $\sigma\ x^{i + j} = (\sigma\ x)^{i + j}$,
 so the conjugates of $x^{i + j}$ are the $(i + j)$-th powers of conjugates of $x$, which concluded the proof.
@@ -881,7 +881,7 @@ so the conjugates of $x^{i + j}$ are the $(i + j)$-th powers of conjugates of $x
 \section{Class group and class number} \label{sec:class-number}
 
 % Recall that the ideal class group of an integral domain $R$ is defined as the quotient of the invertible fractional ideals modulo the principal fractional ideals.
-Given a Dedekind domain with fraction map $f\colon D\to F$, we formalized the notion of class group in Lean by defining a map \lean{to\_principal\_ideal f:units f.codomain → units (fractional\_ideal f)}, %sending $x : K^\times$ to the principal ideal $\langle x \rangle$,
+Given a Dedekind domain with fraction map $f\colon D\to K$, we formalized the notion of class group in Lean by defining a map \lean{to\_principal\_ideal f $:$ units f.codomain → units (fractional\_ideal f)}, %sending $x : K^\times$ to the principal ideal $\langle x \rangle$,
 and defined the class group as
 \begin{lstlisting}
 def class_group := quotient_group.quotient (to_principal_ideal (range f))
@@ -906,8 +906,8 @@ and can be found, for instance, in~\cite{Ireland-Rosen}.
 %so that on the one hand most ingredients became more \mathlib ``friendly'' (by e.g. avoiding unnecessary field extensions, as used for example in norm estimates), and on the other hand it works in the function field setting as well.
 We note that some other ``uniform'' approaches can be found in~\cite{Artin-Whaples} and~\cite{Stasinski}.
 
-Let $D$ be an Euclidean domain: in particular, it will be a PID and hence a Dedekind domain. Given a fraction map $f \colon D \to F$, let $L$ be a finite separable field extension of~$F$.
-We formalized, in the theorem \lean{class\_group.finite\_of\_admissible}, that the integral closure of $D$ in $L$ has a finite class group if $D$ has an ``admissible'' absolute value \lean{abs}.
+Let $D$ be an Euclidean domain: in particular, it will be a PID and hence a Dedekind domain. Given a fraction map $f \colon D \to F$, let $K$ be a finite separable field extension of~$F$.
+We formalized, in the theorem \lean{class\_group.finite\_of\_admissible}, that the integral closure of $D$ in $K$ has a finite class group if $D$ has an ``admissible'' absolute value \lean{abs}.
 This notion originated in our project from the adaptation and generalization of the classical finiteness proof in interaction with the formalization efforts.
 %In other words, we require that $R$ is a Dedekind domain with ``division with remainder'' operators \lean{/, \%} and an absolute value operator such that:
 %\begin{align*}
@@ -933,10 +933,10 @@ structure admissible_absolute_value (D : Type*) [euclidean_domain D]
 \end{lstlisting}
 
 The above condition formalizes and generalizes an intermediate result in paper finiteness proofs;
-the different proofs for number fields and function fields (still assuming $L/F$ separable) become the same after this point.
+the different proofs for number fields and function fields (still assuming $K/F$ separable) become the same after this point.
 We used division with remainder to replace the \emph{fractional part} operator on $F$ in the classical proof, which was essential to incorporate function fields, and at the same time allowing our proof to stay entirely within $D$ to avoid coercions.
 
-The absolute value extends to a norm \lean{abs\_norm f abs:integral\_closure D L → ℤ}.
+The absolute value extends to a norm \lean{abs\_norm f abs $:$ integral\_closure D K → ℤ}.
 We used the admissibility of \lean{abs} to find a finite set \lean{finset\_approx L f abs} of elements of $D$,
 such that the following generalization of~\cite[Theorem~12.2.1]{Ireland-Rosen} holds.
 \begin{lstlisting}
@@ -1044,7 +1044,7 @@ In this project, we confirmed the rule that the hardest part of formalization is
 Once this is accomplished, the paper proof (sometimes first adapted with formalization in mind) almost always translates into a formal proof without too much effort.
 % Informal mathematics effortlessly switches between different viewpoints, choosing whichever suits the situation best.
 In particular, we regularly had to invent abstractions to treat instances of the ``same'' situation uniformly.
-Instead of fixing a canonical representation, be it $K \subseteq L \subseteq F$ as subfields or the field of fractions $\Frac R$, or the monogenic $K(\alpha)$, we found that making the essence of the situation an explicit parameter, as in \lean{is\_scalar\_tower}, \lean{fraction\_map} or \lean{power\_basis},
+Instead of fixing a canonical representation, be it $F \subseteq K \subseteq L$ as subfields or the field of fractions $\Frac R$, or the monogenic $K(\alpha)$, we found that making the essence of the situation an explicit parameter, as in \lean{is\_scalar\_tower}, \lean{fraction\_map} or \lean{power\_basis},
 allows to treat equivalent viewpoints uniformly without the need for transferring results.
 
 The formalization efforts described in this paper cannot be cleanly separated from the development of \mathlib as a whole.
