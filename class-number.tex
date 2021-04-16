@@ -532,6 +532,10 @@ class is_dedekind_domain (D : Type*) [integral_domain D] : Prop :=
 (dimension_le_one : dimension_le_one D)
 (is_integrally_closed : integral_closure D (fraction_ring D) = ⊥)
 \end{lstlisting}
+The notation $\bot$ is used in \mathlib for the bottom element of a lattice.
+For example, here $\bot$ denotes the smallest $D$-subalgebra of \lean{fraction\_ring D}, i.e. $D$ itself,
+and \lean{$\bot$ $:$ ideal D} denotes the zero ideal.
+
 Applications of \lean{is\_dedekind\_domain} can choose a specific fraction field through the following lemma exposing the alternate definition:
 \begin{lstlisting}
 lemma is_dedekind_domain_iff (f : fraction_map D F) :
