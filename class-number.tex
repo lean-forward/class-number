@@ -321,7 +321,7 @@ The effect is that almost all coherence proof obligations are automated through 
 \subsection{Ring of integers} \label{sec:ring-of-integers}
 
 %A number ring is defined as a ring whose fraction field is a number field, the ring of integers $\OK$ is an important example.
-When $K$ is a number field, the ring $\OK$ of integers in $K$ is defined as the integral closure of $\Z$ in $K$.
+When $K$ is a number field (defined as a field satifying \lean{is\_number\_field}), the ring $\OK$ of integers in $K$ is defined as the integral closure of $\Z$ in $K$.
 This is the subring containing those $x : K$ that are the root of a monic polynomial with coefficients in $\Z$:
 \begin{lstlisting}
 def number_field.ring_of_integers (K : Type*) [field K]
@@ -521,10 +521,10 @@ allowing the typeclass system to automatically infer the Dedekind domain structu
 
 \subsection{Fractional ideals}\label{subsection:frac_ideals}
 %\st{When working with fraction fields, it is useful to extend the notion of $R$-ideals to fractional ideals:} 
-The notion which is pivotal to the definition of the ideal class group of a Dedekind domain is that of \emph{fractional ideals}: given any integral domain $R$ with a field of fractions $F$, these are 
+The notion which is pivotal to the definition of the ideal class group of a Dedekind domain is that of \emph{fractional ideals}: given any integral domain $R$ with a field of fractions $F$, an 
 %$R$-ideals divided by some $x : R$,
 %or equivalently 
-$R$-submodules $J$ of $F$ such that there is an $x : R$ with $x J \subseteq R$. %The reason for introducing them is that, unlike their subset of proper ideals, 
+$R$-submodule $J$ of $F$ is \lean{is\_fractional} if there is an $x : R$ with $x J \subseteq R$. %The reason for introducing them is that, unlike their subset of proper ideals, 
 %Recall that, f
 For a Dedekind domain, they form a group under multiplication. As seen in Section~\ref{subsection : fields of fractions}, this notion depends on the field $F$ as well as on the fraction map $f\colon R\to F$. A more precise way of stating the above condition is then 
 %  allowing to speak about $R$-submodules of $F$ and, more importantly, to see an element $x:R$ as the element $f x : F$, so as to be able to write the inclusion 
