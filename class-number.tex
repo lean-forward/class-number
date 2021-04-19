@@ -552,7 +552,7 @@ allowing the typeclass system to automatically infer the Dedekind domain structu
 The notion which is pivotal to the definition of the ideal class group of a Dedekind domain is that of \emph{fractional ideals}:
 given any integral domain $R$ with a field of fractions $F$,
 we define \lean{is\_fractional} as a predicate on $R$-submodules $J$ of $F$, informally as ``there is an $x : R$ with $x J \subseteq R$''.
-For a Dedekind domain, fractional ideals form a group under multiplication.
+For a Dedekind domain, nonzero fractional ideals form a group under multiplication.
 As seen in Section~\ref{subsection : fields of fractions}, this notion depends on the field $K$ as well as on the fraction map $f\colon R\to K$.
 A more precise way of stating the above condition is then
 $f(x)J\subseteq f(R)$.
