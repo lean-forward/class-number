@@ -549,18 +549,14 @@ We marked \lean{is\_dedekind\_domain} as a typeclass by using the keyword \lean{
 allowing the typeclass system to automatically infer the Dedekind domain structure when an appropriate instance is declared, such as for PIDs or rings of integers.
 
 \subsection{Fractional ideals}\label{subsection:frac_ideals}
-%\st{When working with fraction fields, it is useful to extend the notion of $R$-ideals to fractional ideals:} 
-The notion which is pivotal to the definition of the ideal class group of a Dedekind domain is that of \emph{fractional ideals}: given any integral domain $R$ with a field of fractions $F$, an 
-%$R$-ideals divided by some $x : R$,
-%or equivalently 
-$R$-submodule $J$ of $F$ is \lean{is\_fractional} if there is an $x : R$ with $x J \subseteq R$. %The reason for introducing them is that, unlike their subset of proper ideals, 
-%Recall that, f
-For a Dedekind domain, they form a group under multiplication. As seen in Section~\ref{subsection : fields of fractions}, this notion depends on the field $K$ as well as on the fraction map $f\colon R\to K$. A more precise way of stating the above condition is then
-%  allowing to speak about $R$-submodules of $K$ and, more importantly, to see an element $x:R$ as the element $f x : K$, so as to be able to write the inclusion
-$f(x)J\subseteq f(R)$. We formalized the definition of fractional ideals relative to a map $f\colon R\to K$ as a type \lean{fractional\_ideal f}.
-%\st{The dependency on $f$ follows from the module structure on $K$ being determined by $f$.
-%Despite the dependency, }
-%We encoded that
+The notion which is pivotal to the definition of the ideal class group of a Dedekind domain is that of \emph{fractional ideals}:
+given any integral domain $R$ with a field of fractions $F$,
+we define \lean{is\_fractional} as a predicate on $R$-submodules $J$ of $F$, informally as ``there is an $x : R$ with $x J \subseteq R$''.
+For a Dedekind domain, fractional ideals form a group under multiplication.
+As seen in Section~\ref{subsection : fields of fractions}, this notion depends on the field $K$ as well as on the fraction map $f\colon R\to K$.
+A more precise way of stating the above condition is then
+$f(x)J\subseteq f(R)$.
+We formalized the definition of fractional ideals relative to a map $f\colon R\to K$ as a type \lean{fractional\_ideal f}, whose elements consist of the $R$-submodule of $F$ along with a proof of \lean{is\_fractional}.
 The structure of fractional ideals does not depend on the choice of a fraction map, which we formalized as an isomorphism \lean{fractional\_ideal.canonical\_equiv} between the fractional ideals relative to fraction maps $f_1\colon R\to K_1$ and $f_2\colon R\to K_2$.
 
 We defined the addition, multiplication and intersection operations on fractional ideals,
@@ -577,6 +573,7 @@ instance : has_mul (fractional_ideal f) :=
 
 Defining the quotient of two fractional ideals requires slightly more work. Consider any $R$-algebra $A$ and an injection $R\hookrightarrow A$. Given ideals $I,J\le R$, the submodule $I / J\le A$ %\footnote{The $:$ operator typically used for the submodule quotient is already reserved by the type theory, so \mathlib uses $/$ instead.}
 is defined by the property
+\pagebreak[3] % Break the page on this line, rather than the next
 \begin{lstlisting}
 lemma submodule.mem_div_iff_forall_mul_mem {x : A} {I J : submodule R A} :
   x ∈ I / J ↔ ∀ y ∈ J, x * y ∈ I
