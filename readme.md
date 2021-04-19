@@ -10,7 +10,7 @@ We formalized these structures and several fundamental properties, including num
 The formalization has been developed for the community fork of Lean 3.
 To install a full Lean development environment, please follow the "Regular install" instructions at <https://leanprover-community.github.io/get_started.html>.
 After installation, you can run the command `leanproject get lean-forward/class-number` to obtain copies of the relevant source files and all dependencies.
-We are currently in the process of merging our results into the Lean mathematical library mathib.
+We are currently in the process of merging our results into the Lean mathematical library mathlib.
 An up-to-date version of our development is available at the [dedekind-domain-dev branch](https://github.com/leanprover-community/mathlib/tree/dedekind-domain-dev/).
 The command `leanproject get mathlib:dedekind-domain-dev` will download a copy of this branch and the precompiled binaries.
 
