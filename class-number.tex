@@ -945,20 +945,25 @@ After this, the classical approach mentioned above formalized smoothly.
 
 It remained to define an admissible absolute value for $\Z$ and $\Fq[q][t]$. On $\Z$, it was straightforward to formalize that the usual Archimedean absolute value fulfils the requirements. For $\Fq[q][t]$, we showed that $\lvert f\rvert_{\deg}:=q^{\deg f}$ for $f \in \Fq[q][t]$ is the required admissible absolute value; we note that this was somewhat more involved to formalize.
 %(Note that these absolute values coincide with cardinalities in corresponding residue rings, but we do not need this result.)
-We concluded that when $K$ is a global field, restricting to \emph{separable} extensions of $\Fq[q](t)$ in the function field case (but see the remark below the next block of Lean code), the class group is finite:
+We concluded that when $K$ is a global field, restricting to \emph{separable} extensions of $\Fq[q](t)$ in the function field case (but see the remark below), the class group is finite:
 \begin{lstlisting}
 noncomputable instance : fintype
   (class_group (number_field.ring_of_integers.fraction_map K)) :=
 class_group.finite_of_admissible K int.fraction_map int.admissible_abs
-
+\end{lstlisting} % Try to get the page break here.
+\begin{lstlisting}
 noncomputable instance [is_separable f.codomain K] : fintype
   (class_group (function_field.ring_of_integers.fraction_map f K)) :=
 class_group.finite_of_admissible F f polynomial.admissible_card_pow_degree
 \end{lstlisting}
 
-We note that any function field is actually isomorphic to a finite \emph{and separable} extension of a field isomorphic to $\Fq[q](t)$; see for example \cite[Corollary 4.4 in Chapter VIII]{Lang}. Formalizing this result would be one way to get rid of the \lean{[is\_separable f.codomain K]} assumption in the function field case. A trivial way to get rid of this assumption in the finiteness statement above is to simply move it to our function field definition. While this would be mathematically consistent by the result just cited above, we did not opt to do this since in general, it seems a good rule of thumb to avoid making (mathematically) redundant assumptions in definitions (though one can find some elementary exceptions of this in \mathlib). In particular, moving the assumption to the definition would simply preserve the obligation to formalize the cited result when trying to formalize otherwise obvious statements such as: a finite field extension of a function field is a function field.
-
 Finally, we defined \lean{number\_field.class\_number} and \lean{function\_field.class\_number} as the cardinality of the respective class groups.
+
+We remark that it is possible to get rid of the \lean{[is\_separable f.codomain K]} assumption in the function field case,
+since any function field is actually isomorphic to a finite \emph{and separable} extension of a field isomorphic to $\Fq[q](t)$; see for example \cite[Corollary 4.4 in Chapter VIII]{Lang}.
+A trivial way to get rid of this assumption in the finiteness statement above is to simply move it to our definition of function field.
+While this would be mathematically consistent by the result just cited above, we did not opt to do this since it would simply move the proof obligation to the points at which \lean{is\_function\_field} gets instantiated,
+for instance when showing a finite extension of a function field is a function field.
 
 We rounded off our development by determining the class number in the simplest possible case: the rational numbers $\Q$.
 First, we formalized the theorem \lean{class\_number\_eq\_one\_iff}, stating that the class number of $K$ is $1$ if and only if $\OK$ is a principal ideal domain.
