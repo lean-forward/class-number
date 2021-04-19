@@ -22,6 +22,7 @@ On the command line, you can run `code path/to/class-number`.
 The following files contain major contributions from our project:
 
  * [`src/algebraic_number_theory/class_number.lean`](src/class_number.lean)
+ * [`src/algebraic_number_theory/class_number/admissible_absolute_value.lean`](src/admissible_absolute_value.lean)
  * [`src/algebraic_number_theory/function_field.lean`](src/function_field.lean)
  * [`src/algebraic_number_theory/number_field.lean`](src/number_field.lean)
  * [`src/field_theory/intermediate_field.lean`](src/intermediate_field.lean)
@@ -37,7 +38,11 @@ The following files contain declarations mentioned in the paper or otherwise imp
  * [`src/group_theory/group_action/defs.lean`](src/defs.lean)
  * [`src/field_theory/adjoin.lean`](src/adjoin.lean)
  * [`src/field_theory/primitive_element.lean`](src/primitive_element.lean)
+ * [`src/ring_theory/integral_closure.lean`](src/integral_closure.lean)
  * [`src/ring_theory/localization.lean`](src/localization.lean)
+ * [`src/ring_theory/noetherian.lean`](src/noetherian.lean)
+ * [`src/ring_theory/principal_ideal_domain.lean`](src/principal_ideal_domain.lean)
+ * [`src/ring_theory/unique_factorization_domain.lean`](src/unique_factorization_domain.lean)
 
 ## Declarations mentioned in the paper
 
@@ -77,3 +82,5 @@ We will now provide an overview of the source code files containing results ment
  * class group: [`src/ring_theory/class_group.lean`](src/class_group.lean)
  * admissible absolute value: [`src/algebraic_number_theory/class_number/admissible_absolute_value.lean`](src/admissible_absolute_value.lean)
  * class number: [`src/algebraic_number_theory/class_number.lean`](src/class_number.lean)
+ * ring of integers of ℚ: [`src/algebraic_number_theory/number_field.lean`](src/number_field.lean)
+ * class number of ℚ: [`src/algebraic_number_theory/class_number.lean`](src/class_number.lean)
