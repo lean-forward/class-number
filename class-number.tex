@@ -248,7 +248,7 @@ A field which is either a number field or a function field is called a \emph{glo
 % In this project, we formalized Dedekind domains, their class group, number fields and function fields together with their ring of integers, and the definition of the class number, via the proof that the class group of a ring of integers (assuming separability conditions) is finite. 
 In the next sections we will describe the formalization of the above concepts.
 
-\section{Number fields, global fields and rings of integers}
+\section{Number fields, global fields and rings of integers} \label{sec:number fields}
 
 We refer the reader to Section~\ref{sec math background} for the mathematical background needed in this section.
 
@@ -727,8 +727,7 @@ instance principal_ideal_ring.to_dedekind_domain (R : Type*)
  dimension_le_one.principal_ideal_ring _,
  unique_factorization_monoid.integrally_closed (fraction_ring.of R)⟩
 \end{lstlisting}
-The \lean{instance} keyword marks the declaration for inference by the typeclass system.
-%Making this an \lean{instance} instead of a \lean{lemma} ensures that the typeclass system can now automatically infer a Dedekind domain structure whenever a principal ideal structure is already available.
+Recall from Section \ref{sec:number fields} that the \lean{instance} keyword marks the declaration for inference by the typeclass system.
 
 The Noetherian property of a Dedekind domain followed easily by the previously defined lemma \lean{principal\_ideal\_ring.is\_noetherian\_ring}, since, by definition, each ideal in a principal ideal ring is finitely generated (by a single element).
 
