@@ -1,0 +1,468 @@
+\documentclass{amsart}
+\usepackage{amssymb} 
+\usepackage{amsmath} 
+\usepackage{hyperref}
+\usepackage{enumerate}
+\usepackage{mathtools}    
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\LL}{\mathcal{L}}
+
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\Fp}{\mathbb{F}_p}
+\newcommand{\Fq}{\mathbb{F}_q}
+
+\newcommand{\M}{\mathfrak{M}}
+
+\newcommand{\Hom}{\operatorname{Hom}}
+\newcommand{\Isom}{\operatorname{Isom}}
+\newcommand{\im}{\operatorname{im}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\supp}{\operatorname{Sup}}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\cf}{\operatorname{coef}}
+\newcommand{\spn}{\operatorname{span}}
+\newcommand{\characteristic}{\operatorname{char}}
+
+\newcommand{\NN}{\operatorname{Norm}}
+\newcommand{\OK}{\mathcal{O}_K}
+\newcommand{\Cl}{\operatorname{Cl}}
+\newcommand{\lcm}{\operatorname{lcm}}
+\newcommand{\sign}{\operatorname{sign}}
+\newcommand{\remainder}{\operatorname{remainder}}
+\newcommand{\quotient}{\operatorname{quotient}}
+
+
+\DeclarePairedDelimiterX\set[2]{\{}{\}}{\,#1 \;\delimsize\vert\; #2\,}
+
+
+\begin {document}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem*{conjecture}{Conjecture}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+
+\title{Finiteness of the class group}
+
+\maketitle
+
+%------------------------------------------
+\section{Introduction}\label{intro}
+%------------------------------------------
+
+In order to formalize, e.~g.~ in the theorem prover \emph{Lean}, the finiteness of the class group of rings of integers in number fields, we write some proof in detail. Much of the proof actually applies uniformly to the function field case, assuming (for the time being \ldots) it's a separable extension of the \lq base\rq\ field $\Fq(t)$.
+
+NOTE: the only actual intended use of this informal document was to use it in combination with discussions, explanations, etc. to formalize finiteness results for class groups in Lean. In particular, with very few exceptions, no attempt was made to correct errors or complete omissions unless still beneficial for the formalization process.
+Perhaps it will be \lq polished\rq\ a little bit more in the future.
+
+
+%------------------------------------------
+\section{Notation and conventions}\label{notation}
+%------------------------------------------
+
+
+%Throughout this paper we let $k,n \in \N$.
+For ideals $I,J$ in some commutative ring $R$, we use standard divisibility-notation $I|J$, meaning $IH=J$ for some ideal $H$ in $R$.
+
+
+
+%------------------------------------------
+\section{Preliminaries on Dedekind domains}
+%------------------------------------------
+
+For ideals in Dedekind rings we have \lq to contain is to divide\rq. 
+\begin{proposition}\label{prop contain is divide}
+Let $I,J$ be ideals in a Dedekind domain $R$. Then
+\begin{equation}\label{eqn contain is divide}
+I \supseteq J \Leftrightarrow I|J.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+\lq $\Leftarrow$\rq: trivial (assuming $I|J$, which means $J=IH$ for some ideal $H$, it remains to show $IH \subseteq I$, which is obvious).\\
+\lq $\Rightarrow$\rq: Assume $I \supseteq J$. If $I=0$, then $J=0$, and hence $I|J$. We are left with the case $I\not=0$.
+We take as a starting point that nonzero fractional ideals in a Dedekind domain are invertible. So in particular $I$ is invertible. As fractional ideals we have $H:=I^{-1} J \subseteq I^{-1} I=R$. So $H$ is in fact an ideal, and $I H=I I^{-1} J=J$ So $I|J$ (as ideals of $R$).
+\end{proof}
+
+It is convenient to have a characterization of prime ideals in terms of ideals only.
+
+\begin{lemma}\label{lem prime ideal ideals}
+Let $R$ be a commutative ring and $P$ be an ideal in $R$. Then $P$ is a prime ideal if and only if $P\not=R$ and
+\begin{equation}\label{eqn prime ideal ideals}
+\forall \text{ ideals } I,J \subseteq R: IJ \subseteq P \Rightarrow I \subseteq P \text{ or } J \subseteq P.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Unfold definitions etc.\ldots
+\end{proof}
+
+Lemma~\ref{lem prime ideal ideals} and Proposition~\ref{prop contain is divide} above, now yields the well known \lq prime property\rq, but now for ideals.
+
+\begin{corollary}\label{cor prime property ideal}
+Let $I,J,P$ be ideals in a Dedekind domain $R$ with $P$ prime. Then
+\[ P|IJ \Rightarrow \left (P|I \text{ or } P|J \right).\]
+\end{corollary}
+
+Another useful property is the \emph{cancellation rule} for ideal multiplication in Dedekind domains.
+
+\begin{proposition}\label{prop cancellation ideals}
+Let $H,I,J$ be ideals in a Dedekind domain $R$ with $H$ nonzero. Then
+\[ IH=JH \Rightarrow I=J.\]
+\end{proposition}
+
+\begin{proof}
+Again, using the characterization of Dedekind domains that all nonzero fractional ideal are invertible, the result follow by multiplying LHS and RHS of $IH=JH$ by (the fractional ideal) $H^{-1}$.. 
+\end{proof}
+
+
+We now have enough ingredients to our disposal to establish unique factorizarion in terms of ideals in a Dedekind domian.
+\begin{theorem}\label{thm Dedekind unique fac}
+Let $R$ be a Dedekind domain. Then every nonzero ideal $I$ of $R$ can be written as a product of prime ideals of $R$ in a unique way, apart from the order of the factors.
+\end{theorem}
+
+\begin{proof}
+\emph{Existence.} If $I=R$, then we are done by the canonical convention that the empty product (of ideals) gives the unit ideal, i.e. $R$. So Let $I \not=R$. By Zorn's Lemma we get that $I$ is contained in a maximal ideal, which is a nonzero prime ideal $P_1$.
+(If one does not like the appeal to Zorn's lemma, which is equivalent to the axiom of choice, then for $R=\mathcal{O}_K$ one can also use $R/I$ is finite instead.)
+By Proposition~\ref{prop contain is divide} we see that $P_1|I$, i.e. $I=P_1 I_1$ for some nonzero ideal $I_1$ of $R$. Continuing inductively we get $I=P_1P_2\ldots P_k I_k$ for nonzero prime ideals $P_1,P_2,\ldots, P_k$ and nonzero ideal $I_k$ of $R$. If this process would continue indefinitely, then this woud give us an infinite ascending chain of ideals $I\subsetneq I_1 \subsetneq I_2 \subsetneq \ldots$. Since $R$ is Noetherian, this cannot happen, so we must have that for some $k$ the ideal $I_k$ is not divisible by a prime ideal, i.e. $I_k=R$ and consequently $I=P_1P_2\ldots P_k$. This completes the existence part of the proof.\\
+\emph{Uniqueness.} Let $I=P_1P_2\ldots P_k=Q_1Q_2\ldots Q_l$ be two factorizations of $I$ into (nonzero) prime ideals. By Corollary~\ref{cor prime property ideal} (and induction) we get that $P_1$ divides $Q_i$ for some $i=1,2,\ldots,l$. Since $Q_i$ is maximal we get $P_1=Q_i$. Change notation so that $i=1$. Now the cancellation rule, i.e. Propostion~\ref{prop cancellation ideals}, gives $P_2 \ldots P_k=Q_2 \ldots Q_l$. With induction we get that $k=l$ and, after permuting the indices of the $Q_i$'s, that $P_i=Q_i$ for all $i$. This yields Theorem~\ref{thm Dedekind unique fac}.
+\end{proof}
+
+\begin{proposition}\label{prop finitely many ideal divisors}
+Let $I$ be a nonzero ideal in a Dedekind domain $R$. Then there are only finitely many ideals $J$ in $R$ such that $J|I$.
+\end{proposition}
+
+\begin{proof}
+This follows e.~g.~ from unique factorization~\ref{thm Dedekind unique fac}.
+\end{proof}
+
+
+%------------------------------------------
+\section{Further preliminaries}
+%------------------------------------------
+
+An \emph{absolute value} on a ring $R$ with values in an ordered ring $S$ is a function
+\[R \to S, \quad x \mapsto |x|\]
+satisfying for all $x,y \in R$
+\begin{itemize}
+\item $|x|\geq 0$;
+\item $|x|=0 \Leftrightarrow x=0$;
+\item $|x y|=|x| |y|$;
+\item $|x+y|\leq |x|+|y|$.
+\end{itemize} 
+
+If $R$ and $S$ are domains, with fields of fractions $K$ and $L$ respectively, then an absolute value on $R$ with values in $S$ extends uniquely to an absolute value on $K$ with values in $L$ by letting $|x/y|:=|x|/|y|$ for any $x,y \in R$ with $y\not=0$.
+
+We note that it follows very quickly that 
+\[|1|=|-1|=1.\]
+
+Two easy examples are as follows.
+\begin{lemma}
+The following functions are absolute values.
+\begin{itemize}
+\item \[ |.|_{\text{arch}}: \Z \to \Z, \quad x \mapsto \sign(x)x\]
+\item For any domain $D$ and integer $c>1$
+\[ |.|_{\deg}: D[t] \to \Z, \quad f \mapsto c^{\deg f} (\text{if necessary, treat separately}\ 0 \mapsto 0).\]
+In particular, taking $D=\F_q$ (a finite field with $q$ elements) and $c=q$, we get
+\[ |.|_{\deg}: \F_q[t] \to \Z, \quad |f|_{\deg}=q^{\deg f}.\]
+\end{itemize}
+\end{lemma}
+
+\begin{proof}
+Write out definitions, and use standard properties of the degree function, i.e. $\deg (fg)=\deg f+\deg g$ and $\deg(f+g)\leq \max(\deg f,\deg g)$ (treating the zero polynomials separately, or setting $\deg(0)=-\infty$ with the appropriate operations/inequalities for $-\infty$). The second case gives the stronger triangel inequality $|f+g|_{\deg} \leq \max(|f|_{\deg},|g|_{deg})$, which  immediately implies the weaker \lq normal\rq\ triangle inequality.
+\end{proof}
+
+We note that taking $c=q$ for the last absolute value is just some natural normalisation choice. It is of no importance for the results here. So if e.~g.~ taking $c=2$ would make things easier, that choice would be fine too. Also, just considering $q=p$ (so $\F_q=\F_p \simeq \Z/p\Z$) suffices for our purposes.
+
+A crude estimate for the determinant of a matrix is given below.
+\begin{lemma}
+Let $R$ and $S$ be commutative rings with $S$ ordered, and $|.|:R \to S$ an absolute value.
+Let $A$ be a matrix of size $n \times n$ (for some $n\in \N$) with coefficients in $R$. Then 
+\[|\det(A)|\leq n! \left(\max_{1\leq i,j\leq n} |A_{i,j}|\right)^n\]
+\end{lemma}
+
+\begin{proof}
+Induction using row expansion, or using permutation formula/definition for determinant.
+\end{proof}
+
+The following will be used for estimating norms.
+
+\begin{corollary}\label{cor estimate norm}
+Let $R$ and $S$ be commutative rings with $S$ ordered, and $|.|:R \to S$ an absolute value.
+Let $A_1,\ldots A_n$ be a matrix of size $n \times n$ (for some nonzero $n\in \N$) with coefficients in $R$. Let $s_1\ldots s_n \in R$. Then 
+\[ \left|\det(\sum_{k=1}^n s_k A_k) \right| \leq n! \left(n \max_{1\leq i,j,k\leq n} |(A_k)_{i,j}|\right)^n \left( \max_{1\leq k\leq n}(|s_k|) \right)^n\]
+\end{corollary}
+
+%------------------------------------------
+\section{Generalized division with remainder}
+%------------------------------------------
+
+$R$ is a PID (hence Dedekind domain) with nontrivial absolute value $|.| : R \to \Z$, and field of fractions $K$.
+$L$ is a finite and separable (for the time being..) field extension of $K$, and we let $S$ be the integral closure of $R$ in $L$. So $S$ is a Dedekind domain.
+We have the norm map $\NN: L \to K$, restricting to a function $S \to R$. Denote $n:=[L:K]$. Also assume $R$ to be infinite (our main theorem becomes trivial if $R$ is finite).
+
+We also assume that $|.|: R \to \Z$ is a \emph{Euclidean function}, i.e. for all $a,b \in R$ with $b\not=0$ there exists a $q \in R$ such that $|a-qb|<|b|$.
+In fact, we take $R$ to be a Euclidean domain as defined in Lean. So it comes with a choice of quotient function $q: R^2 \to \Z$ (ignoring currying in this math writeup).
+%, and the well founded relation ...
+
+Since $R$ is a PID, $S$ contains an $R$-integral basis, i.e. there are (basis elements) $b_1,b_2,\ldots,b_n \in S$ such that for every $x \in S$ there are unique (scalars) $s_1,s_2,\ldots s_n \in R$ with $x=\sum_{i=1}^n s_i b_i$.
+The scalars define a function $s: S \to R^n, x \mapsto (s_1,\ldots,s_n)$, which is obviously $R$-linear.
+
+We start with an estimate on norms.
+
+\begin{lemma}\label{lem norm estimate}
+There exists a constant $C \in \R_{> 0}$, depending only on the $R$-integral basis $b_1,\ldots,b_n \in S$, such that for any $x=\sum_{i=1}^n s_i b_i \in S$
+\[|\NN(x)| \leq C (\max_i |s_i|)^n.\] 
+\end{lemma}
+
+\begin{proof}
+Follows from Corollary~\ref{cor estimate norm}.
+\end{proof}
+
+We will focus on Euclidean domains with the property that \lq sufficiently many remainders come arbitrary close to each other\rq (in higher dimensions) in the following sense.
+
+\begin{definition}\label{def admissible}
+We call $R$ \emph{admissible} if both:
+\begin{itemize}
+\item We have a function $\M : \R_{>0} \times \N \to \N$;
+\item For all $ \epsilon \in \R_{>0}$, $n \in \N$, $b \in R$, and $A : \N_{\leq \M(\epsilon,n)} \to R^n$ there exists $j,k \in \N_{\leq \M(\epsilon,n)}$ such that
+\[j \neq k \text{ and for all } i\in\{1,\ldots,n\},\ |\remainder(A(k)_i,b)-\remainder(A(j)_i,b)| < \epsilon |b|.\]
+\end{itemize}
+\end{definition}
+
+There are equivalent, arguably cleaner, definitions (e.~g.~ without actually incorporating division with remainder), but for the time being this one seems to work just fine. (And will probably be handy for actual computations at some point.)
+
+We will show later that $\Z$ and $\Fq[t]$ are admissible domains.
+Now our main ingredient for the finiteness of the class group.
+
+\begin{theorem} Assume $R$ is admissible.
+There exists a finite set $M \subset R-\{0\}$, depending only on the $R$-integral basis $b_1,\ldots,b_n \in S$, such that
+for all $a \in S$ and $b \in R-\{0\}$ there exist $q \in S$ and $r \in M$ with $|\NN(ra-qb)| < |\NN(b)|$.
+\end{theorem}
+
+\begin{proof}
+
+Let $C$ be as in Lemma~\ref{lem norm estimate} and choose $\epsilon \in \R_{>0}$ such that
+\begin{equation}\label{eqn choice epsilon}
+\epsilon \leq 1/\sqrt[n]{C}.
+\end{equation}
+Let $\M$ be as in Definition~\ref{def admissible}.
+
+Write $a=\sum_{i=1}^n s_i b_i$ ($s_i\in R)$.
+
+Choose $\M(\epsilon,n)+1$ \emph{distinct} elements $\mu^{(0)},\ldots,\mu^{(\M(\epsilon,n))}$ of $R$ (possible since we assumed $R$ to be infinite).
+And let $M:=\{\mu^{(k)}-\mu^{(j)} : 0\leq j<k\leq \M(\epsilon,n)\}$, so $M \subseteq R-\{0\}$ (the containment is in fact strict since $M$ is finite and $R$ is not).
+
+For any $j \in \{0,\ldots,\M(\epsilon,n)\}$ and $i \in \{1,\ldots n\}$ we let $q^{(j)}_i:=\quotient(\mu^{(j)} s_i,b)$ and $r^{(j)}_i:=\remainder(\mu^{(j)} s_i,b)$. So $q^{(j)}_i,r^{(j)}_i \in R$ and
+\[\mu^{(j)} s_i =q^{(j)}_i b+r^{(j)}_i \text{ and } |r^{(j)}_i|<|b|,\]
+and hence
+\begin{equation}\label{eqn vector q and r}
+\mu^{(j)} a=\sum_{i=1}^n \mu^{(j)} s_i b_i= \sum_{i=1}^n (q^{(j)}_i b+r^{(j)}_i)b_i=\left( \sum_{i=1}^n q^{(j)}_i b_i\right)b+\sum_{i=1}^n r^{(j)}_i b_i.
+\end{equation}
+Consider the function $A : \N_{\leq \M(\epsilon,n)} \to R^n,\ j \mapsto (\mu^{(j)} s_1,\ldots,\mu^{(j)} s_n)$. Then by Definition~\ref{def admissible} we have indices $j,k$ with $0\leq j<k\leq \M(\epsilon,n)$ such that 
+\begin{equation}\label{eqn remainder bounds}
+\text{for all } i \in\{1,\ldots,n\},\ |r^{(k)}_i - r^{(j)}_i| < \epsilon |b|.
+\end{equation}
+Now define
+\[r:=\mu^{(k)}-\mu^{(j)} \in M\]
+and
+\[q:=\sum_{i=1}^n (q^{(k)}_i-q^{(j)}_i) b_i \in S.\]
+Then by~\eqref{eqn vector q and r} (with that $j$ specialised to both (the new) $j$ and $k$), we have
+\[ra-qb=\sum_{i=1}^n \left(r^{(k)}_i - r^{(j)}_i\right) b_i.\]
+So it remains to show that
+\begin{equation}\label{eqn final norm estimate}
+\left|\NN \left(\sum_{i=1}^n \left(r^{(k)}_i - r^{(j)}_i\right) b_i\right)\right| < |\NN(b)|.
+\end{equation}
+Note that since $b \in R$ (coerced into $S$ before taking the norm), we get
+\begin{equation}\label{eqn norm b}
+\NN(b)=b^n.
+\end{equation}
+Now we have
+\begin{alignat*}{3}
+& \left|\NN \left(\sum_{i=1}^n \left(r^{(k)}_i - r^{(j)}_i\right) b_i\right)\right|  && \leq C\left( \max_i |r^{(k)}_i - r^{(j)}_i| \right)^n  && \quad \text{(by Lemma~\ref{lem norm estimate})}\\
+& && < C (\epsilon |b|)^n&& \quad \text{(by~\eqref{eqn remainder bounds})}\\
+& && \leq |b|^n&& \quad \text{(by~\eqref{eqn choice epsilon} )}\\
+& && =|\NN(b)| && \quad \text{(by multiplicativity of $|.|$ and~\eqref{eqn norm b})}.
+\end{alignat*}
+This proves~\eqref{eqn final norm estimate} and thereby finishes the proof of the theorem.
+\end{proof}
+
+Now we need to generalize the result above from $b \in R$ to $b \in S$ (nonzero).
+
+\begin{corollary}\label{cor generalized norm euclidean}
+Assume $R$ is admissible.
+There exists a finite set $M \subset R-\{0\}$, depending only on the $R$-integral basis $b_1,\ldots,b_n \in S$, such that
+for all $a, b \in S$ with $b \not=0$ there exist $q \in S$ and $r \in M$ with $|\NN(ra-qb)| < |\NN(b)|$.
+\end{corollary}
+
+\begin{proof}
+Unfold definitions (via $\gamma=a/b)$ and use multiplicativity of the norm \ldots
+\end{proof}
+
+
+
+%------------------------------------------
+\section{Finiteness of the class group in the admissible case}
+%------------------------------------------
+
+Notation as in previous section.
+
+The following is a trivial statement about choosing an element of minimal nonzero absolute norm in a nonzero ideal (which obviously also holds for any subset containing a nonzero element).
+\begin{lemma}\label{lem element of nonzero minimal norm}
+Let $I$ be a nonzero ideal of $S$. Then there exists a nonzero $b \in I$ such that for all $c \in I$
+\begin{equation}\label{eqn element of nonzero minimal norm}
+|\NN(c)| < |\NN(b)| \Rightarrow c=0.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Trivial, namely $\{|\NN(b)| : b \in I-\{0\} \}$ contains a smallest element, which is a positive integer \ldots
+\end{proof}
+
+\begin{theorem}
+Let $M$ be as in Corollary~\ref{cor generalized norm euclidean} and let $m$ be a nonzero common multiple of all elements in $M$ (e.~g.~ the product, so it exists).
+Then for any nonzero ideal $I$ of $S$, there exists an ideal $J$ of $S$ such that $I \sim J$ and $J | \langle m \rangle_S$.
+\end{theorem}
+
+\begin{proof}
+Let $I$ be a nonzero ideal of $S$.
+\begin{itemize}
+\item Choose a nonzero $b \in I$ such that for all $c \in I$ we have~\eqref{eqn element of nonzero minimal norm}.
+(Possible by Lemma\ref{lem element of nonzero minimal norm}
+\item Let $a \in I$. Since $M$ is as in Corollary~\ref{cor generalized norm euclidean}, we get $q \in S$ and $r \in M$ with $|\NN(r a-qb)| < |\NN(b)|$. Let $c:=ra-qb \in I$ (since $a,b \in I$), then the previous item gives us $ra-qb=0$, i.e.
+\[ra=qb.\]
+\item
+So $\langle m \rangle_S I \subseteq \langle b \rangle$.
+\item
+Now $ \langle m \rangle I = \langle b \rangle J$ for a nonzero ideal $J$ of $S$, and consequently $I \sim J$. Furthermore, $b \in I$, so $ \langle b \rangle \subset I$, so $ \langle m \rangle \langle b \rangle \subset \langle m \rangle I = \langle b \rangle J$. This gives $\langle m \rangle \subset J$, and hence $J | \langle m \rangle$. 
+\end{itemize}
+\end{proof}
+
+\begin{theorem}\label{thm class group finite admissible} 
+The class group of $S$ is finite.
+\end{theorem}
+
+\begin{proof}
+Previous theorem, together with Proposition~\ref{prop finitely many ideal divisors} gives finitely may possibilities for $J$. So finitely many possibilities for $\overline{I} \in \Cl(S)$. Hence $\Cl(S)$ is finite.
+\end{proof}
+
+%------------------------------------------
+\section{Admissibility of $\Z$ and $\F_q[t]$}
+%------------------------------------------
+
+\begin{lemma}\label{lem Z admissible}
+$\Z$ (with $|.|_{\text{arch}}$) is admissible.
+\end{lemma}
+
+\begin{proof}
+This easily follows directly from the box principle\ldots
+\end{proof}
+
+The remainder of this section is about the admissibility of $\F_q[t]$, where $\F_q$ denotes a finite field wit $q$ elements.
+The key is the following result.
+
+\begin{lemma}
+Let $D \in \N$, $b \in \F_q[t]$ (nonzero if that makes live easier), and define $M:=q^D$. Then for every function
+$A_1: \N_{\leq M} \to \F_q[t]$ with $\forall j \in  \N_{\leq M}, \deg A_1(j) < \deg b$, there exists $j,k \in \N_{\leq M}$ such that
+\[j \neq k \text{ and } \deg(A_1(k)-A_1(j)) < \deg b-D.\]
+\end{lemma}
+
+\begin{proof}
+WLOG $D \leq \deg b$ (note we use $\deg 0 = -\infty < $ any integer).
+
+Every $A_1(j)$ is of the form $\sum_{i \in \N_{< \deg b}} c_i^{(j)} t^i$ with coefficients $c_i^{(j)} \in F_q$.
+There are a priori $M=q^D$ possibilities for the coefficients $c_{\deg b-1}^{(j)}, c_{\deg b-2}^{(j)},\ldots, c_{\deg b-D}^{(j)}$.
+So by the box principle, among the $q^D+1$ polynomials $A_1(0), \ldots A_1(M)$, there must be at least two, say $A_1(j), A_1(k),\ j\not=k$ with coefficients 
+\[c_{\deg b-1}^{(j)}=c_{\deg b-1}^{(k)}, c_{\deg b-2}^{(j)}= c_{\deg b-2}^{(k)},\ldots, c_{\deg b-D}^{(j)}= c_{\deg b-D}^{(k)}.\] Hence we can write
+ \[A_1(k)-A_1(j)=\sum_{i \in \N_{<\deg b-D}} (c_i^{(k)}-c_i^{(j)} t^i,\]
+i.e. $\deg (A_1(k)-A_1(j))<\deg b-D$, as was to be shown.
+\end{proof}
+
+We now translate the previous lemma.
+\begin{lemma}
+Let $\epsilon \in \R_{>0}$, $b \in \F_q[t]$, and choose $D \in \N$ such that $M:=q^D\geq 1/\epsilon$ (e.~g.~ $D:=\operatorname{ceiling} (-\log \epsilon/\log q)$).
+Then for every function
+$A_1: \N_{\leq M} \to \F_q[t]$ there exists $j,k \in \N_{\leq M}$ such that
+\[j \neq k \text{ and } |\remainder(A_1(k),b)-\remainder(A_1(j),b)| < \epsilon |b|.\]
+\end{lemma}
+
+\begin{proof}
+Choose $A_1$ and write $f_i:= |\remainder(A_1(i),b)$, so $\deg f_i < \deg b$. By the previous Lemma we have $j\not=k$ such that
+\[\deg (f_k-f_j) <\deg b -D.\]
+It suffices to show that
+\[|f_k-f_j| <\epsilon |b|.\]
+This holds, since:
+\[ |f_k-f_j|=q^{\deg(f_k-f_j)}<q^{\deg b -D}=q^{\deg b}/M=|b|/M\leq \epsilon |b|.\]
+\end{proof}
+
+
+\begin{lemma}\label{lem admissible 1D}
+For $R=\F_q[t]$ both:
+\begin{itemize}
+\item We have a function $\M_1 : \R_{>0} \to \N$;
+\item For all $ \epsilon \in \R_{>0}$, $b \in R$, and $A_1: \N_{\leq \M_1(\epsilon)} \to R$ there exists $j,k \in \N_{\leq \M_1(\epsilon)}$ such that
+\[j \neq k \text{ and } |\remainder(A_1(k),b)-\remainder(A_1(j),b)| < \epsilon |b|.\]
+\end{itemize}
+\end{lemma}
+
+\begin{proof}
+Follows from previous lemma (with $\M_1(\epsilon)=M=q^D$).
+\end{proof}
+
+\begin{lemma}\label{lem Fqt admissible}
+$\F_q[t]$ (with $|.|_{\deg}$) is admissible.
+\end{lemma}
+
+\begin{proof}
+Follows from Lemma~\ref{lem admissible 1D} for any $R$ with a nonarchimedean absolute value, by using the box principle\ldots
+(Taking $\M(\epsilon,n)=\M_1(\epsilon)^n$.)
+\end{proof}
+
+%------------------------------------------
+\section{On the finiteness of the class group for global fields}
+%------------------------------------------
+
+Let $\F$ be a finite field. Let us specialise to $R=\Z$ or $R=\F[t]$, with fraction field $K=\Q$ or $K=\F(t)$ respectively. As before, we let $L$ be a finite separable field extension of $K$ (where separability is automatic if $K=\Q$) and denote by $S$ the integral closure of $R$ in $L$, called the ring of integers of $L$ (which strictly speaking depends on $R$ in the positive characteristic case).
+
+From Lemmata~\ref{lem Z admissible} and~\ref{lem Fqt admissible} together with Theorem~\ref{thm class group finite admissible} we now get our main theorem.
+
+\begin{theorem}
+The class group of $S$ is finite.
+\end{theorem}
+
+\end{document}
+
+
+%------------------------------------------
+\section{Example: The class group of $\Q[\sqrt{-5}]$}
+%------------------------------------------
+
+We claim that for $K=\Q(\sqrt{-5})$, the statements hold for $M=2$.
+...
+
+More precisely,  $J | \langle 2 \rangle = \langle 2,1+\sqrt{-5} \rangle^2$, where $P:=\langle 2,1+\sqrt{-5} \rangle$ is a nonprincipal prime ideal. From which we now see that $\Cl(\OK)=\{\overline{\OK},\overline{P}\}$, in particular $h(\OK)=\#\Cl(\OK)=2$.
+
+\end{document}
+
+
+%------------------------------------------
+\bibliographystyle{amsplain}
+%------------------------------------------
+
+\bibliography{FinitenessClassGrou[}
+

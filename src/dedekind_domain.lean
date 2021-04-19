@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Kenji Nakagawa, Anne Baanen, Filippo A. E. Nuccio, Ashvni Narayanan
 -/
 import algebra.group_with_zero.basic
-import field_theory.minimal_polynomial
+import field_theory.minpoly
 import linear_algebra.finite_dimensional
 import logic.function.basic
 import order.zorn
@@ -346,43 +346,6 @@ variables {M : Type*} [add_comm_monoid M] [semimodule B M]
 
 open submodule
 
-lemma submodule.mem_span_mul_finite_of_mem_span_mul {B M : Type*} [comm_semiring B] [semiring M]
-  [algebra B M] {S : set M} {S' : set M} {x : M} (hx : x ∈ span B (S * S')) :
-  ∃ (T T' : finset M), ↑T ⊆ S ∧ ↑T' ⊆ S' ∧ x ∈ span B (T * T' : set M) :=
-begin
-  apply span_induction hx,
-  { rintros x hx,
-    obtain ⟨y, z, hy, hz, h'⟩ := set.mem_mul.mp hx,
-    have hy' := submodule.subset_span hy,
-    have hz' := submodule.subset_span hz,
-    obtain ⟨T, hT, fy⟩ := submodule.mem_span_finite_of_mem_span hy',
-    obtain ⟨T', hT', fz⟩ := submodule.mem_span_finite_of_mem_span hz',
-    use [T, T', hT, hT'],
-    rw [←h', ←submodule.span_mul_span],
-    apply mul_mem_mul fy fz, },
-  { use [∅, ∅], simp, },
-  { rintros x y ⟨T, T', hT, hT', h1⟩ ⟨U, U', hU, hU', h2⟩,
-    use [T ∪ U, T' ∪ U'],
-    simp only [finset.coe_union],
-    use [set.union_subset hT hU, set.union_subset hT' hU'],
-    suffices f : x + y ∈ span B ((T * T') ∪ (U * U') : set M),
-    { have f' : ((T * T') ∪ (U * U') : set M) ⊆ ((T ∪ U) * (T' ∪ U') : set M),
-      { convert set.subset_union_left (T * T' ∪ U * U' : set M) (T * U' ∪ U * T'),
-        simp only [set.mul_union, set.union_mul, set.union_mul],
-        ac_refl },
-      apply span_mono f' f, },
-    rw [span_union, mem_sup],
-    exact ⟨x, h1, y, h2, rfl⟩ },
-  rintros a x ⟨T, T', hT, hT', h⟩,
-  exact ⟨T, T', hT, hT', smul_mem _ _ h⟩,
-end
-
-lemma submodule.mem_span_mul_finite_of_mem_mul {B M : Type*} [comm_semiring B] [semiring M]
-  [algebra B M] {P Q : submodule B M} {x : M} (hx : x ∈ P * Q) :
-  ∃ (T T' : finset M), (T : set M) ⊆ P ∧ (T' : set M) ⊆ Q ∧ x ∈ span B (T * T' : set M) :=
-submodule.mem_span_mul_finite_of_mem_span_mul
-  (by rwa [← submodule.span_eq P, ← submodule.span_eq Q, submodule.span_mul_span] at hx)
-
 variables {K} {f : fraction_map A K}
 
 lemma fg_of_one_mem_span_mul (s : ideal A) (h2 : (s * (1 / s) : fractional_ideal f) = 1)
@@ -415,6 +378,7 @@ end
 lemma is_noetherian_of_is_dedekind_domain_inv : is_dedekind_domain_inv A → is_noetherian_ring A :=
 begin
   intro h2,
+  rw is_noetherian_ring_iff,
   refine ⟨λ s, _⟩,
   by_cases h : s = ⊥,
   { rw h, apply submodule.fg_bot },
@@ -489,7 +453,7 @@ begin
   have hMinv := h2 M' M'_ne,
   convert hM1,
   by_contra h,
-  apply hM1.1,
+  apply hM1.ne_top,
   rw [eq_top_iff, ← @coe_ideal_le_coe_ideal _ _ _ _ (fraction_ring.of A), ← ideal.one_eq_top],
   show 1 ≤ M',
   suffices g : (1 / M') * p' ≤ p',
@@ -511,7 +475,7 @@ begin
   suffices zy_mem : (fraction_ring.of A).to_map (z * y) ∈ p',
   { obtain ⟨zy, hzy, zy_eq⟩ := mem_coe_ideal.mp zy_mem,
     rw (fraction_ring.of A).injective zy_eq at hzy,
-    exact mem_coe_ideal.mpr ⟨_, or.resolve_left (hp.2 hzy) hzp, rfl⟩ },
+    exact mem_coe_ideal.mpr ⟨_, or.resolve_left (hp.mem_or_mem hzy) hzp, rfl⟩ },
 
   -- But `p' = M * M⁻¹ * p`, so `z ∈ M` and `y ∈ M⁻¹ * p` and we get our conclusion.
     rw [ring_hom.map_mul],
@@ -569,14 +533,14 @@ begin
       { rw [h, multiset.map_zero, ← one_eq_top],
         exact multiset.prod_zero },
       rw [this, top_le_iff] at hZ_M,
-      exact absurd hZ_M hM.1.1 },
-  obtain ⟨P, h_PZ, h_PM⟩ := is_prime.multiset.prod_le (ideal.is_maximal.is_prime hM.1) hZ_nz hZ_M,
+      exact hM.1.ne_top hZ_M },
+  obtain ⟨P, h_PZ, h_PM⟩ := is_prime.multiset.prod_le (ideal.is_maximal.is_prime hM.1) hZ_M,
   have hZP_nz : P.1 ≠ ⊥ ∧ multiset.prod ((Z.erase P).map (coe : subtype _ → ideal R)) ≠ ⊥,
     { suffices this : multiset.prod (Z.map (coe : subtype _ → ideal R)) ≠ ⊥,
       rw [← (multiset.cons_erase h_PZ), multiset.map_cons, multiset.prod_cons, ne.def,
         ideal.mul_eq_bot, not_or_distrib] at this,
       exacts [this, hZ.2] },
-  replace h_PM : P.val = M := is_maximal.eq_of_le _ hM.1.1 h_PM,
+  replace h_PM : P.val = M := is_maximal.eq_of_le _ hM.1.ne_top h_PM,
   swap, { apply hR.2, exacts [hZP_nz.1, P.2] },
   obtain ⟨b, hb⟩ : ∃ (b : R) (H : b ∈ multiset.prod ((Z.erase P).map (coe : subtype _ → ideal R))),
     b ∉ A,
@@ -618,98 +582,109 @@ begin
     tauto },
 end
 
-lemma coe_ideal_mul_one_div [hR : is_dedekind_domain R] (hNF : ¬ is_field R)
-  (I : ideal R) (hne : I ≠ ⊥) :
+lemma coe_ideal_mul_one_div [hR : is_dedekind_domain R] (I : ideal R) (hne : I ≠ ⊥) :
   ↑I * ((1 : fractional_ideal f) / ↑I) = (1 : fractional_ideal f) :=
 begin
-  let h_RalgK := ring_hom.to_algebra f.to_map,
-  by_cases hntop : I = ⊤,
-  { rw [hntop, ← ideal.one_eq_top],
+  by_cases hNF : is_field R,
+  { rw [← not_iff_comm.mp not_is_field_iff_exists_ideal_bot_lt_and_lt_top,
+    not_exists] at hNF,
+    specialize hNF I,
+    rw [not_and_distrib, or_eq_of_eq_false_left, lt_top_iff_ne_top, ne.def, not_not,
+       ← ideal.one_eq_top] at hNF,
+    rw hNF,
     show (1 * (1 / 1) : fractional_ideal f) = 1,
-    simp },
-  { by_contradiction h_abs,
-    obtain ⟨J, hJ⟩ : ∃ (J : ideal R), ↑J = ↑I * (1 / ↑I : fractional_ideal f) :=
-      fractional_ideal.le_one_iff_exists_coe_ideal.mp fractional_ideal.mul_one_div_le_one,
-    by_cases hJ_b : J = ⊥,
-    { rw hJ_b at hJ,
-      apply hne,
-      rw [eq_bot_iff, ← @coe_ideal_le_coe_ideal _ _ _ _ f, hJ],
-      apply fractional_ideal.le_self_mul_one_div,
-      exact fractional_ideal.coe_ideal_le_one },
-    have hJ_t : J ≠ ⊤,
-    { intro hJ_t,
-      rw [← hJ, hJ_t, ← ideal.one_eq_top] at h_abs,
-      exact h_abs rfl },
-    obtain ⟨x, hx, h_xnotint⟩ : ∃ (x : f.codomain),
-      x ∈ (1 / ↑J : fractional_ideal f) ∧ x ∉ (1 : fractional_ideal f) :=
-      exists_not_mem_one_of_ne_bot _ hNF hJ_b hJ_t,
-    have h₁ : (submodule.span R {x} * (1 / ↑I : fractional_ideal f).val) ≤
-      (1 / ↑I : fractional_ideal f).val,
-    { apply submodule.mul_le.mpr,
-      intros z hz b hb,
-      rw fractional_ideal.val_eq_coe at hb,
-      obtain ⟨a, ha⟩ := submodule.mem_span_singleton.mp hz,
-      rw [← ha, algebra.smul_def, mul_assoc, mul_comm, localization_map.algebra_map_eq,
-          val_eq_coe, coe_div, coe_coe_ideal, submodule.mem_div_iff_forall_mul_mem],
-      intros y hy,
-      have h_by : y * b ∈ (↑J : fractional_ideal f).val,
-      { rw [hJ, val_eq_coe, fractional_ideal.coe_mul, coe_coe_ideal],
-        apply submodule.mul_mem_mul hy hb },
-      replace h_by : (f.to_map a) * y * b ∈ (↑J : fractional_ideal f).val,
-      { rw mul_assoc,
-        exact submodule.smul_mem _ _ h_by },
-      rw [← fractional_ideal.mem_coe, fractional_ideal.coe_div,
-          fractional_ideal.coe_coe_ideal] at hx,
-      rw [mul_assoc, mul_assoc],
-      apply submodule.mem_div_iff_forall_mul_mem.mp hx,
-      rw mul_comm,
-      exact h_by,
-      repeat { rwa fractional_ideal.coe_to_fractional_ideal_ne_zero, exact le_refl _ } },
-    have h_pow : ∀ n : ℕ, x ^ n ∈ (1 / ↑I : fractional_ideal f),
-    { intro n,
-      induction n with n hn,
-      { rw fractional_ideal.mem_div_iff_of_nonzero,
-        simp only [pow_zero, one_mul],
-        intros y' hy',
-        rw fractional_ideal.mem_one_iff,
-        rw fractional_ideal.mem_coe_ideal at hy',
-        rcases hy' with ⟨y, -, hy⟩,
-        exact ⟨y, hy⟩,
-        apply mt (coe_to_fractional_ideal_eq_zero (le_refl (non_zero_divisors R))).mp hne },
-      { rw pow_succ,
-        apply submodule.mul_le.mp h₁,
-        exacts [submodule.mem_span_singleton_self x, hn] }},
-    let φ := @aeval R K _ _ h_RalgK x,
-    let A := @alg_hom.range R (polynomial R) f.codomain _ _ _  _ h_RalgK φ,
-    have h_xA : x ∈ A,
-    { suffices hp : ∃ (p : polynomial R), φ p = x,
-      { simpa only [alg_hom.mem_range] },
-      { use X,
-        apply aeval_X } },
-    have h_Afrac : (↑A : submodule R f.codomain) ≤ (1 / ↑I : fractional_ideal f).val,
-    { rw submodule.le_def',
-      intros a ha,
-      dsimp [A] at ha,
-      rw [subalgebra.mem_to_submodule, alg_hom.mem_range] at ha,
-      cases ha with p hp,
-      rw aeval_eq_sum_range at hp,
-      rw ← hp,
-      apply submodule.sum_mem,
-      intros i hi,
-      exact submodule.smul_mem _ _ (h_pow i) },
-    have h_xint : x ∈ integral_closure R f.codomain,
-    { have h_noeth : is_noetherian R (1 / ↑I : fractional_ideal f).val :=
-        by apply fractional_ideal.is_noetherian,
-      rw mem_integral_closure_iff_mem_fg,
-      use A,
-      split,
-      apply is_noetherian_submodule.mp,
-      exacts [h_noeth, h_Afrac, h_xA] },
-    replace h_xint : x ∈ ((⊥  : subalgebra R f.codomain) : submodule R f.codomain),
-    { rw ← ((is_dedekind_domain_iff _ _ f).mp hR).right.right, exact h_xint },
-    rw [algebra.to_submodule_bot, ← fractional_ideal.coe_span_singleton 1,
-          fractional_ideal.span_singleton_one] at h_xint,
-    tauto },
+    rw [one_mul, ring.fractional_ideal.div_one],
+    simp only [bot_lt_iff_ne_bot, hne, not_true, ne.def, not_false_iff],
+    apply is_integral_domain.to_nontrivial,
+    apply integral_domain.to_is_integral_domain, },
+   { let h_RalgK := ring_hom.to_algebra f.to_map,
+    by_cases hntop : I = ⊤,
+    { rw [hntop, ← ideal.one_eq_top],
+      show (1 * (1 / 1) : fractional_ideal f) = 1,
+      simp only [mul_one, ring.fractional_ideal.div_one] },
+    { by_contradiction h_abs,
+      obtain ⟨J, hJ⟩ : ∃ (J : ideal R), ↑J = ↑I * (1 / ↑I : fractional_ideal f) :=
+        fractional_ideal.le_one_iff_exists_coe_ideal.mp fractional_ideal.mul_one_div_le_one,
+      by_cases hJ_b : J = ⊥,
+      { rw hJ_b at hJ,
+        apply hne,
+        rw [eq_bot_iff, ← @coe_ideal_le_coe_ideal _ _ _ _ f, hJ],
+        apply fractional_ideal.le_self_mul_one_div,
+        exact fractional_ideal.coe_ideal_le_one },
+      have hJ_t : J ≠ ⊤,
+      { intro hJ_t,
+        rw [← hJ, hJ_t, ← ideal.one_eq_top] at h_abs,
+        exact h_abs rfl },
+      obtain ⟨x, hx, h_xnotint⟩ : ∃ (x : f.codomain),
+        x ∈ (1 / ↑J : fractional_ideal f) ∧ x ∉ (1 : fractional_ideal f) :=
+        exists_not_mem_one_of_ne_bot _ hNF hJ_b hJ_t,
+      have h₁ : (submodule.span R {x} * (1 / ↑I : fractional_ideal f).val) ≤
+        (1 / ↑I : fractional_ideal f).val,
+      { apply submodule.mul_le.mpr,
+        intros z hz b hb,
+        rw fractional_ideal.val_eq_coe at hb,
+        obtain ⟨a, ha⟩ := submodule.mem_span_singleton.mp hz,
+        rw [← ha, algebra.smul_def, mul_assoc, mul_comm, localization_map.algebra_map_eq,
+            val_eq_coe, coe_div, coe_coe_ideal, submodule.mem_div_iff_forall_mul_mem],
+        intros y hy,
+        have h_by : y * b ∈ (↑J : fractional_ideal f).val,
+        { rw [hJ, val_eq_coe, fractional_ideal.coe_mul, coe_coe_ideal],
+          apply submodule.mul_mem_mul hy hb },
+        replace h_by : (f.to_map a) * y * b ∈ (↑J : fractional_ideal f).val,
+        { rw mul_assoc,
+          exact submodule.smul_mem _ _ h_by },
+        rw [← fractional_ideal.mem_coe, fractional_ideal.coe_div,
+            fractional_ideal.coe_coe_ideal] at hx,
+        rw [mul_assoc, mul_assoc],
+        apply submodule.mem_div_iff_forall_mul_mem.mp hx,
+        rw mul_comm,
+        exact h_by,
+        repeat { rwa fractional_ideal.coe_to_fractional_ideal_ne_zero, exact le_refl _ } },
+      have h_pow : ∀ n : ℕ, x ^ n ∈ (1 / ↑I : fractional_ideal f),
+      { intro n,
+        induction n with n hn,
+        { rw fractional_ideal.mem_div_iff_of_nonzero,
+          simp only [pow_zero, one_mul],
+          intros y' hy',
+          rw fractional_ideal.mem_one_iff,
+          rw fractional_ideal.mem_coe_ideal at hy',
+          rcases hy' with ⟨y, -, hy⟩,
+          exact ⟨y, hy⟩,
+          apply mt (coe_to_fractional_ideal_eq_zero (le_refl (non_zero_divisors R))).mp hne },
+        { rw pow_succ,
+          apply submodule.mul_le.mp h₁,
+          exacts [submodule.mem_span_singleton_self x, hn] }},
+      let φ := @aeval R K _ _ h_RalgK x,
+      let A := @alg_hom.range R (polynomial R) f.codomain _ _ _  _ h_RalgK φ,
+      have h_xA : x ∈ A,
+      { suffices hp : ∃ (p : polynomial R), φ p = x,
+        { simpa only [alg_hom.mem_range] },
+        { use X,
+          apply aeval_X } },
+      have h_Afrac : (↑A : submodule R f.codomain) ≤ (1 / ↑I : fractional_ideal f).val,
+      { rw submodule.le_def',
+        intros a ha,
+        dsimp [A] at ha,
+        rw [subalgebra.mem_to_submodule, alg_hom.mem_range] at ha,
+        cases ha with p hp,
+        rw aeval_eq_sum_range at hp,
+        rw ← hp,
+        apply submodule.sum_mem,
+        intros i hi,
+        exact submodule.smul_mem _ _ (h_pow i) },
+      have h_xint : x ∈ integral_closure R f.codomain,
+      { have h_noeth : is_noetherian R (1 / ↑I : fractional_ideal f).val :=
+          by apply fractional_ideal.is_noetherian,
+        rw mem_integral_closure_iff_mem_fg,
+        use A,
+        split,
+        apply is_noetherian_submodule.mp,
+        exacts [h_noeth, h_Afrac, h_xA] },
+      replace h_xint : x ∈ ((⊥  : subalgebra R f.codomain) : submodule R f.codomain),
+      { rw ← ((is_dedekind_domain_iff _ _ f).mp hR).right.right, exact h_xint },
+      rw [algebra.to_submodule_bot, ← fractional_ideal.coe_span_singleton 1,
+            fractional_ideal.span_singleton_one] at h_xint,
+      tauto } },
 end
 
 theorem fractional_ideal.mul_inv_cancel [hR : is_dedekind_domain R]
@@ -734,8 +709,8 @@ begin
     exact ⟨fractional_ideal.span_singleton (f.to_map a) * (1 / J), h₂⟩ },
   { rw mul_comm at h₁,
     rw [← mul_assoc, h₁],
-    exact coe_ideal_mul_one_div _ hNF _
-      ((coe_to_fractional_ideal_ne_zero (le_refl (non_zero_divisors R))).mp hne_J) }
+    exact coe_ideal_mul_one_div _ _
+      ((coe_to_fractional_ideal_ne_zero (le_refl (non_zero_divisors R))).mp hne_J) },
 end
 
 lemma fractional_ideal.is_unit {hR : is_dedekind_domain R}
@@ -896,6 +871,7 @@ lemma integral_closure.is_noetherian_ring [is_noetherian_ring R]
 begin
   haveI := classical.dec_eq L,
   obtain ⟨s, b, hb, hb_int⟩ := exists_is_basis_integral L f,
+  rw is_noetherian_ring_iff,
   exact is_noetherian_of_is_scalar_tower _ (is_noetherian_of_le
     (is_noetherian_span_of_finite _ (set.finite_range _))
     (integral_closure_le_span hb (λ x, hb_int x) int_cl))
@@ -994,7 +970,8 @@ by { ext, exact ideal.dvd_not_unit_iff_lt }
 instance : wf_dvd_monoid (ideal R) :=
 { well_founded_dvd_not_unit :=
   have well_founded ((>) : ideal R → ideal R → Prop) :=
-  is_noetherian_iff_well_founded.mp (is_dedekind_domain.to_is_noetherian_ring),
+  is_noetherian_iff_well_founded.mp
+    (is_noetherian_ring_iff.mp is_dedekind_domain.to_is_noetherian_ring),
   by rwa ideal.dvd_not_unit_eq_gt }
 
 instance ideal.unique_factorization_monoid :
@@ -1019,7 +996,7 @@ instance ideal.unique_factorization_monoid :
 noncomputable def ideal.finite_divisors (I : ideal R) (hI : I ≠ ⊥) : fintype {J // J ∣ I} :=
 begin
   apply @fintype.of_equiv _ _ (unique_factorization_monoid.finite_divisors hI),
-  refine equiv.symm (equiv.subtype_congr associates_ideal_equiv.to_equiv _),
+  refine equiv.symm (equiv.subtype_equiv associates_ideal_equiv.to_equiv _),
   intro J,
   simp [associates_ideal_equiv, associates.mk_dvd_mk],
 end

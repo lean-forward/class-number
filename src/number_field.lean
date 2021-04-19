@@ -55,39 +55,18 @@ open_locale classical big_operators
 namespace number_field
 variables (K : Type*) [field K] [is_number_field K]
 
-instance is_field_of_number_field : field K := by apply_instance
-
-instance char_zero_of_number_field : char_zero K := is_number_field.cz
+@[priority 100] -- See note [lower instance priority]
+instance char_zero : char_zero K := is_number_field.cz
 
 lemma finite_dimensional_of_number_field : finite_dimensional ℚ K := is_number_field.fd
-
-instance algebra_of_number_field : algebra ℚ K := rat.algebra_rat
 
 lemma is_algebraic_of_number_field : algebra.is_algebraic ℚ K :=
   @algebra.is_algebraic_of_finite ℚ K _ _ _ (finite_dimensional_of_number_field K)
 
-instance infinite_of_number_field : infinite K := begin
-  let f : ℤ → K := (λ n, (n : ℚ) • (1 : K)),
-  apply infinite.of_injective f,
-  intros x y hxy,
-  have hxy2 : (x : ℚ) • (1 : K) = (y : ℚ) • (1 : K) := hxy,
-  have h : 0 = ((x : ℚ) - (y : ℚ)) • (1 : K), calc 0 = (x : ℚ) • (1 : K) - (y : ℚ) • (1 : K) :
-    by rw sub_eq_zero.mpr hxy
-  ... = (x : ℚ) • (1 : K) + (-((y : ℚ) • (1 : K))) : sub_eq_add_neg (↑x • 1) (↑y • 1)
-  ... = (x : ℚ) • (1 : K) + ((-(y : ℚ)) • (1 : K)) : by rw neg_smul
-  ... = ((x : ℚ) + (-(y : ℚ))) • (1 : K) : by rw add_smul
-  ... = ((x : ℚ) - (y : ℚ)) • (1 : K) : by rw sub_eq_add_neg,
-  have h2 : ((x : ℚ) - (y : ℚ)) = 0 ∨ (1 : K) = 0 :=
-    (@smul_eq_zero ℚ K _ _ _ ((x : ℚ) - (y : ℚ)) (1 : K)).1 (eq.symm h),
-  cases h2,
-  { have h3 : (x : ℚ) = (y : ℚ), exact sub_eq_zero.mp h2,
-    exact (rat.coe_int_inj (x : ℤ) (y : ℤ)).1 h3 },
-  { exfalso, revert h2, simp }
-end
-
 /-- The ring of integers (or number ring) corresponding to a number field
-  is the integral closure of ℤ in the number field. -/
-def ring_of_integers := @integral_closure ℤ K _
+is the integral closure of ℤ in the number field. -/
+@[nolint unused_arguments] -- There are multiple definitions of rings of integers.
+def ring_of_integers := integral_closure ℤ K
 
 namespace ring_of_integers
 
@@ -103,6 +82,34 @@ instance : char_zero int.fraction_map.codomain := show char_zero ℚ, by apply_i
 instance : finite_dimensional int.fraction_map.codomain K := ‹is_number_field K›.fd
 instance : algebra.is_algebraic int.fraction_map.codomain K := is_algebraic_of_number_field K
 
+variables {K}
+
+lemma is_integral_coe (x : ring_of_integers K) : is_integral ℤ (x : K) :=
+x.2
+
+lemma char_zero.algebra_map_injective {R : Type*} [semiring R] [char_zero R]
+  [algebra ℕ R] : function.injective (algebra_map ℕ R) :=
+λ x y hxy, by simpa using hxy
+
+lemma char_zero.of_algebra_map_injective {R : Type*} [semiring R] [algebra ℕ R]
+  (h : function.injective (algebra_map ℕ R)) : char_zero R :=
+⟨λ x y hxy, h (by simpa using hxy)⟩
+
+lemma char_zero.iff_algebra_map_injective {R : Type*} [semiring R] [algebra ℕ R] :
+  char_zero R ↔ function.injective (algebra_map ℕ R) :=
+⟨λ h, @char_zero.algebra_map_injective _ _ h _,
+ char_zero.of_algebra_map_injective⟩
+
+variables (K)
+
+instance : char_zero (ring_of_integers K) :=
+char_zero.of_algebra_map_injective (injective.of_comp
+  (show injective (algebra_map _ K ∘ _),
+   from
+   have inj : injective (algebra_map ℕ K) := char_zero.algebra_map_injective,
+   have tower : is_scalar_tower ℕ (ring_of_integers K) K := infer_instance,
+   by rwa [@is_scalar_tower.algebra_map_eq ℕ (ring_of_integers K) K _ _ _ _ _ _ (by convert tower)] at inj))
+
 instance integral_closure_int.is_dedekind_domain : is_dedekind_domain (integral_closure ℤ K) :=
 is_dedekind_domain.integral_closure int.fraction_map (principal_ideal_ring.is_dedekind_domain _)
 
@@ -116,3 +123,45 @@ integral_closure.fraction_map_of_finite_extension K int.fraction_map
 end ring_of_integers
 
 end number_field
+
+namespace rat
+
+open fraction_map
+open number_field
+
+instance rat.finite_dimensional : finite_dimensional ℚ ℚ :=
+(infer_instance : is_noetherian ℚ ℚ)
+
+instance rat.is_number_field : is_number_field ℚ :=
+{ cz := infer_instance,
+  fd := by { convert rat.finite_dimensional,
+             -- The vector space structure of `ℚ` over itself can arise in multiple ways:
+             -- all fields are vector spaces over themselves (used in `rat.finite_dimensional`)
+             -- all fields have a canonical embedding of `ℚ` (used in `is_number_field`).
+             -- Show that these coincide:
+             ext, simp [algebra.smul_def] } }
+
+lemma subalgebra.coe_algebra_map {R A : Type*} [comm_semiring R] [comm_semiring A] [algebra R A]
+  (S : subalgebra R A) :
+  ⇑(algebra_map S A) = (coe : S → A) :=
+rfl
+
+noncomputable def rat.ring_of_integers_equiv : ring_of_integers ℚ ≃+* ℤ :=
+ring_equiv.symm $
+ring_equiv.of_bijective (algebra_map ℤ (ring_of_integers ℚ))
+  ⟨λ x y hxy, int.cast_injective $
+      show (x : ring_of_integers ℚ) = (y : ring_of_integers ℚ), by simpa using hxy,
+   λ y, begin
+     obtain ⟨x, hx⟩ := @unique_factorization_monoid.integer_of_integral ℤ ℚ _ _ _
+       fraction_map.int.fraction_map (y : ℚ) (ring_of_integers.is_integral_coe y),
+     use x,
+     refine subtype.coe_injective _,
+     rw [← hx, ← subalgebra.coe_algebra_map, ← is_scalar_tower.algebra_map_apply ℤ _ _,
+         ring_hom.eq_int_cast (algebra_map ℤ ℚ), ring_hom.eq_int_cast],
+     -- Again we have to show the vector space structures on ℚ coincide.
+     convert @is_scalar_tower.of_algebra_map_eq ℤ (ring_of_integers ℚ) ℚ _ _ _ _ _ _ _,
+     { ext, simp [algebra.smul_def] },
+     { simp }
+   end⟩
+
+end rat
