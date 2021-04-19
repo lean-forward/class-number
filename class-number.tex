@@ -19,7 +19,7 @@
 \ccsdesc[500]{Mathematics of computing~Mathematical software}
 \ccsdesc[500]{Security and privacy~Logic and verification}
 
-\keywords{formal math, algebraic number theory, commutative algebra, Lean, mathlib} %TODO mandatory; please add comma-separated list of keywords
+\keywords{formal math, algebraic number theory, commutative algebra, Lean, mathlib}
 
 \supplement{Full source code of the formalization is part of \mathlib. Copies of the source files relevant to this paper are available in a separate repository.}
 \supplementdetails[swhid={swh:1:dir:3e46fd736dbb76b6e7be7f31ebc973f1a1c0237d}]
@@ -37,17 +37,17 @@ Finally, we would like to thank the whole \mathlib community for invaluable advi
 %\hideLIPIcs  %uncomment to remove references to LIPIcs series (logo, DOI, ...), e.g. when preparing a pre-final version to be uploaded to arXiv or another public repository
 
 %Editor-only macros:: begin (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\EventEditors{John Q. Open and Joan R. Access}
+\EventEditors{Liron Cohen and Cezary Kaliszyk}
 \EventNoEds{2}
-\EventLongTitle{Interactive~Theorem~Proving~2021 (ITP~2021)}
-\EventShortTitle{ITP~2021}
+\EventLongTitle{12th International Conference on Interactive Theorem Proving (ITP 2021)}
+\EventShortTitle{ITP 2021}
 \EventAcronym{ITP}
 \EventYear{2021}
-\EventDate{June~29--July~1, 2021}
-\EventLocation{Rome, Italy}
+\EventDate{June 29--July 1, 2021}
+\EventLocation{Rome, Italy (Virtual Conference)}
 \EventLogo{}
-\SeriesVolume{}
-\ArticleNo{}
+\SeriesVolume{193}
+\ArticleNo{12}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \usepackage{xspace}
@@ -318,7 +318,7 @@ Such an equality cannot always be achieved by defining the map $\Q \to L$ to be 
 
 The solution in \mathlib is to parametrize over all three maps, as long a there is also a proof of coherence:
 a hypothesis of the form ``$L / K / F$ is a tower of field extensions'' is translated into three instance parameters \lean{[algebra F K]}, \lean{[algebra K L]} and \lean{[algebra F L]},
-along with an additional parameter \lean{[is\_scalar\_tower F K L]} expressing that the maps commute.
+along with a parameter \lean{[is\_scalar\_tower F K L]} expressing that the maps commute.
 
 The \lean{is\_scalar\_tower} typeclass derives its name from its applicability to any three types between which exist scalar multiplication operations:
 \begin{lstlisting}
@@ -672,7 +672,7 @@ lemma coe_ideal_mul_one_div [hD : is_dedekind_domain D]
 \end{lstlisting}
 from where it becomes apparent that we had to repeatedly distinguish between \lean{I $:$ ideal D}, and its coercion \lean{↑I $:$ fractional\_ideal f} although these objects, from a mathematical point of view, are identical.
 
-The formal proof of the above result relies on the lemma \lean{exists\_not\_mem\_one\_of\_ne\_bot}, which says that for every non-trivial ideal $0\subsetneq I\subsetneq D$, there exists an element in the field $K$ which is not integral (so, not in $f(D)$) but lies in $1/I$. The proof begins by invoking that every nonzero ideal in the Noetherian ring $D$ contains a product of nonzero prime ideals. This result was not previously available in \mathlib. %, and we formalized it as \lean{exists\_prime\_spectrum\_prod\_le\_and\_ne\_bot\_of\_domain}.
+The formal proof of this result relies on the lemma \lean{exists\_not\_mem\_one\_of\_ne\_bot}, which says that for every non-trivial ideal $0\subsetneq I\subsetneq D$, there exists an element in the field $K$ which is not integral (so, not in $f(D)$) but lies in $1/I$. The proof begins by invoking that every nonzero ideal in the Noetherian ring $D$ contains a product of nonzero prime ideals. This result was not previously available in \mathlib. %, and we formalized it as \lean{exists\_prime\_spectrum\_prod\_le\_and\_ne\_bot\_of\_domain}.
 The dimension condition shows its full force when applying this lemma:
 each prime ideal in the product, being nonzero, will be maximal because the Krull dimension of $D$ is at most $1$; from this, \lean{exists\_not\_mem\_one\_of\_ne\_bot} follows easily. Having the above lemma at our disposal,
 we were able to prove that every ideal $I\ne 0$ is invertible by arguing by contradiction: if $I\ast 1/I\lneq D$, we can find an element $x\in K\setminus f(R)$ which is in $1/(1\ast 1/I)$ thanks to \lean{exists\_not\_mem\_one\_of\_ne\_bot} and some easy algebraic manipulation will imply that $x$ is actually integral over $D$. Since $D$ is integrally closed, it must lie in $f(D)$, contradicting the construction of $x$. Combining these results gives the equivalence between the two conditions for being a Dedekind domain.
@@ -738,7 +738,7 @@ The latter lemma uses the characterization that $I$ is a maximal ideal if and on
 If $I$ is a nonzero prime ideal and $J \supsetneq I$ in the PID $R$, we have that the generator $j$ of $J$ is a divisor of the generator $i$ of $I$. Since $I$ is prime, this implies that either $j \in I$, contradicting the assumption that $J \supsetneq I$, $i = 0$, contradicting that $I$ is nonzero, or that $j$ is a unit, implying $J = R$ as desired.
 
 The final condition of a PID being integrally closed was the most challenging.
-We used the previously defined instance \lean{principal\_ideal\_ring.to\_unique\_factorization\_monoid} that a PID is a unique factorisation monoid (UFM),
+We used the previously defined instance \lean{principal\_ideal\_ring.to\_unique\_factorization\_monoid} to deduce that a PID is a unique factorisation monoid (UFM),
 to instantiate our proof that every UFM is integrally closed.
 In the same way that principal ideal domains are generalized to principal ideal rings, \mathlib generalizes unique factorization domains to unique factorization monoids.
 A commutative monoid $R$ with an absorbing element $0$ and injectivity of multiplication is defined to be a UFM,
