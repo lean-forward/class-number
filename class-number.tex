@@ -959,11 +959,13 @@ class_group.finite_of_admissible F f polynomial.admissible_card_pow_degree
 
 Finally, we defined \lean{number\_field.class\_number} and \lean{function\_field.class\_number} as the cardinality of the respective class groups.
 
-We remark that it is possible to get rid of the \lean{[is\_separable f.codomain K]} assumption in the function field case,
-since any function field is actually isomorphic to a finite \emph{and separable} extension of a field isomorphic to $\Fq[q](t)$; see for example \cite[Corollary 4.4 in Chapter VIII]{Lang}.
-A trivial way to get rid of this assumption in the finiteness statement above is to simply move it to our definition of function field.
-While this would be mathematically consistent by the result just cited above, we did not opt to do this since it would simply move the proof obligation to the points at which \lean{is\_function\_field} gets instantiated,
-for instance when showing a finite extension of a function field is a function field.
+We remark that it is possible to get rid of the \lean{[is\_separable f.codomain K]} assumption above. 
+For instance, using that any function field $K$, given as finite extension of $\Fq[q](t)$, contains an $s \in K$ such that $K/\Fq[q](s)$ is a finite \emph{and separable} extension; see for example \cite[Corollary 4.4 in Chapter VIII]{Lang} (noting that $\Fq$ is perfect and $K$ has transcendence degree $1$ over $\Fq$).
+One then also needs to show that finiteness of the class group of the integral closure of $\Fq[q][s]$ in $K$ is preserved upon replacing $\Fq[q][s]$ by $\Fq[q][t]$.
+A trivial way to get rid of the assumption in the statement above is to simply move it to our definition of function field.
+While this would be mathematically consistent by the result just cited, we did not opt to do this (for instance showing a finite extension of a function field is a function field
+would become nontrivial).
+%One reason being that it would simply preserve the proof obligation for future basic formalizaion work, for instance when showing a finite extension of a function field is a function field.
 
 We rounded off our development by determining the class number in the simplest possible case: the rational numbers $\Q$.
 First, we formalized the theorem \lean{class\_number\_eq\_one\_iff}, stating that the class number of $K$ is $1$ if and only if $\OK$ is a principal ideal domain.
