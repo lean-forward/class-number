@@ -664,7 +664,7 @@ The lemma \lean{fg\_of\_one\_mem\_span\_mul} then shows that $I$ is finitely gen
 The theorem \lean{fractional\_ideal.mul\_inv\_cancel} proves the converse, namely that \lean{is\_dedekind\_domain} implies \lean{is\_dedekind\_domain\_inv}. The classical proof consists of three steps: first, every maximal ideal $M\subseteq D$, seen as a fractional ideal, is invertible;
 secondly, every nonzero ideal is invertible, using that it is contained in a maximal ideal;
 thirdly, the fact that every fractional ideal $J$ satisfies $xJ\leq I$ for a suitable $x\in D$ and an ideal $I\subseteq D$ implies that every fractional ideal is invertible, concluding the proof that nonzero fractional ideals form a group.
-The third step was easy, building upon the material developed for the general theory of \lean{fractional\_ideals f}. Concerning the first two, we found that passing from the case where $M$ is maximal to the general case required more code than directly showing invertibility of arbitrary nonzero ideals. The formal statement reads
+The third step was easy, building upon the material developed for the general theory of \lean{fractional\_ideal f}. Concerning the first two, we found that passing from the case where $M$ is maximal to the general case required more code than directly showing invertibility of arbitrary nonzero ideals. The formal statement reads
 \begin{lstlisting}
 lemma coe_ideal_mul_one_div [hD : is_dedekind_domain D] 
   (I : ideal D) (hne : I ≠ ⊥) :
