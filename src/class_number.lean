@@ -413,7 +413,7 @@ begin
   obtain ⟨q, r, r_mem, lt⟩ := exists_mem_finset_approx' L f abs a b_ne_zero,
   apply @dvd_of_mul_left_dvd _ _ q,
   simp only [algebra.smul_def] at lt,
-  rw ← sub_eq_zero.mp (b_min _ (I.1.sub_mem (I.1.mul_mem_left ha) (I.1.mul_mem_left b_mem)) lt),
+  rw ← sub_eq_zero.mp (b_min _ (I.1.sub_mem (I.1.mul_mem_left _ ha) (I.1.mul_mem_left _ b_mem)) lt),
   refine mul_dvd_mul_right (dvd_trans (ring_hom.map_dvd _ _) hr') _,
   exact finset.dvd_prod r_mem (λ x, x)
 end
@@ -464,6 +464,12 @@ end
 
 end euclidean_domain
 
+section integral_domain
+
+variables {R K : Type*} [integral_domain R] [field K] (f : fraction_map R K)
+
+end integral_domain
+
 end class_group
 
 namespace number_field
@@ -483,7 +489,24 @@ end ring_of_integers
 /-- The class number of a number field is the (finite) cardinality of the class group. -/
 noncomputable def class_number : ℕ := fintype.card (class_group (ring_of_integers.fraction_map K))
 
+variables {K}
+
+/-- The class number of a number field is `1` iff the ring of integers is a PID. -/
+theorem class_number_eq_one_iff :
+  class_number K = 1 ↔ is_principal_ideal_ring (ring_of_integers K) :=
+card_class_group_eq_one_iff _
+
 end number_field
+
+namespace rat
+
+open number_field
+
+theorem class_number : number_field.class_number ℚ = 1 :=
+class_number_eq_one_iff.mpr $ is_principal_ideal_ring.of_surjective _
+  (rat.ring_of_integers_equiv.symm : ℤ ≃+* ring_of_integers ℚ).surjective
+
+end rat
 
 namespace function_field_over
 
@@ -502,5 +525,10 @@ end ring_of_integers
 
 /-- The class number in a function field is the (finite) cardinality of the class group. -/
 noncomputable def class_number : ℕ := fintype.card (class_group (ring_of_integers.fraction_map f F))
+
+/-- The class number of a function field is `1` iff the ring of integers is a PID. -/
+theorem class_number_eq_one_iff :
+  class_number f F = 1 ↔ is_principal_ideal_ring (ring_of_integers f F) :=
+card_class_group_eq_one_iff _
 
 end function_field_over
