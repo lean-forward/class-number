@@ -1,6 +1,6 @@
 # A formalization of Dedekind domains and class groups of global fields
 
-This repository contains the source code for the paper "A formalization of Dedekind domains and class groups of global fields", submitted to ITP 2021.
+This repository contains the source code for the paper "A formalization of Dedekind domains and class groups of global fields", [to be presented at ITP 2021](http://easyconferences.eu/itp2021/).
 
 Dedekind domains and their class groups are notions in commutative algebra that are essential in algebraic number theory.
 We formalized these structures and several fundamental properties, including number theoretic finiteness results for class groups, in the Lean prover as part of the [mathlib mathematical library](https://github.com/leanprover-community/mathlib).
