@@ -85,7 +85,7 @@ For ideals $I,J$ in some commutative ring $R$, we use standard divisibility-nota
 \section{Preliminaries on Dedekind domains}
 %------------------------------------------
 
-For ideals in Dedekind rings we have \lq to contain is to divide\rq. 
+For ideals in Dedekind domains we have \lq to contain is to divide\rq. 
 \begin{proposition}\label{prop contain is divide}
 Let $I,J$ be ideals in a Dedekind domain $R$. Then
 \begin{equation}\label{eqn contain is divide}
@@ -131,7 +131,7 @@ Again, using the characterization of Dedekind domains that all nonzero fractiona
 \end{proof}
 
 
-We now have enough ingredients to our disposal to establish unique factorizarion in terms of ideals in a Dedekind domian.
+We now have enough ingredients to our disposal to establish unique factorization in terms of ideals in a Dedekind domain.
 \begin{theorem}\label{thm Dedekind unique fac}
 Let $R$ be a Dedekind domain. Then every nonzero ideal $I$ of $R$ can be written as a product of prime ideals of $R$ in a unique way, apart from the order of the factors.
 \end{theorem}
@@ -140,7 +140,7 @@ Let $R$ be a Dedekind domain. Then every nonzero ideal $I$ of $R$ can be written
 \emph{Existence.} If $I=R$, then we are done by the canonical convention that the empty product (of ideals) gives the unit ideal, i.e. $R$. So Let $I \not=R$. By Zorn's Lemma we get that $I$ is contained in a maximal ideal, which is a nonzero prime ideal $P_1$.
 (If one does not like the appeal to Zorn's lemma, which is equivalent to the axiom of choice, then for $R=\mathcal{O}_K$ one can also use $R/I$ is finite instead.)
 By Proposition~\ref{prop contain is divide} we see that $P_1|I$, i.e. $I=P_1 I_1$ for some nonzero ideal $I_1$ of $R$. Continuing inductively we get $I=P_1P_2\ldots P_k I_k$ for nonzero prime ideals $P_1,P_2,\ldots, P_k$ and nonzero ideal $I_k$ of $R$. If this process would continue indefinitely, then this woud give us an infinite ascending chain of ideals $I\subsetneq I_1 \subsetneq I_2 \subsetneq \ldots$. Since $R$ is Noetherian, this cannot happen, so we must have that for some $k$ the ideal $I_k$ is not divisible by a prime ideal, i.e. $I_k=R$ and consequently $I=P_1P_2\ldots P_k$. This completes the existence part of the proof.\\
-\emph{Uniqueness.} Let $I=P_1P_2\ldots P_k=Q_1Q_2\ldots Q_l$ be two factorizations of $I$ into (nonzero) prime ideals. By Corollary~\ref{cor prime property ideal} (and induction) we get that $P_1$ divides $Q_i$ for some $i=1,2,\ldots,l$. Since $Q_i$ is maximal we get $P_1=Q_i$. Change notation so that $i=1$. Now the cancellation rule, i.e. Propostion~\ref{prop cancellation ideals}, gives $P_2 \ldots P_k=Q_2 \ldots Q_l$. With induction we get that $k=l$ and, after permuting the indices of the $Q_i$'s, that $P_i=Q_i$ for all $i$. This yields Theorem~\ref{thm Dedekind unique fac}.
+\emph{Uniqueness.} Let $I=P_1P_2\ldots P_k=Q_1Q_2\ldots Q_l$ be two factorizations of $I$ into (nonzero) prime ideals. By Corollary~\ref{cor prime property ideal} (and induction) we get that $P_1$ divides $Q_i$ for some $i=1,2,\ldots,l$. Since $Q_i$ is maximal we get $P_1=Q_i$. Change notation so that $i=1$. Now the cancellation rule, i.e. Proposition~\ref{prop cancellation ideals}, gives $P_2 \ldots P_k=Q_2 \ldots Q_l$. With induction we get that $k=l$ and, after permuting the indices of the $Q_i$'s, that $P_i=Q_i$ for all $i$. This yields Theorem~\ref{thm Dedekind unique fac}.
 \end{proof}
 
 \begin{proposition}\label{prop finitely many ideal divisors}
@@ -184,7 +184,7 @@ In particular, taking $D=\F_q$ (a finite field with $q$ elements) and $c=q$, we 
 \end{lemma}
 
 \begin{proof}
-Write out definitions, and use standard properties of the degree function, i.e. $\deg (fg)=\deg f+\deg g$ and $\deg(f+g)\leq \max(\deg f,\deg g)$ (treating the zero polynomials separately, or setting $\deg(0)=-\infty$ with the appropriate operations/inequalities for $-\infty$). The second case gives the stronger triangel inequality $|f+g|_{\deg} \leq \max(|f|_{\deg},|g|_{deg})$, which  immediately implies the weaker \lq normal\rq\ triangle inequality.
+Write out definitions, and use standard properties of the degree function, i.e. $\deg (fg)=\deg f+\deg g$ and $\deg(f+g)\leq \max(\deg f,\deg g)$ (treating the zero polynomials separately, or setting $\deg(0)=-\infty$ with the appropriate operations/inequalities for $-\infty$). The second case gives the stronger triangle inequality $|f+g|_{\deg} \leq \max(|f|_{\deg},|g|_{deg})$, which  immediately implies the weaker \lq normal\rq\ triangle inequality.
 \end{proof}
 
 We note that taking $c=q$ for the last absolute value is just some natural normalisation choice. It is of no importance for the results here. So if e.~g.~ taking $c=2$ would make things easier, that choice would be fine too. Also, just considering $q=p$ (so $\F_q=\F_p \simeq \Z/p\Z$) suffices for our purposes.
@@ -193,7 +193,7 @@ A crude estimate for the determinant of a matrix is given below.
 \begin{lemma}
 Let $R$ and $S$ be commutative rings with $S$ ordered, and $|.|:R \to S$ an absolute value.
 Let $A$ be a matrix of size $n \times n$ (for some $n\in \N$) with coefficients in $R$. Then 
-\[|\det(A)|\leq n! \left(\max_{1\leq i,j\leq n} |A_{i,j}|\right)^n\]
+\[|\det(A)|\leq n! \left(\max_{1\leq i,j\leq n} |A_{i,j}|\right)^n.\]
 \end{lemma}
 
 \begin{proof}
@@ -205,7 +205,7 @@ The following will be used for estimating norms.
 \begin{corollary}\label{cor estimate norm}
 Let $R$ and $S$ be commutative rings with $S$ ordered, and $|.|:R \to S$ an absolute value.
 Let $A_1,\ldots A_n$ be a matrix of size $n \times n$ (for some nonzero $n\in \N$) with coefficients in $R$. Let $s_1\ldots s_n \in R$. Then 
-\[ \left|\det(\sum_{k=1}^n s_k A_k) \right| \leq n! \left(n \max_{1\leq i,j,k\leq n} |(A_k)_{i,j}|\right)^n \left( \max_{1\leq k\leq n}(|s_k|) \right)^n\]
+\[ \left|\det(\sum_{k=1}^n s_k A_k) \right| \leq n! \left(n \max_{1\leq i,j,k\leq n} |(A_k)_{i,j}|\right)^n \left( \max_{1\leq k\leq n}(|s_k|) \right)^n.\]
 \end{corollary}
 
 %------------------------------------------
@@ -343,7 +343,7 @@ Then for any nonzero ideal $I$ of $S$, there exists an ideal $J$ of $S$ such tha
 Let $I$ be a nonzero ideal of $S$.
 \begin{itemize}
 \item Choose a nonzero $b \in I$ such that for all $c \in I$ we have~\eqref{eqn element of nonzero minimal norm}.
-(Possible by Lemma\ref{lem element of nonzero minimal norm}
+(Possible by Lemma\ref{lem element of nonzero minimal norm}.)
 \item Let $a \in I$. Since $M$ is as in Corollary~\ref{cor generalized norm euclidean}, we get $q \in S$ and $r \in M$ with $|\NN(r a-qb)| < |\NN(b)|$. Let $c:=ra-qb \in I$ (since $a,b \in I$), then the previous item gives us $ra-qb=0$, i.e.
 \[ra=qb.\]
 \item
@@ -385,11 +385,11 @@ $A_1: \N_{\leq M} \to \F_q[t]$ with $\forall j \in  \N_{\leq M}, \deg A_1(j) < \
 \begin{proof}
 WLOG $D \leq \deg b$ (note we use $\deg 0 = -\infty < $ any integer).
 
-Every $A_1(j)$ is of the form $\sum_{i \in \N_{< \deg b}} c_i^{(j)} t^i$ with coefficients $c_i^{(j)} \in F_q$.
+Every $A_1(j)$ is of the form $\sum_{i \in \N_{< \deg b}} c_i^{(j)} t^i$ with coefficients $c_i^{(j)} \in \F_q$.
 There are a priori $M=q^D$ possibilities for the coefficients $c_{\deg b-1}^{(j)}, c_{\deg b-2}^{(j)},\ldots, c_{\deg b-D}^{(j)}$.
-So by the box principle, among the $q^D+1$ polynomials $A_1(0), \ldots A_1(M)$, there must be at least two, say $A_1(j), A_1(k),\ j\not=k$ with coefficients 
+So by the box principle, among the $q^D+1$ polynomials $A_1(0), \ldots, A_1(M)$, there must be at least two, say $A_1(j), A_1(k),\ j\not=k$ with coefficients 
 \[c_{\deg b-1}^{(j)}=c_{\deg b-1}^{(k)}, c_{\deg b-2}^{(j)}= c_{\deg b-2}^{(k)},\ldots, c_{\deg b-D}^{(j)}= c_{\deg b-D}^{(k)}.\] Hence we can write
- \[A_1(k)-A_1(j)=\sum_{i \in \N_{<\deg b-D}} (c_i^{(k)}-c_i^{(j)} t^i,\]
+ \[A_1(k)-A_1(j)=\sum_{i \in \N_{<\deg b-D}} (c_i^{(k)}-c_i^{(j)}) t^i,\]
 i.e. $\deg (A_1(k)-A_1(j))<\deg b-D$, as was to be shown.
 \end{proof}
 
@@ -402,7 +402,7 @@ $A_1: \N_{\leq M} \to \F_q[t]$ there exists $j,k \in \N_{\leq M}$ such that
 \end{lemma}
 
 \begin{proof}
-Choose $A_1$ and write $f_i:= |\remainder(A_1(i),b)$, so $\deg f_i < \deg b$. By the previous Lemma we have $j\not=k$ such that
+Choose $A_1$ and write $f_i:= |\remainder(A_1(i),b)|$, so $\deg f_i < \deg b$. By the previous Lemma we have $j\not=k$ such that
 \[\deg (f_k-f_j) <\deg b -D.\]
 It suffices to show that
 \[|f_k-f_j| <\epsilon |b|.\]
@@ -414,8 +414,8 @@ This holds, since:
 \begin{lemma}\label{lem admissible 1D}
 For $R=\F_q[t]$ both:
 \begin{itemize}
-\item We have a function $\M_1 : \R_{>0} \to \N$;
-\item For all $ \epsilon \in \R_{>0}$, $b \in R$, and $A_1: \N_{\leq \M_1(\epsilon)} \to R$ there exists $j,k \in \N_{\leq \M_1(\epsilon)}$ such that
+\item we have a function $\M_1 : \R_{>0} \to \N$;
+\item for all $ \epsilon \in \R_{>0}$, $b \in R$, and $A_1: \N_{\leq \M_1(\epsilon)} \to R$ there exists $j,k \in \N_{\leq \M_1(\epsilon)}$ such that
 \[j \neq k \text{ and } |\remainder(A_1(k),b)-\remainder(A_1(j),b)| < \epsilon |b|.\]
 \end{itemize}
 \end{lemma}
