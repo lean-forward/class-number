@@ -1,0 +1,274 @@
+\documentclass{beamer}
+\usetheme[nofirafonts]{focus}
+\usepackage{tikz}
+\usepackage{xspace}
+
+\usepackage{fontspec}
+\setmainfont[ItalicFont={* Italic}, BoldFont={* Bold}]{TeX Gyre Heros}
+\setmonofont{DejaVu Sans Mono}[SizeFeatures={Size=9}]
+
+\usepackage{listings}
+\def\lstlanguagefiles{lstlean.tex}
+\lstset{language=lean,backgroundcolor=\color[rgb]{0.9,0.9,0.9}}
+\definecolor{keywordcolor}{rgb}{0.7, 0.1, 0.1}   % red
+\definecolor{commentcolor}{rgb}{0.4, 0.4, 0.4}   % grey
+\definecolor{symbolcolor}{rgb}{0.4, 0.4, 0.4}    % grey
+\definecolor{sortcolor}{rgb}{0.1, 0.5, 0.1}      % green
+
+\usepackage{parskip}
+\setlength{\parskip}{\baselineskip}
+
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\lean}[1]{\texttt{#1}\xspace}
+\newcommand*{\OK}[1][K]{\mathcal{O}_{#1}}
+\newcommand*{\Cl}{\mathcal{C}\kern-.075em l}
+\newcommand*{\Fq}[1][q]{\mathbb{F}_{#1}}
+\DeclareMathOperator{\Tr}{Tr}
+\newcommand{\mathlib}{\textsf{mathlib}\xspace}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\pow}{\textasciicircum\xspace}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\DeclareMathOperator{\Frac}{Frac}
+
+% \DeclareUnicodeCharacter{03B1}{\ensuremath{\alpha}}
+% \DeclareUnicodeCharacter{03C3}{\ensuremath{\sigma}}
+% \DeclareUnicodeCharacter{2081}{\ensuremath{_1}}
+% \DeclareUnicodeCharacter{2090}{\ensuremath{_a}}
+% \DeclareUnicodeCharacter{2097}{\ensuremath{_l}}
+% \DeclareUnicodeCharacter{211A}{\ensuremath{\Q}}
+% \DeclareUnicodeCharacter{2124}{\ensuremath{\Z}}
+% \DeclareUnicodeCharacter{2211}{\ensuremath{\sum}}
+% \DeclareUnicodeCharacter{2264}{\ensuremath{\l}}
+% \DeclareUnicodeCharacter{2286}{\ensuremath{\subseteq}}
+% \DeclareUnicodeCharacter{22A4}{\ensuremath{\top}}
+% \DeclareUnicodeCharacter{22A5}{\ensuremath{\bot}}
+
+\title{A formalization of Dedekind Domains and Class groups of Global fields}
+\author{Anne Baanen \\ Sander R. Dahmen \\ Ashvni Narayanan \\ Filippo A. E. Nuccio}
+%\titlegraphic{\includegraphics[scale=.3]{lf_vu.png}}
+%\titlegraphic{\includegraphics[scale=.2]{vu.png}}
+%\institute{Institute Name \\ Institute Address}
+\date{ITP, June 2021}
+
+\begin{document}
+\begin{frame}
+	\maketitle
+\end{frame}
+
+\begin{frame}{Introduction}
+	Our project is the first formalization of several essential notions of
+	\alert{algebraic number theory}, in the Lean 3 prover as part of \mathlib.
+	% Example application: 26 is the only integer one bigger than a square and one smaller than a cube.
+
+	Goal: lay a useful foundation for theory-building.
+
+	Developing with \mathlib means updating your code regularly\\
+	in exchange for frequent new results and improvements.
+\end{frame}
+
+\begin{frame}{Background: global fields}
+	A \alert{number field} is a finite extension of the rational numbers $\Q$,\\
+	of the form $\Q(\alpha)$ for some algebraic $\alpha$.
+
+\pause
+	Each number field $K$ contains a \alert{ring of integers} $\OK$\\
+	mirroring the way $\Q$ contains $\Z$.
+
+\pause
+	A \alert{global field} is either a \alert{number field} or a\\
+	\alert{function field}: finite extension of polynomial field $\Fq(t)$.
+
+	Function fields have an analogous ring of integers.
+
+\pause
+	\textbf{Theorem}: rings of integers are \alert{Dedekind domains}.
+\end{frame}
+
+\begin{frame}{Background: class number}
+	\alert{Fractional ideals} extend (integral) ideals with division by scalars:\\
+	a fractional ideal is of the form $\frac{1}{b} I$ (with $b \ne 0$).
+
+	\textbf{Theorem}: Dedekind domain $\iff$ fractional ideals are invertible.
+
+\pause
+	Principal fractional ideals $\left\langle \frac{a}{b} \right\rangle = \frac{a}{b} \OK$ for $\frac{a}{b} \in K$ form a subgroup\\
+	of the fractional ideals; the quotient is the \alert{class group} $\Cl_{\OK}$.
+
+	\textbf{Theorem}: if $\OK$ is a ring of integers, $\Cl_{\OK}$ is finite.\\
+	The \alert{class number} of $K$ is the cardinality of $\Cl_{\OK}$.
+
+\pause
+	\textbf{Theorem}: A Dedekind domain is a UFD $\iff$ it is a PID\\
+	$\iff$ $\Cl_{\OK}$ is trivial $\iff$ class number of $K$ $= 1$.
+\end{frame}
+
+\begin{frame}[fragile]{Number fields; field extensions}
+	\mathlib typically uses typeclasses for algebraic structures, e.g.
+
+\begin{lstlisting}
+class is_number_field (K : Type*) [field K] : Prop :=
+[cz : char_zero K] [fd : finite_dimensional ℚ K]
+\end{lstlisting}
+
+	Typeclass inference automates the implications \lean{char\_zero K $\to$ algebra ℚ K $\to$ module ℚ K}
+	required for \lean{finite\_dimensional ℚ K}.
+
+\pause
+
+	A \alert{field extension} $L / K$ is represented in \mathlib by an instance \lean{[algebra K L]}
+	giving the canonical inclusion map \lean{algebra\_map K L}.
+
+\pause
+	A tower $L / K / F$ is given by inclusions \lean{[algebra F K] [algebra K L] [algebra F L]}
+	and an instance \lean{[is\_scalar\_tower F K L]} stating the maps commute.\\
+	Coherence proof obligations are automated through typeclass search.
+\end{frame}
+
+%\begin{frame}{Field of fractions}
+%	Several constructions of the \alert{field of fractions} $\Frac(R)$:\\
+%	quotient type of $R \times (R \setminus \{0\})$, subtype of $R \times R$, $R$ itself (if $R$ is a field), an optimized implementation of $\Q = \Frac(\Z)$\dots
+%
+%	These are isomorphic but not equal: how to reason uniformly?
+%
+%	\pause
+%	Use the unique property: $f : R \to K$ is a \alert{fraction map} if all injective maps $g : R \to A$ with $g(x)$ a unit, can be lifted to $K \to A$.
+%\end{frame}
+
+\begin{frame}{Monogenic extensions}
+	A number field $K$ has the form $\Q(\alpha)$, where $\alpha$ algebraic:\\
+	let $P \in \Q[x]$ be the minimal polynomial (irreducible and $P(\alpha) = 0$).
+
+	Several constructions of $\Q(\alpha)$: subtype of $\C$, quotient type $\Q[x] / P$, ...\\
+	These are isomorphic but not equal: how do we reason uniformly?
+
+\pause
+	We used the \alert{power basis}: $\Q(\alpha)$ has a $\Q$-basis $1, \alpha, \dots, \alpha^{n - 1}$.
+	\textbf{Theorem}: a power basis exists iff $K$ is isomorphic to each construction of $\Q(\alpha)$.
+\end{frame}
+
+\begin{frame}[fragile]{Dedekind domains}
+	We defined Dedekind domains as integral domains $D$ with an \lean{is\_dedekind\_domain D} instance:
+\begin{lstlisting}
+class is_dedekind_domain (D : Type*) [integral_domain D] : Prop :=
+(to_is_noetherian_ring : is_noetherian_ring D)
+(dimension_le_one : ∀ (P : ideal D), P ≠ ⊥ →
+  is_prime P → is_maximal P)
+(is_integrally_closed :
+  integral_closure D (fraction_ring D) = ⊥)
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}{Fractional ideals}
+	We defined fractional ideals of $R$ as\\
+	$R$-submodules $I$ of $\Frac(K)$ such that $\exists a : R, a I \subseteq R$.
+
+	Fractional ideals have a semiring structure (like submodules):\\
+	\begin{itemize}
+		\item $0 = \{0\}$
+		\item $1 = \{x \mid x \in R\}$
+		\item $I + J = \{x + y \mid x \in I, y \in J\}$
+		\item $I * J$ is generated by $x * y$, $x \in I$, $y \in J$
+		\item $x \in I / J \iff \forall y \in J, x * y \in I$
+	\end{itemize}
+
+\pause
+	\textbf{Theorem}: $I * (1 / I) = 1$ for all $I \ne 0$ iff $R$ is a Dedekind domain
+\end{frame}
+
+\begin{frame}{Re-defining division}
+	The \lean{group\_with\_zero} typeclass used to define $x / y := x * y^{-1}$.\\
+	For fractional ideals we want to define $I^{-1} := 1 / I$.
+	How to deal with this circularity?
+
+	\pause
+	Solution: turn defeq into propositional equality by
+	adding a new operation $(/)$ to \lean{group}(\lean{\_with\_zero})
+	and an axiom $x / y = x * y^{-1}$.
+
+	This required about 500 changes in \mathlib.
+\end{frame}
+
+\begin{frame}{Dedekind domain theorems}
+	\textbf{Theorem}: $I * (1 / I) = 1$ for all $I \ne 0$ iff $R$ is a Dedekind domain
+
+	Difficulties:
+	\begin{itemize}
+		\item Showing $x \in I * J$ implies $x = \sum_k y_k z_k$ for $y_k \in I$, $z_k \in J$.
+		\item Coercions: $I$ can be an integral ideal or set $\subseteq R$ or a fractional ideal or submodule or set $\subseteq \Frac(R)$.
+	\end{itemize}
+
+\pause
+	\textbf{Theorem}: Principal ideal domains are Dedekind domains.\\
+	\textbf{Corollary}: $\Z$ and $\Fq[q][t]$ are Dedekind domains.
+\end{frame}
+
+\begin{frame}{Rings of integers are Dedekind domains}
+	\textbf{Theorem}: The integral closure of a Dedekind domain $D$ in a finite separable extension $K / \Frac(D)$ is a Dedekind domain.\\
+	\textbf{Corollary}: Rings of integers, closures of PIDs in finite (separable) extensions, are Dedekind domains.
+
+\pause
+	``Accidental'' collaboration with the Berkeley Galois theory group:
+	\begin{itemize}
+		\setlength\itemsep{-0.5\baselineskip}
+		\item We define \lean{intermediate\_field}
+		\item They use it to formalize primitive element theorem
+		\item We use that to show finite separable field extensions have a power basis
+		\item They use that to show conjugate roots of $\alpha$ correspond to images $\sigma(\alpha)$ for $\sigma : F(\alpha) \to K$ fixing $F$
+		\item We use that to show the \alert{trace form} is nondegenerate
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Finiteness of the class group}
+	\textbf{Theorem}: If $K$ is a global field, the class group of $\OK$ is finite.
+
+	Typical proofs use Minkowski's lattice point theorem for number fields,\\
+	extending this to function fields is complicated
+
+\pause
+	We introduced a new notion of \alert{admissible absolute value},\\
+	and proved if $\lean{abs} : D \to \Z$ is admissible,\\
+	this intermediate step in the classical proof holds:
+\begin{lstlisting}
+theorem exists_mem_finset_approx'
+  (a b : integral_closure D L) :=
+  ∃ (q : integral_closure D L) (r ∈ finset_approx L f abs),
+  abs_norm f abs (r • a - q * b) < abs_norm f abs b
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Finiteness of the class group}
+	After formalizing the remainder of the classical proof,
+	it remained to find admissible absolute values.
+
+	For $\Z$, the usual absolute value is admissible.\\
+	For $\Fq[q][t]$, $\lvert f\rvert_{\deg}:=q^{\deg f}$ is admissible.
+
+\vspace{\baselineskip}
+\pause
+\begin{lstlisting}
+def class_group (f : fraction_map R K) :=
+quotient_group.quotient (to_principal_ideal f).range
+
+noncomputable def number_field.class_number (K : Type*)
+  [field K] [is_number_field K] : ℕ :=
+card (class_group (ring_of_integers.fraction_map K))
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{Conclusions}
+	Total contribution: $\pm$ 5000 lines of project-specific code, $\pm$ 2500 lines background work.\\
+	(Difficult to quantify exactly due to tight integration with \mathlib.)
+
+\pause
+	Rules of thumb for our work:
+	\begin{itemize}
+		\item Parametrize (\lean{is\_scalar\_tower}, \lean{power\_basis}, ...) instead of choosing a canonical construction.
+		\item Refactoring allows deep integration between different viewpoints.
+		\item Contribute quickly and often, so others do your work for you.
+	\end{itemize}
+
+\end{frame}
+\end{document}
