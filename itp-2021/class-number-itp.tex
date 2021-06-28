@@ -47,7 +47,7 @@
 
 \title{A formalization of Dedekind domains and class groups of global fields}
 \author{Anne Baanen \\ Sander R. Dahmen \\ Ashvni Narayanan \\ Filippo A. E. Nuccio}
-\titlegraphic{\includegraphics[scale=.1]{lf_vu.png}\\\includegraphics[scale=.2]{Logo_UJM.png}}
+\titlegraphic{\includegraphics[height=5ex]{lean-forward.png}\includegraphics[height=5ex]{vu.png}\\\includegraphics[width=10em]{LSGNT_banner_logo.jpg}\\\includegraphics[width=10em]{Logo_UJM.png}}
 %\titlegraphic{\includegraphics[scale=.2]{vu.png}}
 %\institute{Institute Name \\ Institute Address}
 \date{ITP, June 2021}
@@ -64,6 +64,7 @@
 
 	Goal: lay a useful foundation for theory-building.
 
+	\mathlib is a community-driven project to build a tightly-integrated library of formalized mathematics.\\
 	Developing with \mathlib means updating your code regularly\\
 	in exchange for frequent new results and improvements.
 \end{frame}
@@ -143,7 +144,7 @@ class is_number_field (K : Type*) [field K] : Prop :=
 	Number fields have the form $\Q(\alpha)$, where $\alpha$ is algebraic:\\
 	the minimal polynomial $f_\alpha \in \Q[x]$ is irreducible and $f_\alpha(\alpha) = 0$.
 
-	Several constructions of $\Q(\alpha)$: subtype of $\C$, quotient type $\Q[x] / f_\alpha$, ...\\
+	Many constructions of $\Q(\alpha)$: subtype of $\C$, quotient type $\Q[x] / f_\alpha$, ...\\
 	These are isomorphic but not equal: how do we reason uniformly?
 
 \pause
@@ -165,7 +166,7 @@ class is_dedekind_domain (R : Type*) [integral_domain R] : Prop :=
 \end{frame}
 
 \begin{frame}{Fractional ideals}
-	We formalized fractional ideals of $R$ as\\
+	We formalized fractional ideals of $R$ as a subtype:\\
 	$R$-submodules $I$ of $\Frac(R)$ such that $\exists a : R, a I \subseteq R$.
 
 	Fractional ideals have a semiring structure (like submodules):\\
