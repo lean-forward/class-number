@@ -157,7 +157,7 @@ class is_number_field (K : Type*) [field K] : Prop :=
 \begin{lstlisting}
 class is_dedekind_domain (R : Type*) [integral_domain R] : Prop :=
 (to_is_noetherian_ring : is_noetherian_ring R)
-(dimension_le_one : ∀ (P : ideal R), P ≠ ⊥ →
+(dimension_le_one : ∀ (P : ideal R), P ≠ 0 →
   is_prime P → is_maximal P)
 (is_integrally_closed :
   integral_closure R (fraction_ring R) = ⊥)
